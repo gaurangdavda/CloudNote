@@ -1,4 +1,26 @@
-# csye6225-git-forking-workflow
-Hello This is Intro to git forking workflow
-###Demo
-# author : Vivek Dalal
+# CSYE 6225 - Spring 2019
+
+## Team Information
+
+| Name | NEU ID | Email Address |
+| --- | --- | --- |
+| | | |
+| | | |
+| | | |
+| | | |
+
+## Technology Stack
+
+
+## Build Instructions
+
+
+## Deploy Instructions
+
+
+## Running Tests
+
+
+## CI/CD
+
+
