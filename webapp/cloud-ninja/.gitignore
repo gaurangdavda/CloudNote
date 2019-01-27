@@ -26,3 +26,6 @@
 /.mvn/
 mvnw
 mvnw.cmd
+
+.idea/
+webapp/.idea/
