@@ -4,7 +4,7 @@
 
 | Name | NEU ID | Email Address |
 | --- | --- | --- |
-| | | |
+| Mansi|001888977 |raghuwanshi.m@husky.neu.edu |
 | | | |
 | | | |
 | | | |
