@@ -4,8 +4,8 @@
 
 | Name | NEU ID | Email Address |
 | --- | --- | --- |
+| Vivek Dalal|001430934|dalal.vi@husky.neu.edu |
 | Mansi|001888977 |raghuwanshi.m@husky.neu.edu |
-| | | |
 | | | |
 | | | |
 
