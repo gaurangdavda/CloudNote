@@ -29,8 +29,7 @@ public class EntryController {
 	@RequestMapping(method = RequestMethod.GET, value = GET_ENDPOINT, produces = MediaType.APPLICATION_JSON_VALUE)
 	ResponseEntity<String> getTimestamp(@RequestHeader(value = AUTH, defaultValue = NO_AUTH) String auth)
 			throws ValidationException {
-		loginService.getTimestamp(auth);
-		return new ResponseEntity<String>(String.valueOf(System.currentTimeMillis()), HttpStatus.OK);
+		return new ResponseEntity<String>(loginService.getTimestamp(auth), HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = POST_ENDPOINT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
