@@ -12,7 +12,14 @@ public class UserCredentials {
 	@Column(name="user_id")
 	private int id;
 
-	
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	@Column(name="user_emailId")
 	private String emailId;

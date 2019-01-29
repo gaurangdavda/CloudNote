@@ -2,7 +2,9 @@ package edu.neu.csye6225.spring19.cloudninja.service.impl;
 
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.EMAILID_PASSWORD_MISSING;
 
+import edu.neu.csye6225.spring19.cloudninja.exception.ResourceNotFoundException;
 import edu.neu.csye6225.spring19.cloudninja.repository.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +12,8 @@ import edu.neu.csye6225.spring19.cloudninja.exception.ValidationException;
 import edu.neu.csye6225.spring19.cloudninja.model.UserCredentials;
 import edu.neu.csye6225.spring19.cloudninja.service.LoginService;
 import edu.neu.csye6225.spring19.cloudninja.util.LoginServiceUtil;
+
+import java.util.List;
 
 @Service
 public class LoginServiceImpl implements LoginService {
@@ -58,6 +62,22 @@ public class LoginServiceImpl implements LoginService {
 		userRepository.save(userCredential);
 
 		return "abc";
+	}
+
+
+	public  void deleteUser(UserCredentials userCredential) throws ValidationException{
+
+		loginServiceUtil.isValidEmail(userCredential.getEmailId());
+
+		if(!userRepository.existsById(userCredential.getId())){
+			throw new ResourceNotFoundException("User not found with id " + userCredential.getId());
+		}
+
+		userRepository.delete(userCredential);
+	}
+
+	public List<UserCredentials> getUser(UserCredentials userCredentials){
+		return userRepository.findAll();
 	}
 
 }
