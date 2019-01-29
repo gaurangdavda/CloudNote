@@ -3,10 +3,12 @@
  */
 package edu.neu.csye6225.spring19.cloudninja.util;
 
+
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.INVALID_EMAIL;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.NULL_EMAIL;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.NULL_PASSWORD;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.WEAK_PASSWORD;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
@@ -56,7 +58,6 @@ public class LoginServiceUtil {
 	}
 
 	public static String encryptPassword(String password) {
-
-		return "";
+		return BCrypt.hashpw(password, BCrypt.gensalt(10));
 	}
 }
