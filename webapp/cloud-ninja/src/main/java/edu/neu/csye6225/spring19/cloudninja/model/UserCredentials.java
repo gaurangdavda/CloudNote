@@ -6,18 +6,11 @@ import javax.persistence.*;
 @Table(name="user")
 public class UserCredentials {
 
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
 
 	@Id
 	@GeneratedValue
 	@Column(name="user_id")
-	private int id;
+	private long id;
 
 	@Column(name="user_emailId")
 	private String emailId;
@@ -36,6 +29,16 @@ public class UserCredentials {
 	public String getPassword() {
 		return password;
 	}
+
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
 
 	public void setPassword(String password) {
 		this.password = password;
