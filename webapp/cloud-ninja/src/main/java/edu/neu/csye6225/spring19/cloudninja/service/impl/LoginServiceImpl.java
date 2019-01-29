@@ -1,5 +1,7 @@
 package edu.neu.csye6225.spring19.cloudninja.service.impl;
 
+import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.EMAILID_PASSWORD_MISSING;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,27 +23,21 @@ public class LoginServiceImpl implements LoginService {
 		byte[] bytes = loginServiceUtil.getDecodedString(authHeader.split(" ")[1]);
 
 		String userPassArr[] = new String(bytes).split(":");
-		if(userPassArr.length != 2) {
-			throw new ValidationException("Username or Password not entered");
+		if (userPassArr.length != 2) {
+			throw new ValidationException(EMAILID_PASSWORD_MISSING);
 		}
-		
+
 		String emailId = userPassArr[0];
 		String password = userPassArr[1];
-		
-		
-		
-		loginServiceUtil.isValidEmail(emailId);
-		
-		System.out.println("Valid email" + emailId);
-		
-		
-		//Fetch details from DB
-		String passwordFromDB = "password";
-		
-		//loginServiceUtil.verifyPassword(enteredPassword, passwordFromDb);
-		
-		
 
+		loginServiceUtil.isValidEmail(emailId);
+
+		System.out.println("Valid email" + emailId);
+
+		// Fetch details from DB
+		String passwordFromDB = "password";
+
+		// loginServiceUtil.verifyPassword(enteredPassword, passwordFromDb);
 
 		return String.valueOf(System.currentTimeMillis());
 
@@ -53,7 +49,7 @@ public class LoginServiceImpl implements LoginService {
 		loginServiceUtil.isValidEmail(userCredential.getEmailId());
 
 		String password = loginServiceUtil.encryptPassword(userCredential.getPassword());
-		
+
 		return "abc";
 	}
 

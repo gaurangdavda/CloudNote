@@ -3,21 +3,22 @@
  */
 package edu.neu.csye6225.spring19.cloudninja.util;
 
+import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.EMAILID_REGEX;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.INVALID_EMAIL;
-import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.PASSWORD_INCORRECT;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.NULL_EMAIL;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.NULL_PASSWORD;
+import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.PASSWORD_INCORRECT;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.WEAK_PASSWORD;
-
-import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.context.annotation.Scope;
-import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.stereotype.Component;
 
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.springframework.context.annotation.Scope;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.stereotype.Component;
 
 import edu.neu.csye6225.spring19.cloudninja.exception.UnAuthorizedLoginException;
 import edu.neu.csye6225.spring19.cloudninja.exception.ValidationException;
@@ -51,7 +52,7 @@ public class LoginServiceUtil {
 	}
 
 	public void isValidEmail(String email) throws ValidationException {
-		String emailRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
+		String emailRegex = EMAILID_REGEX;
 		Pattern emailPattern = Pattern.compile(emailRegex);
 		if (email != null && !email.isEmpty()) {
 			Matcher emailMatcher = emailPattern.matcher(email);
@@ -64,20 +65,22 @@ public class LoginServiceUtil {
 		}
 	}
 
-
-
 	public String encryptPassword(String password) {
 		return BCrypt.hashpw(password, BCrypt.gensalt(10));
 	}
-	
+
 	public void verifyPassword(String enteredPassword, String passwordFromDb) throws UnAuthorizedLoginException {
-		
-		if(!BCrypt.checkpw(enteredPassword, passwordFromDb)) {
+
+		if (!BCrypt.checkpw(enteredPassword, passwordFromDb)) {
 			throw new UnAuthorizedLoginException(PASSWORD_INCORRECT);
 		}
 	}
-	
+
 	public byte[] getDecodedString(String authDetails) {
 		return Base64.decodeBase64(authDetails);
+	}
+
+	public static void main(String[] args) {
+		System.out.println(WEAK_PASSWORD);
 	}
 }
