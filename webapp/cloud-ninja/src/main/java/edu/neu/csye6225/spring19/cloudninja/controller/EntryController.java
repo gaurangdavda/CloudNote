@@ -1,14 +1,14 @@
 package edu.neu.csye6225.spring19.cloudninja.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import edu.neu.csye6225.spring19.cloudninja.model.UserCredentials;
 import edu.neu.csye6225.spring19.cloudninja.service.LoginService;
+
 
 @RestController
 public class EntryController {
@@ -17,14 +17,15 @@ public class EntryController {
 	LoginService loginService;
 
 	@RequestMapping(method = RequestMethod.GET, value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-	String getTimestamp(@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth) {
+	ResponseEntity<String> getTimestamp(@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth) {
 		loginService.checkCredentials(auth);
-		return String.valueOf(System.currentTimeMillis());
+		//return String.valueOf(System.currentTimeMillis());
+		return new ResponseEntity<String>(String.valueOf(System.currentTimeMillis()), HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/user/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	String userDetails(UserCredentials userCredentials) {
-		//loginService.checkCredentials(userCredentials);
-		return "";
+	ResponseEntity<String> userDetails(@RequestBody UserCredentials userCredentials) {
+		loginService.registerUser(userCredentials);
+		return new ResponseEntity<String>("User Created Successfully", HttpStatus.OK);
 	}
 }
