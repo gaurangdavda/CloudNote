@@ -18,8 +18,8 @@ public class EntryController {
 	LoginService loginService;
 
 	@RequestMapping(method = RequestMethod.GET, value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<String> getTimestamp(@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth) {
-		loginService.checkCredentials(auth);
+	ResponseEntity<String> getTimestamp(@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth) throws ValidationException {
+		loginService.getTimestamp(auth);
 		//return String.valueOf(System.currentTimeMillis());
 		return new ResponseEntity<String>(String.valueOf(System.currentTimeMillis()), HttpStatus.OK);
 	}

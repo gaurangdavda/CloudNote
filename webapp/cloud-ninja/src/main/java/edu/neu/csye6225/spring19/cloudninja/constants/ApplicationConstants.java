@@ -15,4 +15,5 @@ public class ApplicationConstants {
 			+ "\n 3) Should contain atleast 1 upper case character." + "\n 4) Should contain atleast 1 digit.";
 	public static final String NULL_EMAIL = "Kindly enter the emaild id.";
 	public static final String INVALID_EMAIL = "Kindly enter valid emaild id.";
+	public static final String PASSWORD_INCORRECT = "PKindly enter valid credentials";
 }
