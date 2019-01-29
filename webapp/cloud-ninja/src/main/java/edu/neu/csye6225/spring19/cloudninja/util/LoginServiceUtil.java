@@ -79,8 +79,4 @@ public class LoginServiceUtil {
 	public byte[] getDecodedString(String authDetails) {
 		return Base64.decodeBase64(authDetails);
 	}
-
-	public static void main(String[] args) {
-		System.out.println(WEAK_PASSWORD);
-	}
 }
