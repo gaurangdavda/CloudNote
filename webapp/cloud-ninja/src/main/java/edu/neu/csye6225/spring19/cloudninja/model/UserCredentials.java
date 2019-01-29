@@ -10,7 +10,9 @@ public class UserCredentials {
 	@Id
 	@GeneratedValue
 	@Column(name="user_id")
-	private long id;
+	private int id;
+
+	
 
 	@Column(name="user_emailId")
 	private String emailId;
@@ -31,7 +33,7 @@ public class UserCredentials {
 	}
 
 
-	
+
 	public void setPassword(String password) {
 		this.password = password;
 	}
