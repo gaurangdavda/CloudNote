@@ -2,7 +2,7 @@ package edu.neu.csye6225.spring19.cloudninja.model;
 
 public class UserCredentials {
 	private String emailId;
-	private Password password;
+	private String password;
 
 	public String getEmailId() {
 		return emailId;
@@ -12,11 +12,11 @@ public class UserCredentials {
 		this.emailId = emailId;
 	}
 
-	public Password getPassword() {
+	public String getPassword() {
 		return password;
 	}
 
-	public void setPassword(Password password) {
+	public void setPassword(String password) {
 		this.password = password;
 	}
 
