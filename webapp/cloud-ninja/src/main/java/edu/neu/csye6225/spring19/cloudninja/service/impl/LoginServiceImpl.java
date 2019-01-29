@@ -13,6 +13,7 @@ import edu.neu.csye6225.spring19.cloudninja.model.UserCredentials;
 import edu.neu.csye6225.spring19.cloudninja.service.LoginService;
 import edu.neu.csye6225.spring19.cloudninja.util.LoginServiceUtil;
 
+import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -76,8 +77,21 @@ public class LoginServiceImpl implements LoginService {
 		userRepository.delete(userCredential);
 	}
 
-	public List<UserCredentials> getUser(UserCredentials userCredentials){
-		return userRepository.findAll();
+	public String getUserEmailId(UserCredentials userCredentials){
+		List<UserCredentials> userCredentialList = userRepository.findAll();
+
+		String email = null;
+		if(!(userCredentialList.contains(userCredentials))){
+			throw new ResourceNotFoundException("User not found with " );
+		}
+
+		for (Iterator iter = userCredentialList.iterator(); iter.hasNext(); ) {
+			UserCredentials element = (UserCredentials) iter.next();
+			email = element.getEmailId();
+
+		}
+
+		return email;
 	}
 
 }
