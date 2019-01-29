@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import edu.neu.csye6225.spring19.cloudninja.exception.ValidationException;
 import edu.neu.csye6225.spring19.cloudninja.model.UserCredentials;
 import edu.neu.csye6225.spring19.cloudninja.service.LoginService;
 
@@ -24,7 +25,7 @@ public class EntryController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/user/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<String> userDetails(@RequestBody UserCredentials userCredentials) {
+	ResponseEntity<String> userDetails(@RequestBody UserCredentials userCredentials) throws ValidationException {
 		loginService.registerUser(userCredentials);
 		return new ResponseEntity<String>("User Created Successfully", HttpStatus.OK);
 	}
