@@ -2,6 +2,7 @@ package edu.neu.csye6225.spring19.cloudninja.service.impl;
 
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.EMAILID_PASSWORD_MISSING;
 
+import edu.neu.csye6225.spring19.cloudninja.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,9 @@ public class LoginServiceImpl implements LoginService {
 
 	@Autowired
 	private LoginServiceUtil loginServiceUtil;
+
+	@Autowired
+	private UserRepository userRepository;
 
 	@Override
 	public String getTimestamp(String authHeader) throws ValidationException {
@@ -48,7 +52,10 @@ public class LoginServiceImpl implements LoginService {
 
 		loginServiceUtil.isValidEmail(userCredential.getEmailId());
 
+
 		String password = loginServiceUtil.encryptPassword(userCredential.getPassword());
+		userCredential.setPassword(password);
+		userRepository.save(userCredential);
 
 		return "abc";
 	}

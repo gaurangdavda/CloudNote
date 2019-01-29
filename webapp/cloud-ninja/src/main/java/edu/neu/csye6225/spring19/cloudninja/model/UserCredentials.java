@@ -3,7 +3,7 @@ package edu.neu.csye6225.spring19.cloudninja.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name="user")
+@Table(name="user_table")
 public class UserCredentials {
 
 
