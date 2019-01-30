@@ -1,6 +1,6 @@
 package edu.neu.csye6225.spring19.cloudninja.controller;
 
-import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.AUTH;
+import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.AUTHORIZATION;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.GET_ENDPOINT;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.HTTP_OK;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.NO_AUTH;
@@ -28,7 +28,7 @@ public class EntryController {
 	LoginService loginService;
 
 	@RequestMapping(method = RequestMethod.GET, value = GET_ENDPOINT, produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<String> getTimestamp(@RequestHeader(value = AUTH, defaultValue = NO_AUTH) String auth)
+	ResponseEntity<String> getTimestamp(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth)
 			throws ValidationException, UnAuthorizedLoginException {
 		return new ResponseEntity<String>(loginService.getTimestamp(auth), HttpStatus.OK);
 	}
