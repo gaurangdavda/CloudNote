@@ -36,10 +36,11 @@ public class LoginServiceImpl implements LoginService {
 	public String registerUser(UserCredentials userCredential) throws ValidationException {
 		
 		//Converting email id to lowercase
-		userCredential.setEmailId(userCredential.getEmailId().toLowerCase());
+		userCredential.setEmailId(userCredential.getEmailId());
 		loginServiceUtil.isValidEmail(userCredential.getEmailId());
+		
 		loginServiceUtil.checkPasswordStrength(userCredential.getPassword());
-		List<UserCredentials> credentialList = userRepository.findByEmailId(userCredential.getEmailId());
+		List<UserCredentials> credentialList = userRepository.findByEmailId(userCredential.getEmailId().toLowerCase());
 		if (credentialList == null || credentialList.size() == 0) {
 			String password = loginServiceUtil.encryptPassword(userCredential.getPassword());
 			userCredential.setPassword(password);
