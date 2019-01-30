@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.neu.csye6225.spring19.cloudninja.exception.UnAuthorizedLoginException;
 import edu.neu.csye6225.spring19.cloudninja.exception.ValidationException;
 import edu.neu.csye6225.spring19.cloudninja.model.UserCredentials;
 import edu.neu.csye6225.spring19.cloudninja.service.LoginService;
@@ -28,7 +29,7 @@ public class EntryController {
 
 	@RequestMapping(method = RequestMethod.GET, value = GET_ENDPOINT, produces = MediaType.APPLICATION_JSON_VALUE)
 	ResponseEntity<String> getTimestamp(@RequestHeader(value = AUTH, defaultValue = NO_AUTH) String auth)
-			throws ValidationException {
+			throws ValidationException, UnAuthorizedLoginException {
 		return new ResponseEntity<String>(loginService.getTimestamp(auth), HttpStatus.OK);
 	}
 
