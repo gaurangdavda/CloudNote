@@ -3,15 +3,13 @@ package edu.neu.csye6225.spring19.cloudninja.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name="user_table")
+@Table(name = "USR_DTLS")
 public class UserCredentials {
-
 
 	@Id
 	@GeneratedValue
-	@Column(name="user_id")
+	@Column(name = "USR_ID")
 	private int id;
-
 
 	public int getId() {
 		return id;
@@ -21,10 +19,10 @@ public class UserCredentials {
 		this.id = id;
 	}
 
-	@Column(name="user_emailId")
+	@Column(name = "USR_EMAIL", unique = true)
 	private String emailId;
 
-	@Column(name="user_password")
+	@Column(name = "USR_PWD")
 	private String password;
 
 	public String getEmailId() {
@@ -38,8 +36,6 @@ public class UserCredentials {
 	public String getPassword() {
 		return password;
 	}
-
-
 
 	public void setPassword(String password) {
 		this.password = password;
