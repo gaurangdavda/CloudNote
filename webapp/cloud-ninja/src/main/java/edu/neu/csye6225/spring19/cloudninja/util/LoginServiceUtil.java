@@ -38,11 +38,11 @@ public class LoginServiceUtil {
 		Predicate<String> rule2b = s -> !s.equals(s.toUpperCase());
 		Predicate<String> rule2c = s -> s.codePoints().anyMatch(Character::isDigit);
 		Predicate<String> rule2d = s -> s.codePoints().anyMatch(i -> !Character.isAlphabetic(i));
-//		Predicate<String> rule2e = s -> s.matches("[@$!%*?&]+");
+		Predicate<String> rule2e = s -> s.matches(".*[@$!%*?._#^&]+.*");
 		Predicate<String> rule2f = s -> !s.equals("Password@123");
 		Predicate<String> rule2g = s -> !s.contains(" ");
-		Predicate<String> rule2 = s -> Stream.of(rule2a, rule2b, rule2c, rule2d, rule2f, rule2g).filter(p -> p.test(s))
-				.count() >= 6;
+		Predicate<String> rule2 = s -> Stream.of(rule2a, rule2b, rule2c, rule2d, rule2e, rule2f, rule2g)
+				.filter(p -> p.test(s)).count() >= 6;
 		rule = rule1.and(rule2);
 		if (password != null && !password.isEmpty()) {
 			boolean isValidPassword = rule.test(password);
@@ -83,4 +83,5 @@ public class LoginServiceUtil {
 	public byte[] getDecodedString(String authDetails) {
 		return Base64.decodeBase64(authDetails);
 	}
+
 }
