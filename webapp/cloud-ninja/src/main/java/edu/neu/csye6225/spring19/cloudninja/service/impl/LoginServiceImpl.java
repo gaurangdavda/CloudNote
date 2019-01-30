@@ -4,10 +4,10 @@ import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstant
 
 import java.util.List;
 
-import edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants;
 import edu.neu.csye6225.spring19.cloudninja.exception.ResourceNotFoundException;
 import edu.neu.csye6225.spring19.cloudninja.exception.UnAuthorizedLoginException;
 import edu.neu.csye6225.spring19.cloudninja.exception.ValidationException;
@@ -27,21 +27,23 @@ public class LoginServiceImpl implements LoginService {
 
 	@Override
 	public String getTimestamp(String authHeader) throws ValidationException, UnAuthorizedLoginException {
-		//Authenticating User before proceeding
+		// Authenticating User before proceeding
 		authenticateUser(authHeader);
 		return String.valueOf(System.currentTimeMillis());
-		
+
 	}
 
 	public String registerUser(UserCredentials userCredential) throws ValidationException {
-		
-		//Converting email id to lowercase
+
+		// Converting email id to lowercase
+
 		loginServiceUtil.isValidEmail(userCredential.getEmailId());
+		String emailId = userCredential.getEmailId().toLowerCase();
 		loginServiceUtil.checkPasswordStrength(userCredential.getPassword());
-		List<UserCredentials> credentialList = userRepository.findByEmailId(userCredential.getEmailId().toLowerCase());
+		List<UserCredentials> credentialList = userRepository.findByEmailId(emailId);
 		if (credentialList == null || credentialList.size() == 0) {
 			String password = loginServiceUtil.encryptPassword(userCredential.getPassword());
-			userCredential.setEmailId(userCredential.getEmailId());
+			userCredential.setEmailId(emailId);
 			userCredential.setPassword(password);
 			userRepository.save(userCredential);
 		} else {
@@ -49,9 +51,9 @@ public class LoginServiceImpl implements LoginService {
 		}
 		return "User created successfully.";
 	}
-	
+
 	public void authenticateUser(String authHeader) throws ValidationException, UnAuthorizedLoginException {
-		if(authHeader!= ApplicationConstants.NO_AUTH) {
+		if (authHeader != ApplicationConstants.NO_AUTH) {
 			byte[] bytes = loginServiceUtil.getDecodedString(authHeader.split(" ")[1]);
 
 			String userPassArr[] = new String(bytes).split(":");
@@ -59,8 +61,8 @@ public class LoginServiceImpl implements LoginService {
 				throw new ValidationException(EMAILID_PASSWORD_MISSING);
 			}
 
-			//Storing email id in lowercase
-			String emailId = userPassArr[0]; 
+			// Storing email id in lowercase
+			String emailId = userPassArr[0];
 			String password = userPassArr[1];
 			String actualPassword = "";
 			loginServiceUtil.isValidEmail(emailId);
@@ -68,12 +70,10 @@ public class LoginServiceImpl implements LoginService {
 			if (credentialList != null && credentialList.size() == 1) {
 				actualPassword = credentialList.get(0).getPassword();
 				loginServiceUtil.verifyPassword(password, actualPassword);
-				//return String.valueOf(System.currentTimeMillis());
 			} else {
 				throw new ResourceNotFoundException("Invalid user ID.");
 			}
-		}
-		else {
+		} else {
 			throw new UnAuthorizedLoginException();
 		}
 	}
