@@ -3,14 +3,23 @@ package edu.neu.csye6225.spring19.cloudninja.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name="user")
+@Table(name="user_table")
 public class UserCredentials {
 
 
 	@Id
 	@GeneratedValue
 	@Column(name="user_id")
-	private long id;
+	private int id;
+
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	@Column(name="user_emailId")
 	private String emailId;
@@ -30,14 +39,6 @@ public class UserCredentials {
 		return password;
 	}
 
-
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
 
 
 	public void setPassword(String password) {

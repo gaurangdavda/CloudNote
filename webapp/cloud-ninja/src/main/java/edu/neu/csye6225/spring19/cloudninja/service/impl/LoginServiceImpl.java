@@ -2,6 +2,9 @@ package edu.neu.csye6225.spring19.cloudninja.service.impl;
 
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.EMAILID_PASSWORD_MISSING;
 
+import edu.neu.csye6225.spring19.cloudninja.exception.ResourceNotFoundException;
+import edu.neu.csye6225.spring19.cloudninja.repository.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,11 +13,17 @@ import edu.neu.csye6225.spring19.cloudninja.model.UserCredentials;
 import edu.neu.csye6225.spring19.cloudninja.service.LoginService;
 import edu.neu.csye6225.spring19.cloudninja.util.LoginServiceUtil;
 
+import java.util.Iterator;
+import java.util.List;
+
 @Service
 public class LoginServiceImpl implements LoginService {
 
 	@Autowired
 	private LoginServiceUtil loginServiceUtil;
+
+	@Autowired
+	private UserRepository userRepository;
 
 	@Override
 	public String getTimestamp(String authHeader) throws ValidationException {
@@ -48,9 +57,41 @@ public class LoginServiceImpl implements LoginService {
 
 		loginServiceUtil.isValidEmail(userCredential.getEmailId());
 
+
 		String password = loginServiceUtil.encryptPassword(userCredential.getPassword());
+		userCredential.setPassword(password);
+		userRepository.save(userCredential);
 
 		return "abc";
+	}
+
+
+	public  void deleteUser(UserCredentials userCredential) throws ValidationException{
+
+		loginServiceUtil.isValidEmail(userCredential.getEmailId());
+
+		if(!userRepository.existsById(userCredential.getId())){
+			throw new ResourceNotFoundException("User not found with id " + userCredential.getId());
+		}
+
+		userRepository.delete(userCredential);
+	}
+
+	public String getUserEmailId(UserCredentials userCredentials){
+		List<UserCredentials> userCredentialList = userRepository.findAll();
+
+		String email = null;
+		if(!(userCredentialList.contains(userCredentials))){
+			throw new ResourceNotFoundException("User not found with " );
+		}
+
+		for (Iterator iter = userCredentialList.iterator(); iter.hasNext(); ) {
+			UserCredentials element = (UserCredentials) iter.next();
+			email = element.getEmailId();
+
+		}
+
+		return email;
 	}
 
 }
