@@ -6,6 +6,8 @@ import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstant
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.NO_AUTH;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.POST_ENDPOINT;
 
+import edu.neu.csye6225.spring19.cloudninja.model.ResponseBody;
+import edu.neu.csye6225.spring19.cloudninja.model.TimeStampWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,14 +30,13 @@ public class EntryController {
 	LoginService loginService;
 
 	@RequestMapping(method = RequestMethod.GET, value = GET_ENDPOINT, produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<String> getTimestamp(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth)
+	ResponseEntity<TimeStampWrapper> getTimestamp(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth)
 			throws ValidationException, UnAuthorizedLoginException {
-		return new ResponseEntity<String>(loginService.getTimestamp(auth), HttpStatus.OK);
+		return new ResponseEntity<TimeStampWrapper>(loginService.getTimestamp(auth), HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = POST_ENDPOINT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<String> userDetails(@RequestBody UserCredentials userCredentials) throws ValidationException {
-		loginService.registerUser(userCredentials);
-		return new ResponseEntity<String>(HTTP_OK, HttpStatus.OK);
+	ResponseEntity<ResponseBody> userDetails(@RequestBody UserCredentials userCredentials) throws ValidationException {
+		return new ResponseEntity<ResponseBody>(loginService.registerUser(userCredentials), HttpStatus.OK);
 	}
 }
