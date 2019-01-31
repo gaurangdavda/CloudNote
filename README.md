@@ -13,12 +13,12 @@
 Java 1.8/ Spring Boot/ PostgresSQL
 
 ## Build Instructions
-Built with-
-Spring-Boot - teh web framework used
-Maven- Dependency Management
+* Build the project using Maven
+* Start the application from an IDE of choice or the command line
+* Spin up the PostgreSQL DB(sudo -u postgres psql)
 
 ## Deploy Instructions
-Has not deployed as of now
+Application is deployed locally and runs on http://localhost:8080/
 
 ## Running Tests
 The unit tests can be found under the test package. The unit tests are developed using Junit4.
