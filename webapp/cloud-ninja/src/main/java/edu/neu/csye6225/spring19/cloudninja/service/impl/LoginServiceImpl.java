@@ -44,13 +44,14 @@ public class LoginServiceImpl implements LoginService {
 		return timeStampWrapper;
 	}
 
-	public ResponseBody registerUser(UserCredentials userCredential) throws ValidationException {
+	public ResponseBody registerUser(UserCredentials userCredential) throws ValidationException {	
 
 		loginServiceUtil.isValidEmail(userCredential.getEmailId());
 		String emailId = userCredential.getEmailId().toLowerCase();
-		loginServiceUtil.checkPasswordStrength(userCredential.getPassword());
+		
 		List<UserCredentials> credentialList = userRepository.findByEmailId(emailId);
 		if (credentialList == null || credentialList.size() == 0) {
+			loginServiceUtil.checkPasswordStrength(userCredential.getPassword());
 			String password = loginServiceUtil.encryptPassword(userCredential.getPassword());
 			userCredential.setEmailId(emailId);
 			userCredential.setPassword(password);
