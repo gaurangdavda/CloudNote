@@ -2,12 +2,9 @@ package edu.neu.csye6225.spring19.cloudninja.controller;
 
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.AUTHORIZATION;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.GET_ENDPOINT;
-import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.HTTP_OK;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.NO_AUTH;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.POST_ENDPOINT;
 
-import edu.neu.csye6225.spring19.cloudninja.model.ResponseBody;
-import edu.neu.csye6225.spring19.cloudninja.model.TimeStampWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import edu.neu.csye6225.spring19.cloudninja.exception.UnAuthorizedLoginException;
 import edu.neu.csye6225.spring19.cloudninja.exception.ValidationException;
+import edu.neu.csye6225.spring19.cloudninja.model.ResponseBody;
+import edu.neu.csye6225.spring19.cloudninja.model.TimeStampWrapper;
 import edu.neu.csye6225.spring19.cloudninja.model.UserCredentials;
 import edu.neu.csye6225.spring19.cloudninja.service.LoginService;
 

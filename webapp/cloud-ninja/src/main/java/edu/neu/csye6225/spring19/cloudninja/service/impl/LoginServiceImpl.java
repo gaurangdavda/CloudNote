@@ -2,11 +2,9 @@ package edu.neu.csye6225.spring19.cloudninja.service.impl;
 
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.EMAILID_PASSWORD_MISSING;
 
-import java.time.format.DateTimeFormatter;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
-import edu.neu.csye6225.spring19.cloudninja.model.ResponseBody;
-import edu.neu.csye6225.spring19.cloudninja.model.TimeStampWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +12,12 @@ import edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants;
 import edu.neu.csye6225.spring19.cloudninja.exception.ResourceNotFoundException;
 import edu.neu.csye6225.spring19.cloudninja.exception.UnAuthorizedLoginException;
 import edu.neu.csye6225.spring19.cloudninja.exception.ValidationException;
+import edu.neu.csye6225.spring19.cloudninja.model.ResponseBody;
+import edu.neu.csye6225.spring19.cloudninja.model.TimeStampWrapper;
 import edu.neu.csye6225.spring19.cloudninja.model.UserCredentials;
 import edu.neu.csye6225.spring19.cloudninja.repository.UserRepository;
 import edu.neu.csye6225.spring19.cloudninja.service.LoginService;
 import edu.neu.csye6225.spring19.cloudninja.util.LoginServiceUtil;
-import java.text.*;
 
 @Service
 public class LoginServiceImpl implements LoginService {

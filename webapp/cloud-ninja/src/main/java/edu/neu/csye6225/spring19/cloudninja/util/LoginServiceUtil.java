@@ -33,7 +33,7 @@ public class LoginServiceUtil {
 
 	public void checkPasswordStrength(String password) throws ValidationException {
 		Predicate<String> rule;
-		Predicate<String> rule1 = s -> s.length() >= 8 && s.length() <= 50;
+		Predicate<String> rule1 = s -> s.length() > 8 && s.length() <= 50;
 		Predicate<String> rule2a = s -> !s.equals(s.toLowerCase());
 		Predicate<String> rule2b = s -> !s.equals(s.toUpperCase());
 		Predicate<String> rule2c = s -> s.codePoints().anyMatch(Character::isDigit);
