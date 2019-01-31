@@ -42,7 +42,7 @@ public class LoginServiceUtil {
 		Predicate<String> rule2f = s -> !s.equals("Password@123");
 		Predicate<String> rule2g = s -> !s.contains(" ");
 		Predicate<String> rule2 = s -> Stream.of(rule2a, rule2b, rule2c, rule2d, rule2e, rule2f, rule2g)
-				.filter(p -> p.test(s)).count() >= 6;
+				.filter(p -> p.test(s)).count() > 6;
 		rule = rule1.and(rule2);
 		if (password != null && !password.isEmpty()) {
 			boolean isValidPassword = rule.test(password);
