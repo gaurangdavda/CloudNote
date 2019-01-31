@@ -5,6 +5,8 @@ import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstant
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import edu.neu.csye6225.spring19.cloudninja.model.ResponseBody;
+import edu.neu.csye6225.spring19.cloudninja.model.TimeStampWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,7 @@ import edu.neu.csye6225.spring19.cloudninja.model.UserCredentials;
 import edu.neu.csye6225.spring19.cloudninja.repository.UserRepository;
 import edu.neu.csye6225.spring19.cloudninja.service.LoginService;
 import edu.neu.csye6225.spring19.cloudninja.util.LoginServiceUtil;
+import java.text.*;
 
 @Service
 public class LoginServiceImpl implements LoginService {
@@ -26,14 +29,22 @@ public class LoginServiceImpl implements LoginService {
 	@Autowired
 	private UserRepository userRepository;
 
+	@Autowired
+	private TimeStampWrapper timeStampWrapper;
+
+	@Autowired
+	private ResponseBody responseBody;
+
+
 	@Override
-	public String getTimestamp(String authHeader) throws ValidationException, UnAuthorizedLoginException {
+	public TimeStampWrapper getTimestamp(String authHeader) throws ValidationException, UnAuthorizedLoginException {
 		// Authenticating User before proceeding
 		authenticateUser(authHeader);
-		return new java.text.SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new java.util.Date (System.currentTimeMillis()));
+		timeStampWrapper.setTimeStamp(new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new java.util.Date (System.currentTimeMillis())));
+		return timeStampWrapper;
 	}
 
-	public String registerUser(UserCredentials userCredential) throws ValidationException {
+	public ResponseBody registerUser(UserCredentials userCredential) throws ValidationException {
 
 		// Converting email id to lowercase
 
@@ -49,7 +60,8 @@ public class LoginServiceImpl implements LoginService {
 		} else {
 			throw new ValidationException("User already exists. Kindly login.");
 		}
-		return "User created successfully.";
+		responseBody.setResponseMessage("User created successfully.");
+		return responseBody;
 	}
 
 	public void authenticateUser(String authHeader) throws ValidationException, UnAuthorizedLoginException {
