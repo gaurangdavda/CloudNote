@@ -13,12 +13,15 @@
 Java 1.8/ Spring Boot/ PostgresSQL
 
 ## Build Instructions
+Built with-
+Spring-Boot - teh web framework used
+Maven- Dependency Management
 
 ## Deploy Instructions
-
+Has not deployed as of now
 
 ## Running Tests
-
+The unit tests can be found under the test package. The unit tests are developed using Junit4.
 
 ## CI/CD
 
