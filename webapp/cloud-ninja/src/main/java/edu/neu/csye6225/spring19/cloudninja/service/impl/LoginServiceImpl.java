@@ -2,6 +2,7 @@ package edu.neu.csye6225.spring19.cloudninja.service.impl;
 
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.EMAILID_PASSWORD_MISSING;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +30,7 @@ public class LoginServiceImpl implements LoginService {
 	public String getTimestamp(String authHeader) throws ValidationException, UnAuthorizedLoginException {
 		// Authenticating User before proceeding
 		authenticateUser(authHeader);
-		return String.valueOf(System.currentTimeMillis());
-
+		return new java.text.SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new java.util.Date (System.currentTimeMillis()));
 	}
 
 	public String registerUser(UserCredentials userCredential) throws ValidationException {
