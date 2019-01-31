@@ -11,8 +11,10 @@ public class ApplicationConstants {
 
 	public static final String NULL_PASSWORD = "Kindly enter the password.";
 	public static final String WEAK_PASSWORD = "Password is weak. Kindly enter the password with the following specifications."
-			+ "\n1) Length should be >= 8 and <= 50." + "\n2) Should contain atleast 1 lower case character."
-			+ "\n3) Should contain atleast 1 upper case character." + "\n4) Should contain atleast 1 digit.";
+			+ " 1) Length should be >= 8 and <= 50." + " 2) Should contain atleast 1 lower case character."
+			+ " 3) Should contain atleast 1 upper case character." + " 4) Should contain atleast 1 digit."
+			+ " 5) Should contain atleast 1 alphabet" + " 6) Shoould not contain spaces."
+			+ " 7) Should not be Password@123." + " 8) Should contain one of the special characters @$!%*?._#^&";
 	public static final String NULL_EMAIL = "Kindly enter the emaild id.";
 	public static final String INVALID_EMAIL = "Kindly enter valid emaild id.";
 	public static final String PASSWORD_INCORRECT = "Incorrect password entered.";
