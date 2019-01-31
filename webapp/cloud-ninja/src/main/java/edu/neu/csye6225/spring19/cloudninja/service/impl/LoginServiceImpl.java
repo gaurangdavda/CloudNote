@@ -46,8 +46,6 @@ public class LoginServiceImpl implements LoginService {
 
 	public ResponseBody registerUser(UserCredentials userCredential) throws ValidationException {
 
-		// Converting email id to lowercase
-
 		loginServiceUtil.isValidEmail(userCredential.getEmailId());
 		String emailId = userCredential.getEmailId().toLowerCase();
 		loginServiceUtil.checkPasswordStrength(userCredential.getPassword());
