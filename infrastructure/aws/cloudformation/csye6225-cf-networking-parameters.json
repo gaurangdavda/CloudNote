@@ -1,0 +1,52 @@
+[
+  {
+    "ParameterKey": "VPCNAME",
+    "ParameterValue": "csye6225-vpc",
+    "UsePreviousValue": true
+  },
+  {
+    "ParameterKey": "VpcCIDR",
+    "ParameterValue": "10.0.0.0/16",
+    "UsePreviousValue": true
+  },
+  {
+    "ParameterKey": "PublicSubnet1CIDR",
+    "ParameterValue": "10.0.0.0/24",
+    "UsePreviousValue": true
+  },
+  {
+    "ParameterKey": "PublicSubnet2CIDR",
+    "ParameterValue": "10.0.1.0/24",
+    "UsePreviousValue": true
+  },
+  {
+    "ParameterKey": "PublicSubnet3CIDR",
+    "ParameterValue": "10.0.2.0/24",
+    "UsePreviousValue": true
+  },
+  {
+    "ParameterKey": "IGNAME",
+    "ParameterValue": "ig",
+    "UsePreviousValue": true
+  },
+  {
+    "ParameterKey": "PBRTNAME",
+    "ParameterValue": "pb-route-table",
+    "UsePreviousValue": true
+  },
+  {
+    "ParameterKey": "PBSN1NAME",
+    "ParameterValue": "pb-subnet-1",
+    "UsePreviousValue": true
+  },
+  {
+    "ParameterKey": "PBSN2NAME",
+    "ParameterValue": "pb-subnet-2",
+    "UsePreviousValue": true
+  },
+  {
+    "ParameterKey": "PBSN3NAME",
+    "ParameterValue": "pb-subnet-3",
+    "UsePreviousValue": true
+  }
+]
