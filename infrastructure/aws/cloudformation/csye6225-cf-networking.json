@@ -184,6 +184,13 @@
              }
           ]
        }
-    }
+    },
+    "RouteName":{
+     "Type":"AWS::EC2::Route",
+     "Properties":{
+         "RouteTableId":{"Ref":"PBRTNAME"},
+         "DestinationCidrBlock":"0.0.0.0/0",
+	"GatewayID":{"Ref":"IGNAME"} 
+
   }
 }
