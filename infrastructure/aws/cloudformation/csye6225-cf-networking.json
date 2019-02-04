@@ -193,4 +193,34 @@
 	"GatewayID":{"Ref":"IGNAME"} 
 
   }
+},
+
+"Subnet1RouteTableAssoc":{
+"Type":"AWS::EC2::SubnetRouteTableAssociation",
+     "Properties":{
+         "SubnetId":{"Ref":"PBSN1NAME"},
+         "RouteTableId":"PBRTNAME",
+        
+
+  }
+},
+
+"Subnet2RouteTableAssoc":{
+"Type":"AWS::EC2::SubnetRouteTableAssociation",
+     "Properties":{
+         "SubnetId":{"Ref":"PBSN2NAME"},
+         "RouteTableId":"PBRTNAME",
+        
+
+  }
+},
+
+"Subnet3RouteTableAssoc":{
+"Type":"AWS::EC2::SubnetRouteTableAssociation",
+     "Properties":{
+         "SubnetId":{"Ref":"PBSN3NAME"},
+         "RouteTableId":"PBRTNAME",
+        
+
+  }
 }
