@@ -113,114 +113,116 @@
         ]
       }
     },
-    "PublicSubnet2":{
-       "Type":"AWS::EC2::Subnet",
-       "Properties":{
-          "VpcId":{
-             "Ref":"VPC"
-          },
-          "AvailabilityZone":{
-             "Fn::Select":[
-                "1",
-                {
-                   "Fn::GetAZs":""
-                }
-             ]
-          },
-          "CidrBlock":{
-             "Ref":"PublicSubnet2CIDR"
-          },
-          "MapPublicIpOnLaunch":true,
-          "Tags":[
-             {
-                "Key":"Name",
-                "Value":{
-                   "Ref":"PBSN2NAME"
-                }
-             }
+    "PublicSubnet2": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "AvailabilityZone": {
+          "Fn::Select": [
+            "1",
+            {
+              "Fn::GetAZs": ""
+            }
           ]
-       }
+        },
+        "CidrBlock": {
+          "Ref": "PublicSubnet2CIDR"
+        },
+        "MapPublicIpOnLaunch": true,
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Ref": "PBSN2NAME"
+            }
+          }
+        ]
+      }
     },
-    "PublicSubnet3":{
-       "Type":"AWS::EC2::Subnet",
-       "Properties":{
-          "VpcId":{
-             "Ref":"VPC"
-          },
-          "AvailabilityZone":{
-             "Fn::Select":[
-                "2",
-                {
-                   "Fn::GetAZs":""
-                }
-             ]
-          },
-          "CidrBlock":{
-             "Ref":"PublicSubnet3CIDR"
-          },
-          "MapPublicIpOnLaunch":true,
-          "Tags":[
-             {
-                "Key":"Name",
-                "Value":{
-                   "Ref":"PBSN3NAME"
-                }
-             }
+    "PublicSubnet3": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "AvailabilityZone": {
+          "Fn::Select": [
+            "2",
+            {
+              "Fn::GetAZs": ""
+            }
           ]
-       }
+        },
+        "CidrBlock": {
+          "Ref": "PublicSubnet3CIDR"
+        },
+        "MapPublicIpOnLaunch": true,
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Ref": "PBSN3NAME"
+            }
+          }
+        ]
+      }
     },
-    "PublicRouteTable":{
-       "Type":"AWS::EC2::RouteTable",
-       "Properties":{
-          "VpcId":{
-             "Ref":"VPC"
-          },
-          "Tags":[
-             {
-                "Key":"Name",
-                "Value":{
-                   "Ref":"PBRTNAME"
-                }
-             }
-          ]
-       }
+    "PublicRouteTable": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Ref": "PBRTNAME"
+            }
+          }
+        ]
+      }
     },
-    "RouteName":{
-     "Type":"AWS::EC2::Route",
-     "Properties":{
-         "RouteTableId":{"Ref":"PBRTNAME"},
-         "DestinationCidrBlock":"0.0.0.0/0",
-	"GatewayID":{"Ref":"IGNAME"} 
-
-  }
-},
-
-"Subnet1RouteTableAssoc":{
-"Type":"AWS::EC2::SubnetRouteTableAssociation",
-     "Properties":{
-         "SubnetId":{"Ref":"PBSN1NAME"},
-         "RouteTableId":"PBRTNAME",
-        
-
-  }
-},
-
-"Subnet2RouteTableAssoc":{
-"Type":"AWS::EC2::SubnetRouteTableAssociation",
-     "Properties":{
-         "SubnetId":{"Ref":"PBSN2NAME"},
-         "RouteTableId":"PBRTNAME",
-        
-
-  }
-},
-
-"Subnet3RouteTableAssoc":{
-"Type":"AWS::EC2::SubnetRouteTableAssociation",
-     "Properties":{
-         "SubnetId":{"Ref":"PBSN3NAME"},
-         "RouteTableId":"PBRTNAME",
-        
-
+    "RouteName": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PBRTNAME"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayID": {
+          "Ref": "IGNAME"
+        }
+      }
+    },
+    "Subnet1RouteTableAssoc": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "PBSN1NAME"
+        },
+        "RouteTableId": "PBRTNAME"
+      }
+    },
+    "Subnet2RouteTableAssoc": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "PBSN2NAME"
+        },
+        "RouteTableId": "PBRTNAME"
+      }
+    },
+    "Subnet3RouteTableAssoc": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "PBSN3NAME"
+        },
+        "RouteTableId": "PBRTNAME"
+      }
+    }
   }
 }
