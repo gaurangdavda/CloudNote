@@ -1,7 +1,17 @@
 [
   {
+    "ParameterKey": "STACKNAME",
+    "ParameterValue": "test-stack",
+    "UsePreviousValue": true
+  },
+  {
+    "ParameterKey": "COURSEAPPENDER",
+    "ParameterValue": "csye6225",
+    "UsePreviousValue": true
+  },
+  {
     "ParameterKey": "VPCNAME",
-    "ParameterValue": "csye6225-vpc",
+    "ParameterValue": "vpc",
     "UsePreviousValue": true
   },
   {
@@ -31,7 +41,7 @@
   },
   {
     "ParameterKey": "PBRTNAME",
-    "ParameterValue": "pb-route-table",
+    "ParameterValue": "rt",
     "UsePreviousValue": true
   },
   {

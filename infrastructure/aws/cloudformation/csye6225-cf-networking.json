@@ -1,6 +1,14 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Parameters": {
+    "STACKNAME": {
+      "Description": "Stack Name",
+      "Type": "String"
+    },
+    "COURSEAPPENDER": {
+      "Description": "Course Name used in resource names",
+      "Type": "String"
+    },
     "VpcCIDR": {
       "Description": "VPC CIDR Block",
       "Type": "String"
@@ -55,28 +63,52 @@
           {
             "Key": "Name",
             "Value": {
-              "Ref": "VPCNAME"
+              "Fn::Join": [
+                "-",
+                [
+                  {
+                    "Ref": "STACKNAME"
+                  },
+                  {
+                    "Ref": "COURSEAPPENDER"
+                  },
+                  {
+                    "Ref": "VPCNAME"
+                  }
+                ]
+              ]
             }
           }
         ]
       }
     },
     "InternetGateway": {
-
       "Type": "AWS::EC2::InternetGateway",
       "Properties": {
         "Tags": [
           {
             "Key": "Name",
             "Value": {
-              "Ref": "IGNAME"
+              "Fn::Join": [
+                "-",
+                [
+                  {
+                    "Ref": "STACKNAME"
+                  },
+                  {
+                    "Ref": "COURSEAPPENDER"
+                  },
+                  {
+                    "Ref": "IGNAME"
+                  }
+                ]
+              ]
             }
           }
         ]
       }
     },
     "InternetGatewayAttachment": {
-      "DependsOn":["VPC","InternetGateway"],
       "Type": "AWS::EC2::VPCGatewayAttachment",
       "Properties": {
         "InternetGatewayId": {
@@ -172,7 +204,6 @@
       }
     },
     "PublicRouteTable": {
-      "DependsOn":["VPC"],
       "Type": "AWS::EC2::RouteTable",
       "Properties": {
         "VpcId": {
@@ -182,15 +213,28 @@
           {
             "Key": "Name",
             "Value": {
-              "Ref": "PBRTNAME"
+              "Fn::Join": [
+                "-",
+                [
+                  {
+                    "Ref": "STACKNAME"
+                  },
+                  {
+                    "Ref": "COURSEAPPENDER"
+                  },
+                  {
+                    "Ref": "PBRTNAME"
+                  }
+                ]
+              ]
             }
           }
         ]
       }
     },
-    "RouteName": {
-      "DependsOn": ["PublicRouteTable","InternetGatewayAttachment"],
+    "DefaultPublicRoute": {
       "Type": "AWS::EC2::Route",
+      "DependsOn": "InternetGatewayAttachment",
       "Properties": {
         "RouteTableId": {
           "Ref": "PublicRouteTable"
@@ -201,15 +245,37 @@
         }
       }
     },
-
     "Subnet1RouteTableAssoc": {
-      "DependsOn": ["PublicRouteTable","PublicSubnet1"],
       "Type": "AWS::EC2::SubnetRouteTableAssociation",
       "Properties": {
+        "RouteTableId": {
+          "Ref": "PublicRouteTable"
+        },
         "SubnetId": {
           "Ref": "PublicSubnet1"
+        }
+      }
+    },
+    "Subnet2RouteTableAssoc": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PublicRouteTable"
         },
-        "RouteTableId":{"Ref": "PublicRouteTable"}
+        "SubnetId": {
+          "Ref": "PublicSubnet2"
+        }
+      }
+    },
+    "Subnet3RouteTableAssoc": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PublicRouteTable"
+        },
+        "SubnetId": {
+          "Ref": "PublicSubnet3"
+        }
       }
     }
   }
