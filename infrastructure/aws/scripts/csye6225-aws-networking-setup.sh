@@ -6,7 +6,19 @@ subnetcidrblock2="10.0.2.0/24"
 securityGroupName="securityGroup"
 port22CidrBlock="0.0.0.0/0"
 
-set -e
+#set -e
+
+f () {
+    errcode=$? # save the exit code as the first thing done in the trap function
+    echo "error $errcode"
+    echo "the command executing at the time of the error was"
+    echo "$BASH_COMMAND"
+    echo "on line ${BASH_LINENO[0]}"
+    exit $errcode
+}
+
+trap f ERR
+
 
 read -p "Enter VPC name and VPC Cidr block: " vpcName vpcCidrBlock
 if [[ -z "$vpcName" ]] && [[ -z "$vpcCidrBlock" ]]; then
