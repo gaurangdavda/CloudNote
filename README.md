@@ -22,7 +22,6 @@
 * Create a database with the name "webappdb"
 * Create an user "webappusr" and grant all permissions on webappdb schema
 
-
 ## Deploy Instructions
 Application is deployed locally and runs on http://localhost:8080/
 
