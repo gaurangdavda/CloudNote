@@ -9,12 +9,12 @@ port22CidrBlock="0.0.0.0/0"
 set -e
 
 read -p "Enter VPC Cidr block: " vpcCidrBlock
-if [ $# -eq 1 ]; then
+if [[ -z "$vpcCidrBlock" ]]; then
   echo "Kindly provide 1 VPC Cidr block"
   exit 1
 else
   echo "Creating VPC.."
-  aws_response=$(aws ec2 create-vpc --cidr-bloc $vpcCidrBlock --output json)
+  aws_response=$(aws ec2 create-vpc --cidr-block $vpcCidrBlock --output json)
   echo "VPC Created"
   vpcId=$(echo -e "$aws_response" |  /usr/bin/jq '.Vpc.VpcId' | tr -d '"')
 fi
@@ -34,9 +34,14 @@ done
 for i in {1..3}
 do
   read -p "Please enter availability zone from above and subnetcidrblock: " availabilityZone subnetcidrblock
+  if [[ -z "$availabilityZone" ]] && [[ -z "$subnetcidrblock" ]]; then
+    echo "availability zone or subnetcidrblock cannot be blank"
+    exit 1
+  else
   subnet_response=$(aws ec2 create-subnet --vpc-id "$vpcId" --cidr-block $subnetcidrblock --availability-zone=$availabilityZone)
   subnetId=$(echo -e "$subnet_response" |  /usr/bin/jq '.Subnet.SubnetId' | tr -d '"')
   associate_response=$(aws ec2 associate-route-table --subnet-id "$subnetId" --route-table-id "$routeTableId")
+fi
 done
 
 
@@ -50,7 +55,7 @@ attach_response=$(aws ec2 attach-internet-gateway --internet-gateway-id "$gatewa
 echo "Gateway Attached"
 
 read -p "Please enter destination cidr block for adding route to the internet gateway: " destinationCidrBlock
-if [ $# -eq 1 ]; then
+if [[ -z "$destinationCidrBlock" ]]; then
   echo "Kindly provide destination cidr block"
   exit 1
 else
@@ -59,15 +64,12 @@ else
 fi
 
 echo "Security Groups"
-#security_response=$(aws ec2 create-security-group --group-name "$securityGroupName" --description "Private: $securityGroupName" --vpc-id "$vpcId" --output json)
-#groupId=$(echo -e "$security_response" |  /usr/bin/jq '.GroupId' | tr -d '"')
-#security_response2=$(aws ec2 authorize-security-group-ingress --group-id "$groupId" --protocol tcp --port 22 --cidr "$port22CidrBlock")
-
-#security_response2=$(aws ec2 authorize-security-group-ingress --group-name default --protocol tcp --port 22 --cidr "$port22CidrBlock")
-groupdetails=$(aws ec2 describe-security-groups --query "SecurityGroups[*].{ID:GroupId}")
-groupid=$(echo -e "$groupdetails" |  /usr/bin/jq '.[0].ID' | tr -d '"')
+groupdetails=$(aws ec2 describe-security-groups --filters "Name=vpc-id,Values=$vpcId" --output json)
+groupid=$(echo -e "$groupdetails" |  /usr/bin/jq  '.SecurityGroups[0].GroupId' | tr -d '"')
+userIdGroupPairs=$(echo -e "$groupdetails" |  /usr/bin/jq  '.SecurityGroups[0].IpPermissions[0].UserIdGroupPairs[0].GroupId' | tr -d '"')
+cidrEgress=$(echo -e "$groupdetails" |  /usr/bin/jq  '.SecurityGroups[0].IpPermissionsEgress[0].IpRanges[0].CidrIp' | tr -d '"')
+aws ec2 revoke-security-group-ingress --group-id "$groupid" --protocol all --source-group "$userIdGroupPairs"
+aws ec2 revoke-security-group-egress --group-id "$groupid" --protocol all --port all --cidr "$cidrEgress"
 security_response=$(aws ec2 authorize-security-group-ingress --group-id "$groupid" --protocol tcp --port 22 --cidr "$port22CidrBlock")
-
-
-
+security_response=$(aws ec2 authorize-security-group-ingress --group-id "$groupid" --protocol tcp --port 80 --cidr "$port22CidrBlock")
 echo "Security Group created and rules have been updated"
