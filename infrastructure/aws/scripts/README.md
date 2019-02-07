@@ -8,4 +8,4 @@ csye6225-aws-networking-teardown.sh
 
 script csye6225-aws-networking-teardown.sh to delete networking resources using AWS CLI
 
-To run : ./csye6225-aws-networking-teardown.sh
+To run : ./csye6225-aws-networking-teardown.sh "VPCId"
