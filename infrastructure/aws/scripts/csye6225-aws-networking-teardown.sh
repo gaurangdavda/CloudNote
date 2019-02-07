@@ -1,10 +1,18 @@
 #!/bin/bash
 clear
+port22CidrBlock="0.0.0.0/0"
+set -e
 if [ $# -gt 0 ]
 then
 	echo "VPC ID is, $1."
 	echo "Number of arguments: $#"
 	vpcid=$1
+	# Delete rule from security group
+	echo "Deleting rule from default security group"
+	#aws ec2 revoke-security-group-ingress --group-name default --protocol tcp --port 22 --cidr "$port22CidrBlock"
+	echo "Deleted rule from default security group"
+
+
 	# Delete subnets
 	echo "Deleting Subnets"
 	for i in `aws ec2 describe-subnets --filters Name=vpc-id,Values="${vpcid}" | grep SubnetId | sed -E 's/^.*(subnet-[a-z0-9]+).*$/\1/'`;
@@ -13,8 +21,11 @@ then
 		echo "Deleted Subnets"
 	done
 
+#aws ec2 describe-route-tables --filters "Name=vpc-id,Values=vpc-0d72365647982862e" --query 'RouteTables[?Associations[0].Main != `true`]'
+
 	# Delete route tables
 	echo "Deleting route tables"
+#	route_tables=$(aws ec2 describe-route-tables --filters Name=vpc-id,Values="${vpcid}" | jq -r '.RouteTables')
 	for i in `aws ec2 describe-route-tables --filters Name=vpc-id,Values="${vpcid}" --query "RouteTables[*].RouteTableId" --output text | tr -d '"'`;
 	do
 		aws ec2 delete-route-table --route-table-id=$i;
