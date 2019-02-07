@@ -1,9 +1,4 @@
 #!/bin/bash
-subnetcidrblock0="10.0.0.0/24"
-subnetcidrblock1="10.0.1.0/24"
-subnetcidrblock2="10.0.2.0/24"
-#destinationCidrBlock="0.0.0.0/0"
-securityGroupName="securityGroup"
 port22CidrBlock="0.0.0.0/0"
 
 #set -e
