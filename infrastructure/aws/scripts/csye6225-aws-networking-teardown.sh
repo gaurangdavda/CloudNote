@@ -7,6 +7,7 @@ f () {
     echo "the command executing at the time of the error was"
     echo "$BASH_COMMAND"
     echo "on line ${BASH_LINENO[0]}"
+    echo "Exiting the script"
     exit $errcode
 }
 
@@ -16,10 +17,12 @@ read -p "Enter VPC-ID to be deleted: " vpcid
 if [[ -z "$vpcid" ]];
 then
 	echo "Kindly provide valid vpc-id"
+  echo "Exiting the script..."
+  echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 	exit 1
 else
-	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"	
-	echo "Deleting vpc dependencies..."
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	echo "Attempting to delete vpc dependencies..."
 	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 	echo "Revoking security group rules..."
 	groupdetails=$(aws ec2 describe-security-groups --filters "Name=vpc-id,Values=$vpcid" --output json)
@@ -31,7 +34,7 @@ else
 	echo "Revoked security group rules"
 
 	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-	echo "Disassociating subnets from route table..."	
+	echo "Disassociating subnets from route table..."
 	mainval=$(aws ec2 describe-route-tables --filters Name=vpc-id,Values="$vpcid" --query 'RouteTables[0].Associations[0].Main' | tr -d '", []')
 	if [ $mainval == "false" ];
 	then
@@ -69,7 +72,7 @@ else
 	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 	echo "Deleted route table"
 
-	
+
 	for i in `aws ec2 describe-internet-gateways --filters Name=attachment.vpc-id,Values="${vpcid}" | grep igw- | sed -E 's/^.*(igw-[a-z0-9]+).*$/\1/'`;
 	do
 		echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
