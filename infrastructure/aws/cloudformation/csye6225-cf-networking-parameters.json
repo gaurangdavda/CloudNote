@@ -1,7 +1,7 @@
 [
   {
     "ParameterKey": "STACKNAME",
-    "ParameterValue": "test-stack",
+    "ParameterValue": "REPLACE_STACK_NAME",
     "UsePreviousValue": true
   },
   {

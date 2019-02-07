@@ -8,7 +8,8 @@ if [ $# -lt 1 ]; then
 fi
 
 #Replacing the STACK_NAME passed by the user in the csye6225-cf-networking-parameters.json
-sed -i "s/REPLACE_STACK_NAME/$1/g" csye6225-cf-networking-parameters.json
+#sed -i "s/REPLACE_STACK_NAME/$1" csye6225-cf-networking-parameters.json
+sed -i "0,/REPLACE_STACK_NAME/s/REPLACE_STACK_NAME/$1/" csye6225-cf-networking-parameters.json
 
 ##Creating Stack
 echo "Creating Cloud Stack $1"
@@ -19,4 +20,5 @@ echo "$response"
 
 aws cloudformation wait stack-create-complete --stack-name $1
 echo "stack $1 created successfully"
-sed -i "s/$1/REPLACE_STACK_NAME/g" csye6225-cf-networking-parameters.json
+#sed -i "s/$1/REPLACE_STACK_NAME" csye6225-cf-networking-parameters.json
+sed -i "0,/$1/s/$1/REPLACE_STACK_NAME/" csye6225-cf-networking-parameters.json

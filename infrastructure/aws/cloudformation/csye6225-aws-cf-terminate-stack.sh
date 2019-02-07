@@ -7,9 +7,6 @@ if [ $# -lt 1 ]; then
   exit 1
 fi
 
-#Replacing the STACK_NAME passed by the user in the csye6225-cf-networking-parameters.json
-sed -i "s/REPLACE_STACK_NAME/$1/g" csye6225-cf-networking-parameters.json
-
 echo " "
 echo "----Deleting Stack----"
 echo " "
