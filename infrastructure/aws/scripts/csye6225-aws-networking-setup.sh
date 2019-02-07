@@ -33,17 +33,17 @@ done
 
 for i in {1..3}
 do
-  read -p "Please enter availability zone from above and subnetcidrblock: " availabilityZone subnetcidrblock
-  if [[ -z "$availabilityZone" ]] && [[ -z "$subnetcidrblock" ]]; then
-    echo "availability zone or subnetcidrblock cannot be blank"
+  read -p "Please enter availability zone from above, subnetcidrblock and subnet name: " availabilityZone subnetcidrblock subnetName
+  if [[ -z "$availabilityZone" ]] && [[ -z "$subnetcidrblock" ]] && [[ -z "$subnetName" ]]; then
+    echo "availability zone or subnetcidrblock or subnet name cannot be blank"
     exit 1
   else
   subnet_response=$(aws ec2 create-subnet --vpc-id "$vpcId" --cidr-block $subnetcidrblock --availability-zone=$availabilityZone)
   subnetId=$(echo -e "$subnet_response" |  /usr/bin/jq '.Subnet.SubnetId' | tr -d '"')
   associate_response=$(aws ec2 associate-route-table --subnet-id "$subnetId" --route-table-id "$routeTableId")
+  aws ec2 create-tags --resources "$subnetId" --tags Key=Name,Value="$subnetName"
 fi
 done
-
 
 echo "Creating Internet Gateway"
 gateway_response=$(aws ec2 create-internet-gateway --output json)
