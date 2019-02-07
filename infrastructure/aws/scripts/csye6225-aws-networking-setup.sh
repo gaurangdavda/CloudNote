@@ -22,7 +22,7 @@ trap f ERR
 
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 read -p "Enter VPC name and VPC Cidr block: " vpcName vpcCidrBlock
-if [[ -z "$vpcName" ]] && [[ -z "$vpcCidrBlock" ]]; then
+if [[ -z "$vpcName" ]] || [[ -z "$vpcCidrBlock" ]]; then
   echo "Kindly provide vpcName and VPC Cidr block"
   echo "Exiting..."
   echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
@@ -55,7 +55,7 @@ echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 for i in {1..3}
 do
   read -p "Please enter availability zone from above, subnetcidrblock and subnet name: " availabilityZone subnetcidrblock subnetName
-  if [[ -z "$availabilityZone" ]] && [[ -z "$subnetcidrblock" ]] && [[ -z "$subnetName" ]]; then
+  if [[ -z "$availabilityZone" ]] || [[ -z "$subnetcidrblock" ]] || [[ -z "$subnetName" ]]; then
     echo "availability zone or subnetcidrblock or subnet name cannot be blank"
     echo "Exiting..."
     echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
