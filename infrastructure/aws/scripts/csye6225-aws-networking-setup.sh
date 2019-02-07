@@ -42,12 +42,16 @@ routeTableId=$(echo -e "$route_table_response" |  /usr/bin/jq '.RouteTable.Route
 echo "Route Table created"
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 
+region=()
+regionlist=()
 echo "please select region from below: "
 for region in `aws ec2 describe-availability-zones --output text | cut -f5`
 do
+     region+=($region)
      echo -e $region
 done
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+
 for i in {1..3}
 do
   read -p "Please enter availability zone from above, subnetcidrblock and subnet name: " availabilityZone subnetcidrblock subnetName
@@ -56,7 +60,18 @@ do
     echo "Exiting..."
     echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
     exit 1
+  elif [[ ! " ${region[@]} " =~ " ${availabilityZone} " ]]; then
+    echo "please eneter a valid availability zone"
+    echo "Exiting..."
+    echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+    exit 1
+  elif [[ " ${regionlist[@]} " =~ " ${availabilityZone} " ]]; then
+    echo "subnet with this availability zone already exists, please enter unique availability zone"
+    echo "Exiting..."
+    echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+    exit 1
   else
+  regionlist+=($availabilityZone)
   subnet_response=$(aws ec2 create-subnet --vpc-id "$vpcId" --cidr-block $subnetcidrblock --availability-zone=$availabilityZone)
   subnetId=$(echo -e "$subnet_response" |  /usr/bin/jq '.Subnet.SubnetId' | tr -d '"')
   associate_response=$(aws ec2 associate-route-table --subnet-id "$subnetId" --route-table-id "$routeTableId")
