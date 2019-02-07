@@ -8,15 +8,16 @@ port22CidrBlock="0.0.0.0/0"
 
 set -e
 
-read -p "Enter VPC Cidr block: " vpcCidrBlock
-if [[ -z "$vpcCidrBlock" ]]; then
-  echo "Kindly provide 1 VPC Cidr block"
+read -p "Enter VPC name and VPC Cidr block: " vpcName vpcCidrBlock
+if [[ -z "$vpcName" ]] && [[ -z "$vpcCidrBlock" ]]; then
+  echo "Kindly provide vpcName and VPC Cidr block"
   exit 1
 else
   echo "Creating VPC.."
   aws_response=$(aws ec2 create-vpc --cidr-block $vpcCidrBlock --output json)
   echo "VPC Created"
   vpcId=$(echo -e "$aws_response" |  /usr/bin/jq '.Vpc.VpcId' | tr -d '"')
+  aws ec2 create-tags --resources "$vpcId" --tags Key=Name,Value="$vpcName"
 fi
 
 echo "Creating Route Table for VPC"
@@ -29,7 +30,6 @@ for region in `aws ec2 describe-availability-zones --output text | cut -f5`
 do
      echo -e $region
 done
-
 
 for i in {1..3}
 do
