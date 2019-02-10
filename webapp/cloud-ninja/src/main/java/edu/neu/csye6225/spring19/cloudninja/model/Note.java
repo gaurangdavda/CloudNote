@@ -21,6 +21,8 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import edu.neu.csye6225.spring19.cloudninja.util.CommonUtil;
 
 /**
@@ -29,6 +31,7 @@ import edu.neu.csye6225.spring19.cloudninja.util.CommonUtil;
  */
 @Entity
 @Table(name = "USR_NOTE_DTLS")
+@JsonPropertyOrder({ "id", "content", "title", "created_on", "last_updated_on"})
 public class Note {
 
 	@Autowired
@@ -39,23 +42,28 @@ public class Note {
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator", parameters = {
 			@Parameter(name = "uuid_gen_strategy_class", value = "org.hibernate.id.uuid.CustomVersionOneStrategy") })
 	@Column(name = "NOTE_ID")
+	@JsonProperty("id")
 	private UUID id;
 
 	@Column(name = "NOTE_TITLE")
+	@JsonProperty("title")
 	private String title;
 
 	@Column(name = "NOTE_CONTENT")
+	@JsonProperty("content")
 	private String content;
 
 	@Column(name = "CREATED_DATE", updatable = false)
+	@JsonProperty("created_on")
 	private String creationDate;
 
 	@Column(name = "LAST_UPDATED_DATE")
+	@JsonProperty("last_updated_on")
 	private String updatedDate;
 
 	@ManyToOne
 	@JoinColumn(name = "USR_EML_ID")
-	private int emailId;
+	private UserCredentials userCredentials;
 
 	/**
 	 * @return the id
@@ -115,12 +123,12 @@ public class Note {
 		this.updatedDate = updatedDate;
 	}
 
-	public int getEmailId() {
-		return emailId;
+	public UserCredentials getUserCredentials() {
+		return userCredentials;
 	}
 
-	public void setEmailId(int emailId) {
-		this.emailId = emailId;
+	public void setUserCredentials(UserCredentials userCredentials) {
+		this.userCredentials = userCredentials;
 	}
 
 	@PrePersist
