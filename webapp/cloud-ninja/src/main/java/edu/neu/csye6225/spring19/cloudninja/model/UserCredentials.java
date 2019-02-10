@@ -16,6 +16,9 @@ public class UserCredentials {
 	@Column(name = "USR_PWD")
 	private String password;
 
+//	@OneToMany(mappedBy = "userCredentials")
+//	private Set<Note> notes;
+
 	public String getEmailId() {
 		return emailId;
 	}

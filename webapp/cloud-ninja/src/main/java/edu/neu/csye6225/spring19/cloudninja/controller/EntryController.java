@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.neu.csye6225.spring19.cloudninja.exception.ResourceNotFoundException;
 import edu.neu.csye6225.spring19.cloudninja.exception.UnAuthorizedLoginException;
 import edu.neu.csye6225.spring19.cloudninja.exception.ValidationException;
 import edu.neu.csye6225.spring19.cloudninja.model.Note;
@@ -43,7 +44,7 @@ public class EntryController {
 	@RequestMapping(method = RequestMethod.GET, value = LOGIN, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<TimeStampWrapper> login(
 			@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth)
-			throws ValidationException, UnAuthorizedLoginException {
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
 		return new ResponseEntity<TimeStampWrapper>(loginService.getTimestamp(auth), HttpStatus.OK);
 	}
 
@@ -56,20 +57,21 @@ public class EntryController {
 	@RequestMapping(method = RequestMethod.GET, value = NOTE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<Note>> getAllNotes(
 			@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth)
-			throws ValidationException, UnAuthorizedLoginException {
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
 		return new ResponseEntity<List<Note>>(noteTakingService.getAllNotes(auth), HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = NOTE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	public void createNote(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
-			@RequestBody Note note) throws ValidationException, UnAuthorizedLoginException {
+			@RequestBody Note note) throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
 		noteTakingService.createNote(auth, note);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = NOTE_ID, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Note> getNote(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
-			@RequestParam("id") UUID noteId) throws ValidationException, UnAuthorizedLoginException {
+			@RequestParam("id") UUID noteId)
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
 		return new ResponseEntity<Note>(noteTakingService.getNote(auth, noteId), HttpStatus.OK);
 	}
 
@@ -77,14 +79,15 @@ public class EntryController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void updateNote(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
 			@RequestParam("id") UUID noteId, @RequestBody Note note)
-			throws ValidationException, UnAuthorizedLoginException {
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
 		noteTakingService.updateNote(auth, noteId, note);
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = NOTE_ID, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteNote(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
-			@RequestParam UUID noteId) throws ValidationException, UnAuthorizedLoginException {
+			@RequestParam UUID noteId)
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
 		noteTakingService.deleteNote(auth, noteId);
 	}
 }

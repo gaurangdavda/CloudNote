@@ -5,10 +5,13 @@ package edu.neu.csye6225.spring19.cloudninja.model;
 
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.DATE_FORMAT;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -18,13 +21,13 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Parameter;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
-import edu.neu.csye6225.spring19.cloudninja.util.CommonUtil;
 
 /**
  * @author gaurang
@@ -32,11 +35,8 @@ import edu.neu.csye6225.spring19.cloudninja.util.CommonUtil;
  */
 @Entity
 @Table(name = "USR_NOTE_DTLS")
-@JsonPropertyOrder({ "id", "content", "title", "created_on", "last_updated_on"})
+@JsonPropertyOrder({ "id", "content", "title", "created_on", "last_updated_on" })
 public class Note {
-
-	@Autowired
-	CommonUtil commonUtil;
 
 	@Id
 	@GeneratedValue(generator = "UUID")
@@ -62,8 +62,10 @@ public class Note {
 	@JsonProperty("last_updated_on")
 	private String updatedDate;
 
-	@ManyToOne
-	@JoinColumn(name = "USR_EML_ID")
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "USR_EMAIL", nullable = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@JsonIgnore
 	private UserCredentials userCredentials;
 
 	/**
@@ -124,23 +126,35 @@ public class Note {
 		this.updatedDate = updatedDate;
 	}
 
+	/**
+	 * @return the userCredentials
+	 */
 	public UserCredentials getUserCredentials() {
 		return userCredentials;
 	}
 
+	/**
+	 * @param userCredentials the userCredentials to set
+	 */
 	public void setUserCredentials(UserCredentials userCredentials) {
 		this.userCredentials = userCredentials;
 	}
 
 	@PrePersist
 	private void onCreate() {
-		setCreationDate(commonUtil.getCurrentDateWithFormat(DATE_FORMAT));
-		setUpdatedDate(commonUtil.getCurrentDateWithFormat(DATE_FORMAT));
+		setCreationDate(getCurrentDateWithFormat(DATE_FORMAT));
+		setUpdatedDate(getCurrentDateWithFormat(DATE_FORMAT));
 	}
 
 	@PreUpdate
 	private void onUpdate() {
-		setUpdatedDate(commonUtil.getCurrentDateWithFormat(DATE_FORMAT));
+		setUpdatedDate(getCurrentDateWithFormat(DATE_FORMAT));
+	}
+
+	private String getCurrentDateWithFormat(String format) {
+
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
+		return simpleDateFormat.format(new Date());
 	}
 
 }

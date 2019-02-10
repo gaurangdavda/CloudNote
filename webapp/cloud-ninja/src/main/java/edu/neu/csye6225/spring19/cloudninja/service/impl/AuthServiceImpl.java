@@ -26,27 +26,39 @@ public class AuthServiceImpl implements AuthService {
 	private UserRepository userRepository;
 
 	@Override
-	public void authenticateUser(String authHeader) throws ValidationException, UnAuthorizedLoginException {
+	public void authenticateUser(UserCredentials credentials)
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
+
+		String actualPassword = "";
+		String emailId = credentials.getEmailId();
+		String password = credentials.getPassword();
+		authServiceUtil.isValidEmail(emailId);
+		List<UserCredentials> credentialList = userRepository.findByEmailId(emailId);
+		if (credentialList != null && credentialList.size() == 1) {
+			actualPassword = credentialList.get(0).getPassword();
+			authServiceUtil.verifyPassword(password, actualPassword);
+		} else {
+			throw new ResourceNotFoundException("Invalid user ID.");
+		}
+
+	}
+
+	@Override
+	public UserCredentials extractCredentialsFromHeader(String authHeader)
+			throws ValidationException, UnAuthorizedLoginException {
 		if (authHeader != ApplicationConstants.NO_AUTH) {
 			byte[] bytes = authServiceUtil.getDecodedString(authHeader.split(" ")[1]);
-
 			String userPassArr[] = new String(bytes).split(":");
 			if (userPassArr.length != 2) {
 				throw new ValidationException(EMAILID_PASSWORD_MISSING);
 			}
-
 			// Storing email id in lowercase
 			String emailId = userPassArr[0];
 			String password = userPassArr[1];
-			String actualPassword = "";
-			authServiceUtil.isValidEmail(emailId);
-			List<UserCredentials> credentialList = userRepository.findByEmailId(emailId.toLowerCase());
-			if (credentialList != null && credentialList.size() == 1) {
-				actualPassword = credentialList.get(0).getPassword();
-				authServiceUtil.verifyPassword(password, actualPassword);
-			} else {
-				throw new ResourceNotFoundException("Invalid user ID.");
-			}
+			UserCredentials credentials = new UserCredentials();
+			credentials.setEmailId(emailId.toLowerCase());
+			credentials.setPassword(password);
+			return credentials;
 		} else {
 			throw new UnAuthorizedLoginException();
 		}
