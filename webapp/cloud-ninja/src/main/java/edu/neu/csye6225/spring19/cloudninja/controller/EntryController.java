@@ -14,11 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -70,7 +70,7 @@ public class EntryController {
 
 	@RequestMapping(method = RequestMethod.GET, value = NOTE_ID, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Note> getNote(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
-			@RequestParam("id") UUID noteId)
+			@PathVariable(value = "noteId") UUID noteId)
 			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
 		return new ResponseEntity<Note>(noteTakingService.getNote(auth, noteId), HttpStatus.OK);
 	}
@@ -78,7 +78,7 @@ public class EntryController {
 	@RequestMapping(method = RequestMethod.PUT, value = NOTE_ID, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void updateNote(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
-			@RequestParam("id") UUID noteId, @RequestBody Note note)
+			@PathVariable(value = "noteId") UUID noteId, @RequestBody Note note)
 			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
 		noteTakingService.updateNote(auth, noteId, note);
 	}
@@ -86,7 +86,7 @@ public class EntryController {
 	@RequestMapping(method = RequestMethod.DELETE, value = NOTE_ID, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteNote(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
-			@RequestParam UUID noteId)
+			@PathVariable(value = "noteId") UUID noteId)
 			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
 		noteTakingService.deleteNote(auth, noteId);
 	}
