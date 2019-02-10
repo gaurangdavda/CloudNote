@@ -12,7 +12,6 @@ import edu.neu.csye6225.spring19.cloudninja.exception.ValidationException;
 import edu.neu.csye6225.spring19.cloudninja.model.Note;
 import edu.neu.csye6225.spring19.cloudninja.model.UserCredentials;
 import edu.neu.csye6225.spring19.cloudninja.repository.NoteTakingRepository;
-import edu.neu.csye6225.spring19.cloudninja.repository.UserRepository;
 import edu.neu.csye6225.spring19.cloudninja.service.AuthService;
 import edu.neu.csye6225.spring19.cloudninja.service.NoteTakingService;
 
@@ -24,9 +23,6 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 
 	@Autowired
 	private NoteTakingRepository noteTakingRepository;
-
-	@Autowired
-	private UserRepository userRepository;
 
 	@Override
 	public List<Note> getAllNotes(String authHeader)
@@ -51,7 +47,12 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
 		UserCredentials credentials = authService.extractCredentialsFromHeader(authHeader);
 		authService.authenticateUser(credentials);
-		return null;
+		Note note = fetchNoteFromId(noteId);
+		if (authService.isUserAuthorized(credentials, note)) {
+			return note;
+		} else {
+			throw new UnAuthorizedLoginException();
+		}
 	}
 
 	@Override
@@ -67,7 +68,18 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
 		UserCredentials credentials = authService.extractCredentialsFromHeader(authHeader);
 		authService.authenticateUser(credentials);
+		Note note = fetchNoteFromId(noteId);
+		if (authService.isUserAuthorized(credentials, note)) {
+			noteTakingRepository.delete(note);
+		} else {
+			throw new UnAuthorizedLoginException();
+		}
 
+	}
+
+	private Note fetchNoteFromId(UUID noteId) {
+		Note note = noteTakingRepository.findById(noteId).get();
+		return note;
 	}
 
 }
