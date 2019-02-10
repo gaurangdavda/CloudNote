@@ -29,7 +29,7 @@ import edu.neu.csye6225.spring19.cloudninja.exception.ValidationException;
  */
 @Component
 @Scope(value = "singleton")
-public class LoginServiceUtil {
+public class AuthServiceUtil {
 
 	public void checkPasswordStrength(String password) throws ValidationException {
 		Predicate<String> rule;

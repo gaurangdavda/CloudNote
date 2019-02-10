@@ -9,14 +9,14 @@ public class UserCredentials {
 	@Id
 	@GeneratedValue
 	@Column(name = "USR_ID")
-	private int id;
+	private int userId;
 
-	public int getId() {
-		return id;
+	public int getUserId() {
+		return userId;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setUserId(int id) {
+		this.userId = id;
 	}
 
 	@Column(name = "USR_EMAIL", unique = true)
