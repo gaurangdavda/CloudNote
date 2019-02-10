@@ -3,7 +3,8 @@
  */
 package edu.neu.csye6225.spring19.cloudninja.model;
 
-import java.util.Date;
+import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.DATE_FORMAT;
+
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -12,10 +13,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import edu.neu.csye6225.spring19.cloudninja.util.CommonUtil;
 
 /**
  * @author gaurang
@@ -25,23 +31,31 @@ import org.hibernate.annotations.Parameter;
 @Table(name = "USR_NOTE_DTLS")
 public class Note {
 
+	@Autowired
+	CommonUtil commonUtil;
+
 	@Id
 	@GeneratedValue(generator = "UUID")
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator", parameters = {
 			@Parameter(name = "uuid_gen_strategy_class", value = "org.hibernate.id.uuid.CustomVersionOneStrategy") })
 	@Column(name = "NOTE_ID")
 	private UUID id;
+
 	@Column(name = "NOTE_TITLE")
 	private String title;
+
 	@Column(name = "NOTE_CONTENT")
 	private String content;
+
 	@Column(name = "CREATED_DATE", updatable = false)
-	private Date creationDate;
+	private String creationDate;
+
 	@Column(name = "LAST_UPDATED_DATE")
-	private Date updatedDate;
+	private String updatedDate;
+
 	@ManyToOne
-	@JoinColumn(name = "USR_ID")
-	private int userId;
+	@JoinColumn(name = "USR_EML_ID")
+	private int emailId;
 
 	/**
 	 * @return the id
@@ -85,46 +99,39 @@ public class Note {
 		this.content = content;
 	}
 
-	/**
-	 * @return the creationDate
-	 */
-	public Date getCreationDate() {
+	public String getCreationDate() {
 		return creationDate;
 	}
 
-	/**
-	 * @param creationDate the creationDate to set
-	 */
-	public void setCreationDate(Date creationDate) {
+	public void setCreationDate(String creationDate) {
 		this.creationDate = creationDate;
 	}
 
-	/**
-	 * @return the updatedDate
-	 */
-	public Date getUpdatedDate() {
+	public String getUpdatedDate() {
 		return updatedDate;
 	}
 
-	/**
-	 * @param updatedDate the updatedDate to set
-	 */
-	public void setUpdatedDate(Date updatedDate) {
+	public void setUpdatedDate(String updatedDate) {
 		this.updatedDate = updatedDate;
 	}
 
-	/**
-	 * @return the owner_id
-	 */
-	public int getUserId() {
-		return userId;
+	public int getEmailId() {
+		return emailId;
 	}
 
-	/**
-	 * @param owner_id the owner_id to set
-	 */
-	public void setUserId(int userId) {
-		this.userId = userId;
+	public void setEmailId(int emailId) {
+		this.emailId = emailId;
+	}
+
+	@PrePersist
+	private void onCreate() {
+		setCreationDate(commonUtil.getCurrentDateWithFormat(DATE_FORMAT));
+		setUpdatedDate(commonUtil.getCurrentDateWithFormat(DATE_FORMAT));
+	}
+
+	@PreUpdate
+	private void onUpdate() {
+		setUpdatedDate(commonUtil.getCurrentDateWithFormat(DATE_FORMAT));
 	}
 
 }
