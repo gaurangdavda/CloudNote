@@ -10,19 +10,15 @@ import edu.neu.csye6225.spring19.cloudninja.model.Note;
 
 public interface NoteTakingService {
 
-	public List<Note> getAllNotes(String auth)
-			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException;
+	public List<Note> getAllNotes(String auth) throws ValidationException, UnAuthorizedLoginException;
 
-	public void createNote(String auth, Note note)
-			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException;
+	public Note createNote(String auth, Note note) throws ValidationException, UnAuthorizedLoginException;
 
 	public Note getNote(String auth, UUID noteId)
 			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException;
 
-	public void updateNote(String auth, UUID noteId, Note note)
-			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException;
+	public void updateNote(String auth, UUID noteId, Note note) throws ValidationException, UnAuthorizedLoginException;
 
-	public void deleteNote(String auth, UUID noteId)
-			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException;
+	public void deleteNote(String auth, UUID noteId) throws ValidationException, UnAuthorizedLoginException;
 
 }

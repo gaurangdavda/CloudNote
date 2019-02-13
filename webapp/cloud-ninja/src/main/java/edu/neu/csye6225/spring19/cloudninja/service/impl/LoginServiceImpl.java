@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import edu.neu.csye6225.spring19.cloudninja.exception.ResourceNotFoundException;
 import edu.neu.csye6225.spring19.cloudninja.exception.UnAuthorizedLoginException;
 import edu.neu.csye6225.spring19.cloudninja.exception.ValidationException;
 import edu.neu.csye6225.spring19.cloudninja.model.ResponseBody;
@@ -37,7 +36,7 @@ public class LoginServiceImpl implements LoginService {
 
 	@Override
 	public TimeStampWrapper getTimestamp(String authHeader)
-			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
+			throws ValidationException, UnAuthorizedLoginException {
 		// Authenticating User before proceeding
 		authService.authenticateUser(authService.extractCredentialsFromHeader(authHeader));
 		timeStampWrapper.setTimeStamp(

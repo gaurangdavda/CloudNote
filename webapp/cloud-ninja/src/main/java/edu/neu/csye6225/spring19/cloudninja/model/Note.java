@@ -93,7 +93,7 @@ public class Note {
 	/**
 	 * @param title the title to set
 	 */
-	public void setTitle(@NotNull String title) {
+	public void setTitle(String title) {
 		this.title = title;
 	}
 
@@ -107,7 +107,7 @@ public class Note {
 	/**
 	 * @param content the content to set
 	 */
-	public void setContent(@NotNull String content) {
+	public void setContent(String content) {
 		this.content = content;
 	}
 
