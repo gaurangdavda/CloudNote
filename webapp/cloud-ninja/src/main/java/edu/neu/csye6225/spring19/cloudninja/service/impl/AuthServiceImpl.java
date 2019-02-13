@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants;
-import edu.neu.csye6225.spring19.cloudninja.exception.ResourceNotFoundException;
 import edu.neu.csye6225.spring19.cloudninja.exception.UnAuthorizedLoginException;
 import edu.neu.csye6225.spring19.cloudninja.exception.ValidationException;
 import edu.neu.csye6225.spring19.cloudninja.model.Note;
@@ -28,7 +27,7 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public void authenticateUser(UserCredentials credentials)
-			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
+			throws ValidationException, UnAuthorizedLoginException {
 
 		String actualPassword = "";
 		String emailId = credentials.getEmailId();
@@ -39,7 +38,7 @@ public class AuthServiceImpl implements AuthService {
 			actualPassword = credentialList.get(0).getPassword();
 			authServiceUtil.verifyPassword(password, actualPassword);
 		} else {
-			throw new ResourceNotFoundException("Invalid user ID.");
+			throw new ValidationException("Invalid user ID.");
 		}
 
 	}

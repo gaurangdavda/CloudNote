@@ -1,6 +1,7 @@
 package edu.neu.csye6225.spring19.cloudninja.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import edu.neu.csye6225.spring19.cloudninja.service.ValidationService;
@@ -31,7 +32,7 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 
 	@Override
 	public List<Note> getAllNotes(String authHeader)
-			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
+			throws ValidationException, UnAuthorizedLoginException {
 		UserCredentials credentials = authService.extractCredentialsFromHeader(authHeader);
 		authService.authenticateUser(credentials);
 		List<Note> noteList = noteTakingRepository.getAllNotesForUser(credentials);
@@ -39,12 +40,14 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 	}
 
 	@Override
-	public void createNote(String authHeader, Note note)
-			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
+	public Note createNote(String authHeader, Note note)
+			throws ValidationException, UnAuthorizedLoginException {
 		UserCredentials credentials = authService.extractCredentialsFromHeader(authHeader);
 		authService.authenticateUser(credentials);
+		validationService.isNoteValid(note);
 		note.setUserCredentials(credentials);
-		noteTakingRepository.save(note);
+		Note savedNote = noteTakingRepository.save(note);
+		return savedNote;
 	}
 
 	@Override
@@ -52,7 +55,12 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
 		UserCredentials credentials = authService.extractCredentialsFromHeader(authHeader);
 		authService.authenticateUser(credentials);
-		Note note = fetchNoteFromId(noteId);
+		//Note note = fetchNoteFromId(noteId);
+		Optional<Note> noteWrapper = noteTakingRepository.findById(noteId);
+		if(!noteWrapper.isPresent() || noteWrapper.get() == null) {
+			throw new ResourceNotFoundException("Note with ID: " + noteId.toString() + " does not exist");
+		}
+		Note note = noteWrapper.get();
 		if (authService.isUserAuthorized(credentials, note)) {
 			return note;
 		} else {
@@ -62,11 +70,17 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 
 	@Override
 	public void updateNote(String authHeader, UUID noteId, Note note)
-			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
+			throws ValidationException, UnAuthorizedLoginException {
 		UserCredentials credentials = authService.extractCredentialsFromHeader(authHeader);
 		authService.authenticateUser(credentials);
 		validationService.isNoteValid(note);
-		Note nt = fetchNoteFromId(noteId);
+		//Note nt = fetchNoteFromId(noteId);
+		Optional<Note> noteWrapper = noteTakingRepository.findById(noteId);
+		if(!noteWrapper.isPresent() || noteWrapper.get() == null) {
+			throw new ValidationException("Note with ID: " + noteId.toString() + " does not exist");
+		}
+		Note nt = noteWrapper.get();
+		
 		if(authService.isUserAuthorized(credentials, nt)) {
 			nt.setContent(note.getContent());
 			nt.setTitle(note.getTitle());
@@ -78,10 +92,17 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 
 	@Override
 	public void deleteNote(String authHeader, UUID noteId)
-			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
+			throws ValidationException, UnAuthorizedLoginException {
 		UserCredentials credentials = authService.extractCredentialsFromHeader(authHeader);
 		authService.authenticateUser(credentials);
-		Note note = fetchNoteFromId(noteId);
+		
+		//Note note = fetchNoteFromId(noteId);
+		
+		Optional<Note> noteWrapper = noteTakingRepository.findById(noteId);
+		if(!noteWrapper.isPresent() || noteWrapper.get() == null) {
+			throw new ValidationException("Note with ID: " + noteId.toString() + " does not exist");
+		}
+		Note note = noteWrapper.get();
 		if (authService.isUserAuthorized(credentials, note)) {
 			noteTakingRepository.delete(note);
 		} else {
@@ -90,9 +111,15 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 
 	}
 
-	private Note fetchNoteFromId(UUID noteId) {
-		Note note = noteTakingRepository.findById(noteId).get();
-		return note;
-	}
+	//Removing since we need seperate HTTP response codes for GET,PUT, DELETE
+//	private Note fetchNoteFromId(UUID noteId) throws ResourceNotFoundException {
+//		Optional<Note> noteWrapper = noteTakingRepository.findById(noteId);
+//		if(!noteWrapper.isPresent() || noteWrapper.get() == null) {
+//			throw new ResourceNotFoundException("Note with ID: " + noteId.toString() + " does not exist");
+//		}
+//		
+//		//Returns the note which was found
+//		return noteWrapper.get();
+//	}
 
 }
