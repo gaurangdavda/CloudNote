@@ -3,6 +3,7 @@ package edu.neu.csye6225.spring19.cloudninja.service.impl;
 import java.util.List;
 import java.util.UUID;
 
+import edu.neu.csye6225.spring19.cloudninja.service.ValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,10 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 
 	@Autowired
 	private NoteTakingRepository noteTakingRepository;
+
+	@Autowired
+	private ValidationService validationService;
+
 
 	@Override
 	public List<Note> getAllNotes(String authHeader)
@@ -60,7 +65,15 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
 		UserCredentials credentials = authService.extractCredentialsFromHeader(authHeader);
 		authService.authenticateUser(credentials);
-
+		validationService.isNoteValid(note);
+		Note nt = fetchNoteFromId(noteId);
+		if(authService.isUserAuthorized(credentials, nt)) {
+			nt.setContent(note.getContent());
+			nt.setTitle(note.getTitle());
+			noteTakingRepository.save(nt);
+		} else {
+			throw new UnAuthorizedLoginException();
+		}
 	}
 
 	@Override

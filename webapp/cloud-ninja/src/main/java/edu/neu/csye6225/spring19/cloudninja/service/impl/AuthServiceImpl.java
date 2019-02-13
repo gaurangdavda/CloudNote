@@ -67,7 +67,6 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public boolean isUserAuthorized(UserCredentials credentials, Note note) {
-
 		if (note.getUserCredentials().getEmailId().equals(credentials.getEmailId()))
 			return true;
 		return false;
