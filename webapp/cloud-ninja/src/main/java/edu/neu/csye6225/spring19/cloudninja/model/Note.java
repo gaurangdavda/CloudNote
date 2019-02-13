@@ -19,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.OnDelete;
@@ -47,11 +48,11 @@ public class Note {
 	private UUID id;
 
 	@Column(name = "NOTE_TITLE")
-	@JsonProperty("title")
+	@JsonProperty(value = "title")
 	private String title;
 
 	@Column(name = "NOTE_CONTENT")
-	@JsonProperty("content")
+	@JsonProperty(value = "content")
 	private String content;
 
 	@Column(name = "CREATED_DATE", updatable = false)
@@ -92,7 +93,7 @@ public class Note {
 	/**
 	 * @param title the title to set
 	 */
-	public void setTitle(String title) {
+	public void setTitle(@NotNull String title) {
 		this.title = title;
 	}
 
@@ -106,7 +107,7 @@ public class Note {
 	/**
 	 * @param content the content to set
 	 */
-	public void setContent(String content) {
+	public void setContent(@NotNull String content) {
 		this.content = content;
 	}
 
