@@ -22,11 +22,23 @@
 * Create a database with the name "webappdb"
 * Create an user "webappusr" and grant all permissions on webappdb schema
 
+## DNS Setup 
+
+Register a domain name with Namecheap as your registrar
+Domain name setup with the format csye6225-spring2019-husky_id.me
+Create a public hosted zone in Amazon Route 53
+Configure Namecheap to use custom nameservers provided by Amazon Route 53
+Create a type TXT record for your domain with TTL of 10 seconds 
+Type TXT recordshould contains the text value "csye6225-spring2019"
+
 ## Deploy Instructions
 Application is deployed locally and runs on http://localhost:8080/
 
 ## Running Tests
-The unit tests can be found under the test package. The unit tests are developed using Junit4.
+The unit tests can be found under the test package. The unit tests are developedusing Junit4
+
+Install Postman
+Demo of all the API implementation on Postman 
 
 ## CI/CD
 

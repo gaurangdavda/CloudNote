@@ -1,29 +1,23 @@
 package edu.neu.csye6225.spring19.cloudninja.model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "USR_DTLS")
 public class UserCredentials {
 
 	@Id
-	@GeneratedValue
-	@Column(name = "USR_ID")
-	private int id;
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	@Column(name = "USR_EMAIL", unique = true)
+	@Column(name = "USR_EMAIL")
 	private String emailId;
 
 	@Column(name = "USR_PWD")
 	private String password;
+
+//	@OneToMany(mappedBy = "userCredentials")
+//	private Set<Note> notes;
 
 	public String getEmailId() {
 		return emailId;
