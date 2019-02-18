@@ -1,11 +1,15 @@
 package edu.neu.csye6225.spring19.cloudninja.controller;
 
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.AUTHORIZATION;
+import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.FILE;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.LOGIN;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.NOTE;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.NOTE_ID;
+import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.NOTE_ID_ATTACHMENT;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.NO_AUTH;
+import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.NOTE_ID_ATTACHMENTS;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.REGISTER;
+import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.NOTE_ID_ATTACHMENT_ID;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,27 +23,41 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import edu.neu.csye6225.spring19.cloudninja.exception.ResourceNotFoundException;
 import edu.neu.csye6225.spring19.cloudninja.exception.UnAuthorizedLoginException;
 import edu.neu.csye6225.spring19.cloudninja.exception.ValidationException;
+import edu.neu.csye6225.spring19.cloudninja.model.Attachment;
 import edu.neu.csye6225.spring19.cloudninja.model.Note;
 import edu.neu.csye6225.spring19.cloudninja.model.ResponseBody;
 import edu.neu.csye6225.spring19.cloudninja.model.TimeStampWrapper;
 import edu.neu.csye6225.spring19.cloudninja.model.UserCredentials;
+import edu.neu.csye6225.spring19.cloudninja.property.FileStorageProperties;
 import edu.neu.csye6225.spring19.cloudninja.service.LoginService;
 import edu.neu.csye6225.spring19.cloudninja.service.NoteTakingService;
 
 @RestController
 public class EntryController {
 
+//	private String uploadDir;
+
+//	@Autowired
+//	public EntryController(FileStorageProperties fileStorageProperties) {
+//		this.uploadDir = fileStorageProperties.getUploadDir();
+//	}
+
 	@Autowired
 	private LoginService loginService;
 
 	@Autowired
 	private NoteTakingService noteTakingService;
+
+	@Autowired
+	FileStorageProperties fileStorageProperties;
 
 	@RequestMapping(method = RequestMethod.GET, value = LOGIN, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<TimeStampWrapper> login(
@@ -92,5 +110,48 @@ public class EntryController {
 	public void deleteNote(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
 			@PathVariable(value = "noteId") UUID noteId) throws ValidationException, UnAuthorizedLoginException {
 		noteTakingService.deleteNote(auth, noteId);
+	}
+
+	@RequestMapping(value = NOTE_ID_ATTACHMENT, method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@ResponseStatus(HttpStatus.CREATED)
+	public Attachment attachFile(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
+			@PathVariable(value = "noteId") UUID noteId, @RequestParam(FILE) MultipartFile file)
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
+		System.out.println(fileStorageProperties.getUploadDir());
+		// This will change
+		return noteTakingService.saveAttachment(auth, noteId, file);
+	}
+
+	@RequestMapping(value = NOTE_ID_ATTACHMENTS, method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@ResponseStatus(HttpStatus.CREATED)
+	public List<Attachment> attachMultipleFiles(
+			@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
+			@PathVariable(value = "noteId") UUID noteId, @RequestParam(FILE) MultipartFile[] files)
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
+		return noteTakingService.saveAttachments(auth, noteId, files);
+	}
+
+	@RequestMapping(value = NOTE_ID_ATTACHMENT, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(HttpStatus.OK)
+	public List<Attachment> getAllAttachments(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
+			@PathVariable(value = "noteId") UUID noteId)
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
+		return noteTakingService.getAttachments(auth, noteId);
+	}
+	
+	@RequestMapping(value = NOTE_ID_ATTACHMENT_ID, method = RequestMethod.PUT, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void updateAttachment(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
+			@PathVariable(value = "noteId") UUID noteId, @PathVariable(value = "idAttachments") UUID attachmentId, @RequestParam(FILE) MultipartFile file)
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
+		noteTakingService.updateAttachment(auth, noteId, attachmentId);
+	}
+	
+	@RequestMapping(value = NOTE_ID_ATTACHMENT_ID, method = RequestMethod.DELETE)
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void deleteAttachment(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
+			@PathVariable(value = "noteId") UUID noteId, @PathVariable(value = "idAttachments") UUID attachmentId)
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
+		noteTakingService.deleteAttachment(auth, noteId, attachmentId);
 	}
 }
