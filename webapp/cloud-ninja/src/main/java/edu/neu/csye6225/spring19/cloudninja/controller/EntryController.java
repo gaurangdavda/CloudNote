@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import edu.neu.csye6225.spring19.cloudninja.exception.FileStorageException;
 import edu.neu.csye6225.spring19.cloudninja.exception.ResourceNotFoundException;
 import edu.neu.csye6225.spring19.cloudninja.exception.UnAuthorizedLoginException;
 import edu.neu.csye6225.spring19.cloudninja.exception.ValidationException;
@@ -116,7 +117,7 @@ public class EntryController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public Attachment attachFile(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
 			@PathVariable(value = "noteId") UUID noteId, @RequestParam(FILE) MultipartFile file)
-			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException, FileStorageException {
 		System.out.println(fileStorageProperties.getUploadDir());
 		// This will change
 		return noteTakingService.saveAttachment(auth, noteId, file);
@@ -127,7 +128,7 @@ public class EntryController {
 	public List<Attachment> attachMultipleFiles(
 			@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
 			@PathVariable(value = "noteId") UUID noteId, @RequestParam(FILE) MultipartFile[] files)
-			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException, FileStorageException {
 		return noteTakingService.saveAttachments(auth, noteId, files);
 	}
 

@@ -1,4 +1,4 @@
-package edu.neu.csye6225.spring19.cloudninja.util;
+package edu.neu.csye6225.spring19.cloudninja.util.file.storage.impl;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -14,15 +14,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 import edu.neu.csye6225.spring19.cloudninja.exception.FileStorageException;
 import edu.neu.csye6225.spring19.cloudninja.property.FileStorageProperties;
+import edu.neu.csye6225.spring19.cloudninja.util.file.storage.FileStorageUtil;
 
 @Component
 @Scope(value = "singleton")
-public class FileStorageUtil {
+@Profile("dev")
+public class DevFileStorageUtil implements FileStorageUtil{
 
 	private final Path fileStorageLocation;
 
-	@Autowired
-	public FileStorageUtil(FileStorageProperties fileStorageProperties) {
+	public DevFileStorageUtil(FileStorageProperties fileStorageProperties) throws FileStorageException {
 		this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir()).toAbsolutePath().normalize();
 
 		try {
@@ -33,11 +34,12 @@ public class FileStorageUtil {
 		}
 	}
 
-	public String storeFile(MultipartFile file) {
+	@Override
+	public String storeFile(MultipartFile file) throws FileStorageException {
 		// Normalize file name
 		String origfileName = StringUtils.cleanPath(file.getOriginalFilename());
-		
-		String fileName =  System.currentTimeMillis() + "_" +  origfileName;
+
+		String fileName = System.currentTimeMillis() + "_" + origfileName;
 
 		try {
 			// Check if the file's name contains invalid characters
@@ -54,4 +56,17 @@ public class FileStorageUtil {
 			throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
 		}
 	}
+
+	@Override
+	public String replaceFile(MultipartFile file) throws FileStorageException{
+		
+		return null;
+	}
+
+	@Override
+	public void deleteFile(MultipartFile file) throws FileStorageException {
+		
+		
+	}
+
 }
