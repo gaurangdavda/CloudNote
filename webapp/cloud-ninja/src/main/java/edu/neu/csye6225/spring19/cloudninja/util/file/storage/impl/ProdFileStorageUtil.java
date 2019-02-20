@@ -13,11 +13,11 @@ import edu.neu.csye6225.spring19.cloudninja.util.file.storage.aws.AmazonClient;
 @Component
 @Scope(value = "singleton")
 @Profile("prod")
-public class ProdFileStorageUtil implements FileStorageUtil{
+public class ProdFileStorageUtil implements FileStorageUtil {
 
 	@Autowired
 	private AmazonClient amazonClient;
-	
+
 	@Override
 	public String storeFile(MultipartFile file) throws FileStorageException {
 		return amazonClient.uploadFile(file);
@@ -25,7 +25,7 @@ public class ProdFileStorageUtil implements FileStorageUtil{
 
 	@Override
 	public String replaceFile(String oldFileUrl, MultipartFile file) throws FileStorageException {
-		//first delete the file and then upload the new file
+		// first delete the file and then upload the new file
 		amazonClient.deleteFileFromS3Bucket(oldFileUrl);
 		return amazonClient.uploadFile(file);
 	}

@@ -187,8 +187,8 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 					+ " does not exist in Note with ID: " + noteId.toString());
 		}
 		Attachment attachment = attachmentWrapper.get();
-		//Deleting from the storage
-		
+		// Deleting from the storage
+
 		if (authService.isUserAuthorized(credentials, note)) {
 			fileStorageUtil.deleteFile(attachment.getUrl());
 			attachmentReposiory.delete(attachment);

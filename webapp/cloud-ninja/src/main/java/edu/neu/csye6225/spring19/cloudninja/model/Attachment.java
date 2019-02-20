@@ -12,15 +12,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Parameter;
-
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.Parameter;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
@@ -29,12 +26,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({ "id", "url" })
 public class Attachment {
 
-	public Attachment() {
-		
-	}
-	
-	
-	public Attachment(@NotNull String url, Note note) {	
+	public Attachment(@NotNull String url, Note note) {
 		this.url = url;
 		this.note = note;
 	}
@@ -81,7 +73,5 @@ public class Attachment {
 	public void setNote(Note note) {
 		this.note = note;
 	}
-	
-	
 
 }

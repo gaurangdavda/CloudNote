@@ -10,7 +10,6 @@ import java.util.Date;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import edu.neu.csye6225.spring19.cloudninja.exception.FileStorageException;
@@ -37,7 +36,6 @@ public class DevFileStorageUtil implements FileStorageUtil {
 
 	@Override
 	public String storeFile(MultipartFile file) throws FileStorageException {
-		
 
 		String fileName = generateFileName(file);
 
