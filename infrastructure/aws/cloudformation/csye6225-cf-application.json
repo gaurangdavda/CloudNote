@@ -4,7 +4,7 @@
       "SecurityGroupWB":{
          "Type":"AWS::EC2::SecurityGroup",
          "Properties":{
-            "GroupName":"csye6225-sg-webapp",
+
             "GroupDescription":"SecurityGroup to access webapplication",
             "SecurityGroupIngress":[
                {
@@ -34,47 +34,49 @@
                   "Key":"Name",
                   "Value":"SecurityGroupWB"
                }
-            ],
+            ]
           }
         },
-"EC2Instance":{
-        "Type":"AWS::EC2::Instance",
-        "Properties":{
-           "DisableApiTermination":"false",
-           "ImageId":"ami-042554f1d6ca20e4d",
-           "InstanceType":"t2.micro",
-           "AvailabilityZone":"us-east-1a",
-           "SubnetId": "subnet-0df4290e1a46b8199",
-           "KeyName":"first",
-           "Volumes":[
-              {
-                 "Device":"/dev/sda2",
-                 "VolumeId":{
-                    "Ref":"NewVolume"
-                 }
-              }
-           ],
-           "Tags":[
-              {
-                 "Key":"Name",
-                 "Value":"EC2Webapplication"
-              }
-],
-}
-},
-"NewVolume":{
-        "Type":"AWS::EC2::Volume",
-        "Properties":{
-           "Size":"20",
-           "VolumeType":"gp2",
-           "AvailabilityZone":"us-east-1a",
-           "Tags":[
-              {
-                 "Key":"Name",
-                 "Value":"EC2AppVolume"
-              }
-           ]
-        }
-},
-}
+      "SecurityGroupRDS":{
+         "Type":"AWS::EC2::SecurityGroup",
+         "Properties":{
+
+            "GroupDescription":"SecurityGroup to access webapplication",
+            "SecurityGroupIngress":[
+
+               {
+                  "CidrIp":"0.0.0.0/0",
+                  "Description":"tcp",
+                  "FromPort":"3306",
+                  "ToPort":"3306",
+                  "IpProtocol":"TCP"
+               }
+            ],
+            "Tags":[
+               {
+                  "Key":"Name",
+                  "Value":"SecurityGroupRDS"
+               }
+            ]
+         }
+      },
+      "RdsInstance": {
+         "Type": "AWS::RDS::DBInstance",
+         "Properties": {
+            "Engine":  "Postgres",
+            "AllocatedStorage": "100",
+            "EngineVersion": "10.6",
+            "DBInstanceClass": "db.t2.medium",
+            "MultiAZ": "false",
+            "DBInstanceIdentifier":"csye6225-spring2019",
+            "MasterUsername":"csye6225master",
+            "MasterUserPassword": "csye6225password" ,
+            "PubliclyAccessible": "false",
+            "DBName": "csye6225" ,
+            "VPCSecurityGroups": [{ "Ref" : "SecurityGroupRDS" }]
+
+         },
+         "DeletionPolicy": "Delete"
+      }
+   }
 }
