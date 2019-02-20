@@ -283,7 +283,7 @@
       "StackVPC":{
          "Description":"VPC ID",
          "Value":{
-            "Ref":"VPC".
+            "Ref":"VPC"
          },
          "Export":{
             "Name":"VPCID"
