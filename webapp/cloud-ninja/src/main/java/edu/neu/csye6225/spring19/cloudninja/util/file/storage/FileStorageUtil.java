@@ -8,8 +8,8 @@ public interface FileStorageUtil {
 
 	public String storeFile(MultipartFile file) throws FileStorageException;
 
-	public String replaceFile(MultipartFile file) throws FileStorageException;
-	
-	public void deleteFile(MultipartFile file) throws FileStorageException;
-	
+	public String replaceFile(String oldFileUrl, MultipartFile file) throws FileStorageException;
+
+	public void deleteFile(String fileUrl) throws FileStorageException;
+
 }

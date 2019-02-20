@@ -120,7 +120,8 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 	}
 
 	@Override
-	public List<Attachment> getAttachments(String auth, UUID noteId) throws ValidationException, UnAuthorizedLoginException {
+	public List<Attachment> getAttachments(String auth, UUID noteId)
+			throws ValidationException, UnAuthorizedLoginException {
 		return getNoteForAttachment(auth, noteId).getAttachments();
 	}
 
@@ -163,18 +164,41 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 	}
 
 	@Override
-	public void updateAttachment(String auth, UUID noteId, UUID attachmentId) throws ValidationException, UnAuthorizedLoginException {
+	public void updateAttachment(String auth, UUID noteId, UUID attachmentId)
+			throws ValidationException, UnAuthorizedLoginException {
+		UserCredentials credentials = authService.extractCredentialsFromHeader(auth);
+		authService.authenticateUser(credentials);
 		Note note = getNoteForAttachment(auth, noteId);
-		
-		//Update the attachment
+
+		// Update the attachment
+
+		// String fileLocation = fileStorageUtil.replaceFile(oldFileUrl, file);
 	}
 
 	@Override
-	public void deleteAttachment(String auth, UUID noteId, UUID attachmentId) throws ValidationException, UnAuthorizedLoginException {
+	public void deleteAttachment(String auth, UUID noteId, UUID attachmentId)
+			throws ValidationException, UnAuthorizedLoginException, FileStorageException {
+		UserCredentials credentials = authService.extractCredentialsFromHeader(auth);
+		authService.authenticateUser(credentials);
 		Note note = getNoteForAttachment(auth, noteId);
+
+		Optional<Attachment> attachmentWrapper = attachmentReposiory.findById(attachmentId);
+		if (!attachmentWrapper.isPresent() || attachmentWrapper.get() == null) {
+			throw new ValidationException("Attachment with ID: " + attachmentId.toString()
+					+ " does not exist in Note with ID: " + noteId.toString());
+		}
+		Attachment attachment = attachmentWrapper.get();
+		//Deleting from the storage
 		
-		//deleting the attachment
-		
+		if (authService.isUserAuthorized(credentials, note)) {
+			fileStorageUtil.deleteFile(attachment.getUrl());
+			attachmentReposiory.delete(attachment);
+		} else {
+			throw new UnAuthorizedLoginException("Note with ID: " + noteId.toString() + " is not one of your notes");
+		}
+
+		// deleting the attachment
+
 	}
 
 }

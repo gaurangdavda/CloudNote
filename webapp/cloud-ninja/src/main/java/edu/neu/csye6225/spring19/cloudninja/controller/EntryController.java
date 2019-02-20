@@ -152,7 +152,7 @@ public class EntryController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteAttachment(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
 			@PathVariable(value = "noteId") UUID noteId, @PathVariable(value = "idAttachments") UUID attachmentId)
-			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException, FileStorageException {
 		noteTakingService.deleteAttachment(auth, noteId, attachmentId);
 	}
 }
