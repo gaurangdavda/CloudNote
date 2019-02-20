@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Date;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
@@ -19,7 +20,7 @@ import edu.neu.csye6225.spring19.cloudninja.util.file.storage.FileStorageUtil;
 @Component
 @Scope(value = "singleton")
 @Profile("dev")
-public class DevFileStorageUtil implements FileStorageUtil{
+public class DevFileStorageUtil implements FileStorageUtil {
 
 	private final Path fileStorageLocation;
 
@@ -36,10 +37,9 @@ public class DevFileStorageUtil implements FileStorageUtil{
 
 	@Override
 	public String storeFile(MultipartFile file) throws FileStorageException {
-		// Normalize file name
-		String origfileName = StringUtils.cleanPath(file.getOriginalFilename());
+		
 
-		String fileName = System.currentTimeMillis() + "_" + origfileName;
+		String fileName = generateFileName(file);
 
 		try {
 			// Check if the file's name contains invalid characters
@@ -58,15 +58,17 @@ public class DevFileStorageUtil implements FileStorageUtil{
 	}
 
 	@Override
-	public String replaceFile(MultipartFile file) throws FileStorageException{
-		
+	public String replaceFile(String oldFileUrl, MultipartFile file) throws FileStorageException {
+
 		return null;
 	}
 
 	@Override
-	public void deleteFile(MultipartFile file) throws FileStorageException {
-		
-		
+	public void deleteFile(String fileUrl) throws FileStorageException {
+
 	}
 
+	private String generateFileName(MultipartFile multiPart) {
+		return new Date().getTime() + "-" + multiPart.getOriginalFilename().replace(" ", "_");
+	}
 }

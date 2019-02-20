@@ -32,7 +32,7 @@ public interface NoteTakingService {
 			throws ValidationException, UnAuthorizedLoginException;
 
 	public void deleteAttachment(String auth, UUID noteId, UUID attachmentId)
-			throws ValidationException, UnAuthorizedLoginException;
+			throws ValidationException, UnAuthorizedLoginException, FileStorageException;
 
 	public Attachment saveAttachment(String auth, UUID noteId, MultipartFile file)
 			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException, FileStorageException;
