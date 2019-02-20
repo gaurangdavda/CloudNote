@@ -22,7 +22,6 @@ import edu.neu.csye6225.spring19.cloudninja.service.AuthService;
 import edu.neu.csye6225.spring19.cloudninja.service.NoteTakingService;
 import edu.neu.csye6225.spring19.cloudninja.service.ValidationService;
 import edu.neu.csye6225.spring19.cloudninja.util.file.storage.FileStorageUtil;
-import edu.neu.csye6225.spring19.cloudninja.util.file.storage.impl.DevFileStorageUtil;
 
 @Service
 public class NoteTakingServiceImpl implements NoteTakingService {
