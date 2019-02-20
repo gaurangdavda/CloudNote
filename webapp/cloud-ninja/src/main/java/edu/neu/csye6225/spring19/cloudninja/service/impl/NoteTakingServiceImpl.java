@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import edu.neu.csye6225.spring19.cloudninja.exception.FileStorageException;
 import edu.neu.csye6225.spring19.cloudninja.exception.ResourceNotFoundException;
 import edu.neu.csye6225.spring19.cloudninja.exception.UnAuthorizedLoginException;
 import edu.neu.csye6225.spring19.cloudninja.exception.ValidationException;
@@ -20,7 +21,8 @@ import edu.neu.csye6225.spring19.cloudninja.repository.NoteTakingRepository;
 import edu.neu.csye6225.spring19.cloudninja.service.AuthService;
 import edu.neu.csye6225.spring19.cloudninja.service.NoteTakingService;
 import edu.neu.csye6225.spring19.cloudninja.service.ValidationService;
-import edu.neu.csye6225.spring19.cloudninja.util.FileStorageUtil;
+import edu.neu.csye6225.spring19.cloudninja.util.file.storage.FileStorageUtil;
+import edu.neu.csye6225.spring19.cloudninja.util.file.storage.impl.DevFileStorageUtil;
 
 @Service
 public class NoteTakingServiceImpl implements NoteTakingService {
@@ -124,7 +126,7 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 
 	@Override
 	public Attachment saveAttachment(String auth, UUID noteId, MultipartFile file)
-			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException, FileStorageException {
 
 		Note note = getNoteForAttachment(auth, noteId);
 
@@ -136,7 +138,7 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 
 	@Override
 	public List<Attachment> saveAttachments(String auth, UUID noteId, MultipartFile[] files)
-			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException, FileStorageException {
 
 		Note note = getNoteForAttachment(auth, noteId);
 		List<Attachment> savedAttachments = new ArrayList<Attachment>();
