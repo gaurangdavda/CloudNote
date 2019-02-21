@@ -25,7 +25,7 @@ public interface NoteTakingService {
 			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException;
 
 	public void deleteNote(String auth, UUID noteId)
-			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException;
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException, FileStorageException;
 
 	public List<Attachment> getAttachments(String auth, UUID noteId)
 			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException;

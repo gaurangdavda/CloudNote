@@ -90,10 +90,16 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 
 	@Override
 	public void deleteNote(String auth, UUID noteId)
-			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException, FileStorageException {
 
 		Note fetchedNote;
 		fetchedNote = getNote(auth, noteId);
+		List<Attachment> attachments = fetchedNote.getAttachments();
+		if (attachments != null && attachments.size() > 0) {
+			for (Attachment a : attachments) {
+				fileStorageUtil.deleteFile(a.getUrl());
+			}
+		}
 		noteTakingRepository.delete(fetchedNote);
 	}
 

@@ -110,7 +110,7 @@ public class EntryController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteNote(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
 			@PathVariable(value = "noteId") UUID noteId)
-			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException, FileStorageException {
 		noteTakingService.deleteNote(auth, noteId);
 	}
 
