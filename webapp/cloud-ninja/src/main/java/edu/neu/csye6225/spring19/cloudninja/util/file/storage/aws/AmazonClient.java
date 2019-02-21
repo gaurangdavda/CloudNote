@@ -72,16 +72,21 @@ public class AmazonClient {
 
 		String fileUrl = "";
 
-		File file;
+		File file = null;
 		try {
 			file = convertMultiPartToFile(multipartFile);
 
 			String fileName = generateFileName(multipartFile);
 			fileUrl = endpointUrl + "/" + bucketName + "/" + fileName;
 			uploadFileTos3bucket(fileName, file);
-			file.delete();
+			
 		} catch (Exception e) {
 			throw new FileStorageException("File not stored in S3 bucket. Please try again");
+		} finally {
+			if(file != null) {
+				file.delete();
+			}
+		
 		}
 
 		return fileUrl;
