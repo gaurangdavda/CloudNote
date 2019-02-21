@@ -48,8 +48,8 @@
                {
                   "CidrIp":"0.0.0.0/0",
                   "Description":"tcp",
-                  "FromPort":"3306",
-                  "ToPort":"3306",
+                  "FromPort":"5432",
+                  "ToPort":"5432",
                   "IpProtocol":"TCP"
                }
             ],
@@ -131,6 +131,7 @@
          },
          "DeletionPolicy": "Delete"
       },
+
       "DynamoDBTable":
       {
          "Type" : "AWS::DynamoDB::Table",
@@ -149,8 +150,6 @@
                "ReadCapacityUnits" : "5",
                "WriteCapacityUnits" : "5"
             },
-
-
             "TableName" : "csye6225"
 
          }
