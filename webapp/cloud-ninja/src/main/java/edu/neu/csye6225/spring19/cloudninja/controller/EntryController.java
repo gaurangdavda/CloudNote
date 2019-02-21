@@ -44,13 +44,6 @@ import edu.neu.csye6225.spring19.cloudninja.service.NoteTakingService;
 @RestController
 public class EntryController {
 
-//	private String uploadDir;
-
-//	@Autowired
-//	public EntryController(FileStorageProperties fileStorageProperties) {
-//		this.uploadDir = fileStorageProperties.getUploadDir();
-//	}
-
 	@Autowired
 	private LoginService loginService;
 
@@ -73,7 +66,6 @@ public class EntryController {
 		return new ResponseEntity<ResponseBody>(loginService.registerUser(userCredentials), HttpStatus.CREATED);
 	}
 
-	// Get All notes for the user
 	@RequestMapping(method = RequestMethod.GET, value = NOTE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<Note>> getAllNotes(
 			@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth)
@@ -81,14 +73,12 @@ public class EntryController {
 		return new ResponseEntity<List<Note>>(noteTakingService.getAllNotes(auth), HttpStatus.OK);
 	}
 
-	// Create note with details passed for the user
 	@RequestMapping(method = RequestMethod.POST, value = NOTE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Note> createNote(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
 			@RequestBody Note note) throws ValidationException, UnAuthorizedLoginException {
 		return new ResponseEntity<Note>(noteTakingService.createNote(auth, note), HttpStatus.CREATED);
 	}
 
-	// Get note with UUID passed for the user
 	@RequestMapping(method = RequestMethod.GET, value = NOTE_ID, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Note> getNote(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
 			@PathVariable(value = "noteId") UUID noteId)
@@ -96,7 +86,6 @@ public class EntryController {
 		return new ResponseEntity<Note>(noteTakingService.getNote(auth, noteId), HttpStatus.OK);
 	}
 
-	// Update note with details passed for user
 	@RequestMapping(method = RequestMethod.PUT, value = NOTE_ID, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void updateNote(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
@@ -105,7 +94,6 @@ public class EntryController {
 		noteTakingService.updateNote(auth, noteId, note);
 	}
 
-	// Delete note for the user
 	@RequestMapping(method = RequestMethod.DELETE, value = NOTE_ID, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteNote(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
@@ -119,8 +107,6 @@ public class EntryController {
 	public Attachment attachFile(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
 			@PathVariable(value = "noteId") UUID noteId, @RequestParam(FILE) MultipartFile file)
 			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException, FileStorageException {
-		System.out.println(fileStorageProperties.getUploadDir());
-		// This will change
 		return noteTakingService.saveAttachment(auth, noteId, file);
 	}
 

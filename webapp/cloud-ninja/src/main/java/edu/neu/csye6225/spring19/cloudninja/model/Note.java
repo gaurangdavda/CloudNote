@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -71,7 +70,7 @@ public class Note {
 	@JsonIgnore
 	private UserCredentials userCredentials;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "note")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "note")
 	@JsonProperty("attachments")
 	private List<Attachment> attachments;
 

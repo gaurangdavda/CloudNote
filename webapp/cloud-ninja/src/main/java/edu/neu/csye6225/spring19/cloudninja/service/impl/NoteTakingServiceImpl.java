@@ -98,6 +98,7 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 		if (attachments != null && attachments.size() > 0) {
 			for (Attachment a : attachments) {
 				fileStorageUtil.deleteFile(a.getUrl());
+				attachmentReposiory.delete(a);
 			}
 		}
 		noteTakingRepository.delete(fetchedNote);
