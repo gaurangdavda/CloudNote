@@ -1,6 +1,17 @@
 #!/bin/bash
 
-set -e
+f () {
+    errcode=$? # save the exit code as the first thing done in the trap function
+    echo "error $errcode"
+    echo "the command executing at the time of the error was"
+    echo "$BASH_COMMAND"
+    echo "on line ${BASH_LINENO[0]}"
+    echo "Exiting the script."
+    exit $errcode
+}
+
+trap f ERR
+
 ## Checking whether the stack-name is passed as an arguement
 if [ $# -lt 1 ]; then
   echo "Kindly provide stack name! Script execution stopped."
@@ -20,14 +31,18 @@ echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 # fi
 
 echo "Displaying all keys!"
-aws ec2 describe-key-pairs 
-echo -e "\n"
+for key in `aws ec2 describe-key-pairs --output text | cut -f3`
+do
+  echo -e $key
+done
 echo "Choose 1 Key which you want to use!"
 read KEY_CHOSEN
 
 echo "Displaying AMI!"
-aws ec2 describe-images --owners self --query 'Images[*].{ID:ImageId}'
-echo -e "\n"
+for image in `aws ec2 describe-images --owners self --query 'Images[*].{ID:ImageId}' --output text | cut -f1`
+do
+  echo -e $image
+done
 echo "Enter AMI ID"
 read amiId
 
