@@ -1,6 +1,5 @@
 package edu.neu.csye6225.spring19.cloudninja.util.file.storage.impl;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -50,7 +49,7 @@ public class DefaultFileStorageUtil implements FileStorageUtil {
 			Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
 			return targetLocation.toString();
-		} catch (IOException ex) {
+		} catch (Exception ex) {
 			throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
 		}
 	}
@@ -68,7 +67,7 @@ public class DefaultFileStorageUtil implements FileStorageUtil {
 		try {
 			Path targetLocation = this.fileStorageLocation.resolve(fileUrl);
 			Files.delete(targetLocation);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new FileStorageException("Could not delete file " + fileUrl + ". Please try again!", e);
 		}
 	}

@@ -12,8 +12,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.amazonaws.AmazonServiceException;
-import com.amazonaws.SdkClientException;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
@@ -82,33 +80,19 @@ public class AmazonClient {
 			fileUrl = endpointUrl + "/" + bucketName + "/" + fileName;
 			uploadFileTos3bucket(fileName, file);
 			file.delete();
-		} catch (AmazonServiceException e) {
-			// The call was transmitted successfully, but Amazon S3 couldn't process
-			// it, so it returned an error response.
-			e.printStackTrace();
-		} catch (SdkClientException e) {
-			// Amazon S3 couldn't be contacted for a response, or the client
-			// couldn't parse the response from Amazon S3.
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new FileStorageException("File not stored in S3 bucket. Please try again");
 		}
 
 		return fileUrl;
 	}
 
-	public void deleteFileFromS3Bucket(String fileUrl) {
+	public void deleteFileFromS3Bucket(String fileUrl) throws FileStorageException {
 		try {
 			String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
 			s3client.deleteObject(new DeleteObjectRequest(bucketName, fileName));
-		} catch (AmazonServiceException e) {
-			// The call was transmitted successfully, but Amazon S3 couldn't process
-			// it, so it returned an error response.
-			e.printStackTrace();
-		} catch (SdkClientException e) {
-			// Amazon S3 couldn't be contacted for a response, or the client
-			// couldn't parse the response from Amazon S3.
-			e.printStackTrace();
+		} catch (Exception e) {
+			throw new FileStorageException("File not stored in S3 bucket. Please try again");
 		}
 
 	}
