@@ -64,7 +64,7 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
 		UserCredentials credentials = authService.extractCredentialsFromHeader(auth);
 		authService.authenticateUser(credentials);
-		// Note note = fetchNoteFromId(noteId);
+
 		Optional<Note> noteWrapper = noteTakingRepository.findById(noteId);
 		if (!noteWrapper.isPresent() || noteWrapper.get() == null) {
 			throw new ResourceNotFoundException("Note with ID: " + noteId.toString() + " does not exist");
@@ -78,125 +78,97 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 	}
 
 	@Override
-	public void updateNote(String auth, UUID noteId, Note note) throws ValidationException, UnAuthorizedLoginException {
-		UserCredentials credentials = authService.extractCredentialsFromHeader(auth);
-		authService.authenticateUser(credentials);
+	public void updateNote(String auth, UUID noteId, Note note)
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
 		validationService.isNoteValid(note);
-		// Note nt = fetchNoteFromId(noteId);
-		Optional<Note> noteWrapper = noteTakingRepository.findById(noteId);
-		if (!noteWrapper.isPresent() || noteWrapper.get() == null) {
-			throw new ValidationException("Note with ID: " + noteId.toString() + " does not exist");
-		}
-		Note nt = noteWrapper.get();
-
-		if (authService.isUserAuthorized(credentials, nt)) {
-			nt.setContent(note.getContent());
-			nt.setTitle(note.getTitle());
-			noteTakingRepository.save(nt);
-		} else {
-			throw new UnAuthorizedLoginException("Note with ID: " + noteId.toString() + " is not one of your notes");
-		}
+		Note fetchedNote;
+		fetchedNote = getNote(auth, noteId);
+		fetchedNote.setContent(note.getContent());
+		fetchedNote.setTitle(note.getTitle());
+		noteTakingRepository.save(fetchedNote);
 	}
 
 	@Override
-	public void deleteNote(String auth, UUID noteId) throws ValidationException, UnAuthorizedLoginException {
-		UserCredentials credentials = authService.extractCredentialsFromHeader(auth);
-		authService.authenticateUser(credentials);
+	public void deleteNote(String auth, UUID noteId)
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
 
-		// Note note = fetchNoteFromId(noteId);
-
-		Optional<Note> noteWrapper = noteTakingRepository.findById(noteId);
-		if (!noteWrapper.isPresent() || noteWrapper.get() == null) {
-			throw new ValidationException("Note with ID: " + noteId.toString() + " does not exist");
-		}
-		Note note = noteWrapper.get();
-		if (authService.isUserAuthorized(credentials, note)) {
-			noteTakingRepository.delete(note);
-		} else {
-			throw new UnAuthorizedLoginException("Note with ID: " + noteId.toString() + " is not one of your notes");
-		}
-
+		Note fetchedNote;
+		fetchedNote = getNote(auth, noteId);
+		noteTakingRepository.delete(fetchedNote);
 	}
 
 	@Override
 	public List<Attachment> getAttachments(String auth, UUID noteId)
-			throws ValidationException, UnAuthorizedLoginException {
-		return getNoteForAttachment(auth, noteId).getAttachments();
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
+		Note fetchedNote;
+		fetchedNote = getNote(auth, noteId);
+		return fetchedNote.getAttachments();
 	}
 
 	@Override
 	public Attachment saveAttachment(String auth, UUID noteId, MultipartFile file)
 			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException, FileStorageException {
 
-		Note note = getNoteForAttachment(auth, noteId);
-
+		Note fetchedNote;
+		fetchedNote = getNote(auth, noteId);
 		String fileLocation = fileStorageUtil.storeFile(file);
-		Attachment attachment = new Attachment(fileLocation, note);
+		Attachment attachment = new Attachment(fileLocation, fetchedNote);
 		return attachmentReposiory.save(attachment);
-
 	}
 
 	@Override
 	public List<Attachment> saveAttachments(String auth, UUID noteId, MultipartFile[] files)
 			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException, FileStorageException {
 
-		Note note = getNoteForAttachment(auth, noteId);
+		Note fetchedNote;
+		fetchedNote = getNote(auth, noteId);
 		List<Attachment> savedAttachments = new ArrayList<Attachment>();
 		for (MultipartFile file : files) {
 			String fileLocation = fileStorageUtil.storeFile(file);
-			Attachment attachment = new Attachment(fileLocation, note);
+			Attachment attachment = new Attachment(fileLocation, fetchedNote);
 			savedAttachments.add(attachmentReposiory.save(attachment));
 		}
-
 		return savedAttachments;
-
-	}
-
-	private Note getNoteForAttachment(String auth, UUID noteId) throws ValidationException, UnAuthorizedLoginException {
-		UserCredentials credentials = authService.extractCredentialsFromHeader(auth);
-		authService.authenticateUser(credentials);
-		Optional<Note> noteWrapper = noteTakingRepository.findById(noteId);
-		if (!noteWrapper.isPresent() || noteWrapper.get() == null) {
-			throw new ValidationException("Note with ID: " + noteId.toString() + " does not exist");
-		}
-		return noteWrapper.get();
 	}
 
 	@Override
-	public void updateAttachment(String auth, UUID noteId, UUID attachmentId)
-			throws ValidationException, UnAuthorizedLoginException {
-		UserCredentials credentials = authService.extractCredentialsFromHeader(auth);
-		authService.authenticateUser(credentials);
-		Note note = getNoteForAttachment(auth, noteId);
-
-		// Update the attachment
-
-		// String fileLocation = fileStorageUtil.replaceFile(oldFileUrl, file);
+	public void updateAttachment(String auth, UUID noteId, UUID attachmentId, MultipartFile file)
+			throws ValidationException, UnAuthorizedLoginException, FileStorageException, ResourceNotFoundException {
+		Note fetchedNote;
+		fetchedNote = getNote(auth, noteId);
+		Attachment attachment = getAttachmentForNote(attachmentId, fetchedNote);
+		String fileLocation = fileStorageUtil.replaceFile(attachment.getUrl(), file);
+		attachment.setUrl(fileLocation);
+		attachmentReposiory.save(attachment);
 	}
 
 	@Override
 	public void deleteAttachment(String auth, UUID noteId, UUID attachmentId)
-			throws ValidationException, UnAuthorizedLoginException, FileStorageException {
-		UserCredentials credentials = authService.extractCredentialsFromHeader(auth);
-		authService.authenticateUser(credentials);
-		Note note = getNoteForAttachment(auth, noteId);
+			throws ValidationException, UnAuthorizedLoginException, FileStorageException, ResourceNotFoundException {
+		Note fetchedNote;
+		fetchedNote = getNote(auth, noteId);
+		Attachment attachment = getAttachmentForNote(attachmentId, fetchedNote);
+		fileStorageUtil.deleteFile(attachment.getUrl());
+		attachmentReposiory.delete(attachment);
+	}
 
+	private Attachment getAttachmentForNote(UUID attachmentId, Note fetchedNote)
+			throws ValidationException, UnAuthorizedLoginException {
 		Optional<Attachment> attachmentWrapper = attachmentReposiory.findById(attachmentId);
 		if (!attachmentWrapper.isPresent() || attachmentWrapper.get() == null) {
-			throw new ValidationException("Attachment with ID: " + attachmentId.toString()
-					+ " does not exist in Note with ID: " + noteId.toString());
+			throw new ValidationException("Attachment with ID: " + attachmentId.toString() + " does not exist");
 		}
 		Attachment attachment = attachmentWrapper.get();
-		// Deleting from the storage
-
-		if (authService.isUserAuthorized(credentials, note)) {
-			fileStorageUtil.deleteFile(attachment.getUrl());
-			attachmentReposiory.delete(attachment);
-		} else {
-			throw new UnAuthorizedLoginException("Note with ID: " + noteId.toString() + " is not one of your notes");
+//		for (Attachment a : fetchedNote.getAttachments()) {
+//			if (a.getId().equals(attachment.getId())) {
+//				return attachment;
+//			}
+//		}
+		if (fetchedNote.getAttachments().contains(attachment)) {
+			return attachment;
 		}
-
-		// deleting the attachment
+		throw new UnAuthorizedLoginException(
+				"Attachment with ID: " + attachmentId.toString() + " is not one of the attachments of your note");
 
 	}
 

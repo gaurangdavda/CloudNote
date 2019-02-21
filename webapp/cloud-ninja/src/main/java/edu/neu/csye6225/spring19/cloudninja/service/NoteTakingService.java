@@ -21,18 +21,20 @@ public interface NoteTakingService {
 	public Note getNote(String auth, UUID noteId)
 			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException;
 
-	public void updateNote(String auth, UUID noteId, Note note) throws ValidationException, UnAuthorizedLoginException;
+	public void updateNote(String auth, UUID noteId, Note note)
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException;
 
-	public void deleteNote(String auth, UUID noteId) throws ValidationException, UnAuthorizedLoginException;
+	public void deleteNote(String auth, UUID noteId)
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException;
 
 	public List<Attachment> getAttachments(String auth, UUID noteId)
-			throws ValidationException, UnAuthorizedLoginException;
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException;
 
-	public void updateAttachment(String auth, UUID noteId, UUID attachmentId)
-			throws ValidationException, UnAuthorizedLoginException;
+	public void updateAttachment(String auth, UUID noteId, UUID attachmentId, MultipartFile file)
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException, FileStorageException;
 
 	public void deleteAttachment(String auth, UUID noteId, UUID attachmentId)
-			throws ValidationException, UnAuthorizedLoginException, FileStorageException;
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException, FileStorageException;
 
 	public Attachment saveAttachment(String auth, UUID noteId, MultipartFile file)
 			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException, FileStorageException;

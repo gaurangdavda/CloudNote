@@ -6,10 +6,10 @@ import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstant
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.NOTE;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.NOTE_ID;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.NOTE_ID_ATTACHMENT;
-import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.NO_AUTH;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.NOTE_ID_ATTACHMENTS;
-import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.REGISTER;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.NOTE_ID_ATTACHMENT_ID;
+import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.NO_AUTH;
+import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.REGISTER;
 
 import java.util.List;
 import java.util.UUID;
@@ -101,7 +101,7 @@ public class EntryController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void updateNote(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
 			@PathVariable(value = "noteId") UUID noteId, @RequestBody Note note)
-			throws ValidationException, UnAuthorizedLoginException {
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
 		noteTakingService.updateNote(auth, noteId, note);
 	}
 
@@ -109,7 +109,8 @@ public class EntryController {
 	@RequestMapping(method = RequestMethod.DELETE, value = NOTE_ID, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteNote(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
-			@PathVariable(value = "noteId") UUID noteId) throws ValidationException, UnAuthorizedLoginException {
+			@PathVariable(value = "noteId") UUID noteId)
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
 		noteTakingService.deleteNote(auth, noteId);
 	}
 
@@ -139,15 +140,16 @@ public class EntryController {
 			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
 		return noteTakingService.getAttachments(auth, noteId);
 	}
-	
+
 	@RequestMapping(value = NOTE_ID_ATTACHMENT_ID, method = RequestMethod.PUT, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void updateAttachment(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
-			@PathVariable(value = "noteId") UUID noteId, @PathVariable(value = "idAttachments") UUID attachmentId, @RequestParam(FILE) MultipartFile file)
-			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
-		noteTakingService.updateAttachment(auth, noteId, attachmentId);
+			@PathVariable(value = "noteId") UUID noteId, @PathVariable(value = "idAttachments") UUID attachmentId,
+			@RequestParam(FILE) MultipartFile file)
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException, FileStorageException {
+		noteTakingService.updateAttachment(auth, noteId, attachmentId, file);
 	}
-	
+
 	@RequestMapping(value = NOTE_ID_ATTACHMENT_ID, method = RequestMethod.DELETE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteAttachment(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,

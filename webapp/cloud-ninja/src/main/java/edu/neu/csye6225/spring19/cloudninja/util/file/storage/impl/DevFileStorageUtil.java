@@ -58,12 +58,19 @@ public class DevFileStorageUtil implements FileStorageUtil {
 	@Override
 	public String replaceFile(String oldFileUrl, MultipartFile file) throws FileStorageException {
 
-		return null;
+		deleteFile(oldFileUrl);
+		return storeFile(file);
 	}
 
 	@Override
 	public void deleteFile(String fileUrl) throws FileStorageException {
 
+		try {
+			Path targetLocation = this.fileStorageLocation.resolve(fileUrl);
+			Files.delete(targetLocation);
+		} catch (IOException e) {
+			throw new FileStorageException("Could not delete file " + fileUrl + ". Please try again!", e);
+		}
 	}
 
 	private String generateFileName(MultipartFile multiPart) {
