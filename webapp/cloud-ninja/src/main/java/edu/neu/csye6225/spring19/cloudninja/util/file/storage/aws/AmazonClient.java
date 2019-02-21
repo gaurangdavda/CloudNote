@@ -7,10 +7,6 @@ import java.util.Date;
 
 import javax.annotation.PostConstruct;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -18,9 +14,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 
@@ -51,10 +47,10 @@ public class AmazonClient {
 //		AWSCredentials credentials = new BasicAWSCredentials(this.accessKey,
 //		this.secretKey);
 //BasicAWSCredentials creds = new BasicAWSCredentials(this.accessKey, this.secretKey);
-this.s3client = AmazonS3ClientBuilder.standard()
-			.withCredentials(new ProfileCredentialsProvider()).build();
+		this.s3client = AmazonS3ClientBuilder.standard().withCredentials(new ProfileCredentialsProvider()).build();
 
-		//this.s3client = AmazonS3ClientBuilder.standard().withRegion(this.clientRegion).build();
+		// this.s3client =
+		// AmazonS3ClientBuilder.standard().withRegion(this.clientRegion).build();
 
 	}
 
@@ -71,8 +67,7 @@ this.s3client = AmazonS3ClientBuilder.standard()
 	}
 
 	private void uploadFileTos3bucket(String fileName, File file) {
-		s3client.putObject(
-				new PutObjectRequest(bucketName, fileName, file));
+		s3client.putObject(new PutObjectRequest(bucketName, fileName, file));
 	}
 
 	public String uploadFile(MultipartFile multipartFile) throws FileStorageException {

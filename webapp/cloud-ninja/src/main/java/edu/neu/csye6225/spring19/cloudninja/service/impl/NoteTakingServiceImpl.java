@@ -21,6 +21,7 @@ import edu.neu.csye6225.spring19.cloudninja.repository.NoteTakingRepository;
 import edu.neu.csye6225.spring19.cloudninja.service.AuthService;
 import edu.neu.csye6225.spring19.cloudninja.service.NoteTakingService;
 import edu.neu.csye6225.spring19.cloudninja.service.ValidationService;
+import edu.neu.csye6225.spring19.cloudninja.util.CommonUtil;
 import edu.neu.csye6225.spring19.cloudninja.util.file.storage.FileStorageUtil;
 
 @Service
@@ -40,6 +41,9 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 
 	@Autowired
 	private FileStorageUtil fileStorageUtil;
+
+	@Autowired
+	private CommonUtil commonUtil;
 
 	@Override
 	public List<Note> getAllNotes(String auth) throws ValidationException, UnAuthorizedLoginException {
@@ -120,6 +124,7 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 		fetchedNote = getNote(auth, noteId);
 		String fileLocation = fileStorageUtil.storeFile(file);
 		Attachment attachment = new Attachment(fileLocation, fetchedNote);
+		attachment.setFileName(commonUtil.getFileNameFromPath(fileLocation));
 		return attachmentReposiory.save(attachment);
 	}
 
@@ -133,6 +138,7 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 		for (MultipartFile file : files) {
 			String fileLocation = fileStorageUtil.storeFile(file);
 			Attachment attachment = new Attachment(fileLocation, fetchedNote);
+			attachment.setFileName(commonUtil.getFileNameFromPath(fileLocation));
 			savedAttachments.add(attachmentReposiory.save(attachment));
 		}
 		return savedAttachments;
@@ -146,6 +152,7 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 		Attachment attachment = getAttachmentForNote(attachmentId, fetchedNote);
 		String fileLocation = fileStorageUtil.replaceFile(attachment.getUrl(), file);
 		attachment.setUrl(fileLocation);
+		attachment.setFileName(commonUtil.getFileNameFromPath(fileLocation));
 		attachmentReposiory.save(attachment);
 	}
 

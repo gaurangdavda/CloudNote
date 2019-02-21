@@ -27,9 +27,9 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 public class Attachment {
 
 	public Attachment() {
-	
+
 	}
-	
+
 	public Attachment(@NotNull String url, Note note) {
 		this.url = url;
 		this.note = note;
@@ -54,6 +54,10 @@ public class Attachment {
 	@JsonIgnore
 	private Note note;
 
+	@Column(name = "FILE_NAME")
+	@JsonIgnore
+	private String fileName;
+
 	public UUID getId() {
 		return id;
 	}
@@ -76,6 +80,14 @@ public class Attachment {
 
 	public void setNote(Note note) {
 		this.note = note;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 
 }
