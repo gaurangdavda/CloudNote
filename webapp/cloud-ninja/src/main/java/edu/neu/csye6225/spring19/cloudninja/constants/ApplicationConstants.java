@@ -20,6 +20,8 @@ public class ApplicationConstants {
 	public static final String NULL_EMAIL = "Kindly enter the emaild id.";
 	public static final String INVALID_EMAIL = "Kindly enter valid emaild id.";
 	public static final String PASSWORD_INCORRECT = "Incorrect password entered.";
+	public static final String EMAILID_PASSWORD_MISSING = "EmailId/Username or Password not entered";
+	public static final String EMAILID_REGEX = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
 	// =========================================================================================================================
 
 	// Endpoints for this service
@@ -31,8 +33,11 @@ public class ApplicationConstants {
 	public static final String HTTP_OK = "User Created Successfully";
 	public static final String AUTHORIZATION = "Authorization";
 	public static final String NO_AUTH = "No Auth";
-	public static final String EMAILID_PASSWORD_MISSING = "EmailId/Username or Password not entered";
-	public static final String EMAILID_REGEX = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
+	public static final String NOTE_ID_ATTACHMENT = "/note/{noteId}/attachments";
+	public static final String NOTE_ID_ATTACHMENTS = "/note/{noteId}/multiattachments";
+	public static final String NOTE_ID_ATTACHMENT_ID = "/note/{noteId}/attachments/{idAttachments}";
+	public static final String FILE = "file";
+
 	// =========================================================================================================================
 
 	// Date format

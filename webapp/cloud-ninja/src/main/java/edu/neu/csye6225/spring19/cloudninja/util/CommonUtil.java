@@ -11,8 +11,13 @@ import org.springframework.stereotype.Component;
 public class CommonUtil {
 
 	public String getCurrentDateWithFormat(String format) {
-		
+
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
 		return simpleDateFormat.format(new Date());
+	}
+
+	public String getFileNameFromPath(String path) {
+		String[] pathArr = path.split("/");
+		return pathArr[pathArr.length - 1];
 	}
 }

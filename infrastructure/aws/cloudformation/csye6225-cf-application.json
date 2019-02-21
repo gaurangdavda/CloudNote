@@ -1,0 +1,168 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Parameters":{
+      "keyname":{
+        "Description":"Key Name",
+        "Type":"String"
+      },
+      "AmiId":{
+        "Description":"AMI ID",
+        "Type":"String"
+      }
+    },
+   "Resources":{
+      "SecurityGroupWB":{
+         "Type":"AWS::EC2::SecurityGroup",
+         "Properties":{
+            "VpcId": {"Fn::ImportValue": "VPCID"},
+            "GroupDescription":"SecurityGroup to access webapplication",
+            "SecurityGroupIngress":[
+               {
+                  "CidrIp":"0.0.0.0/0",
+                  "Description":"To allow world for port 80",
+                  "FromPort":"80",
+                  "ToPort":"80",
+                  "IpProtocol":"TCP"
+               },
+               {
+                  "CidrIp":"0.0.0.0/0",
+                  "Description":"To allow world for port 22",
+                  "FromPort":"22",
+                  "ToPort":"22",
+                  "IpProtocol":"TCP"
+               },
+               {
+                  "CidrIp":"0.0.0.0/0",
+                  "Description":"To allow world for port 443",
+                  "FromPort":"443",
+                  "ToPort":"443",
+                  "IpProtocol":"TCP"
+               }
+            ],
+            "Tags":[
+               {
+                  "Key":"Name",
+                  "Value":"SecurityGroupWB"
+               }
+            ]
+          }
+        },
+      "SecurityGroupRDS":{
+         "Type":"AWS::EC2::SecurityGroup",
+
+         "Properties":{
+            "VpcId": {"Fn::ImportValue": "VPCID"},
+            "GroupDescription":"SecurityGroup to access webapplication",
+            "SecurityGroupIngress":[
+
+               {
+                  "CidrIp":"0.0.0.0/0",
+                  "Description":"tcp",
+                  "FromPort":"5432",
+                  "ToPort":"5432",
+                  "IpProtocol":"TCP"
+               }
+            ],
+            "Tags":[
+               {
+                  "Key":"Name",
+                  "Value":"SecurityGroupRDS"
+               }
+            ]
+         }
+      },
+      "EC2Instance":{
+         "Type":"AWS::EC2::Instance",
+         "Properties":{
+            "DisableApiTermination":"false",
+            "ImageId":{"Ref":"AmiId"},
+            "InstanceType":"t2.micro",
+            "SecurityGroupIds": [{"Fn::GetAtt": ["SecurityGroupWB","GroupId"]}],
+            "AvailabilityZone":"us-east-1a",
+            "SubnetId": {"Fn::ImportValue": "MainPublicSubnet"},
+            "KeyName":{"Ref":"keyname"},
+            "Volumes":[
+               {
+                  "Device":"/dev/sda2",
+                  "VolumeId":{
+                     "Ref":"NewVolume"
+                  }
+               }
+            ],
+            "Tags":[
+               {
+                  "Key":"Name",
+                  "Value":"EC2Webapplication"
+               }
+            ]
+         }
+      },
+      "NewVolume":{
+         "Type":"AWS::EC2::Volume",
+         "Properties":{
+            "Size":"20",
+            "VolumeType":"gp2",
+            "AvailabilityZone":"us-east-1a",
+            "Tags":[
+               {
+                  "Key":"Name",
+                  "Value":"EC2AppVolume"
+               }
+            ]
+         }
+      },
+
+      "DBSubnetGroup": {
+         "Type" : "AWS::RDS::DBSubnetGroup",
+         "Properties" : {
+            "DBSubnetGroupDescription" : "DB SUBNET GROUP FOR RDS",
+            "DBSubnetGroupName" : "MyDBSubnetGroup",
+            "SubnetIds" : [ {"Fn::ImportValue": "PublicSubnet2"},{"Fn::ImportValue": "PublicSubnet3"}]
+
+         }
+
+      },
+
+      "RdsInstance": {
+         "Type": "AWS::RDS::DBInstance",
+         "Properties": {
+            "Engine":  "Postgres",
+            "AllocatedStorage": "100",
+            "EngineVersion": "10.6",
+            "DBInstanceClass": "db.t2.medium",
+            "MultiAZ": false,
+            "DBInstanceIdentifier":"csye6225-spring2019",
+            "MasterUsername":"csye6225master",
+            "MasterUserPassword": "csye6225password" ,
+            "PubliclyAccessible": true,
+            "DBName": "csye6225" ,
+            "VPCSecurityGroups": [{ "Ref" : "SecurityGroupRDS" }],
+            "DBSubnetGroupName": {"Ref": "DBSubnetGroup"}
+         },
+         "DeletionPolicy": "Delete"
+      },
+
+      "DynamoDBTable":
+      {
+         "Type" : "AWS::DynamoDB::Table",
+         "Properties" : {
+            "AttributeDefinitions" : [ {
+               "AttributeName": "id",
+               "AttributeType": "S"
+            }],
+
+            "KeySchema" : [ {
+               "AttributeName": "id",
+               "KeyType": "HASH"
+            }],
+
+            "ProvisionedThroughput" : {
+               "ReadCapacityUnits" : "5",
+               "WriteCapacityUnits" : "5"
+            },
+            "TableName" : "csye6225"
+
+         }
+      }
+   }
+}

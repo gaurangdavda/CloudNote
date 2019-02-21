@@ -26,8 +26,7 @@ public class AuthServiceImpl implements AuthService {
 	private UserRepository userRepository;
 
 	@Override
-	public void authenticateUser(UserCredentials credentials)
-			throws ValidationException, UnAuthorizedLoginException {
+	public void authenticateUser(UserCredentials credentials) throws ValidationException, UnAuthorizedLoginException {
 
 		String actualPassword = "";
 		String emailId = credentials.getEmailId();

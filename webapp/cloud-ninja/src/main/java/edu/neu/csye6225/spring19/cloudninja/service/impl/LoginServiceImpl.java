@@ -35,8 +35,7 @@ public class LoginServiceImpl implements LoginService {
 	private AuthService authService;
 
 	@Override
-	public TimeStampWrapper getTimestamp(String authHeader)
-			throws ValidationException, UnAuthorizedLoginException {
+	public TimeStampWrapper getTimestamp(String authHeader) throws ValidationException, UnAuthorizedLoginException {
 		// Authenticating User before proceeding
 		authService.authenticateUser(authService.extractCredentialsFromHeader(authHeader));
 		timeStampWrapper.setTimeStamp(

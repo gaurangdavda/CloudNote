@@ -7,6 +7,7 @@ import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstant
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -16,10 +17,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.OnDelete;
@@ -36,7 +37,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  */
 @Entity
 @Table(name = "USR_NOTE_DTLS")
-@JsonPropertyOrder({ "id", "content", "title", "created_on", "last_updated_on" })
+@JsonPropertyOrder({ "id", "content", "title", "created_on", "last_updated_on", "attachments" })
 public class Note {
 
 	@Id
@@ -68,6 +69,10 @@ public class Note {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JsonIgnore
 	private UserCredentials userCredentials;
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "note")
+	@JsonProperty("attachments")
+	private List<Attachment> attachments;
 
 	/**
 	 * @return the id
@@ -139,6 +144,14 @@ public class Note {
 	 */
 	public void setUserCredentials(UserCredentials userCredentials) {
 		this.userCredentials = userCredentials;
+	}
+
+	public List<Attachment> getAttachments() {
+		return attachments;
+	}
+
+	public void setAttachments(List<Attachment> attachments) {
+		this.attachments = attachments;
 	}
 
 	@PrePersist
