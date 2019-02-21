@@ -1,79 +1,38 @@
 package edu.neu.csye6225.spring19.cloudninja.util.file.storage.impl;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.Date;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import edu.neu.csye6225.spring19.cloudninja.exception.FileStorageException;
-import edu.neu.csye6225.spring19.cloudninja.property.FileStorageProperties;
 import edu.neu.csye6225.spring19.cloudninja.util.file.storage.FileStorageUtil;
+import edu.neu.csye6225.spring19.cloudninja.util.file.storage.aws.AmazonClient;
 
 @Component
 @Scope(value = "singleton")
 @Profile("dev")
 public class DevFileStorageUtil implements FileStorageUtil {
 
-	private final Path fileStorageLocation;
-
-	public DevFileStorageUtil(FileStorageProperties fileStorageProperties) throws FileStorageException {
-		this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir()).toAbsolutePath().normalize();
-
-		try {
-			Files.createDirectories(this.fileStorageLocation);
-		} catch (Exception ex) {
-			throw new FileStorageException("Could not create the directory where the uploaded files will be stored.",
-					ex);
-		}
-	}
+	@Autowired
+	private AmazonClient amazonClient;
 
 	@Override
 	public String storeFile(MultipartFile file) throws FileStorageException {
-
-		String fileName = generateFileName(file);
-
-		try {
-			// Check if the file's name contains invalid characters
-			if (fileName.contains("..")) {
-				throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
-			}
-
-			// Copy file to the target location (Replacing existing file with the same name)
-			Path targetLocation = this.fileStorageLocation.resolve(fileName);
-			Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-
-			return targetLocation.toString();
-		} catch (IOException ex) {
-			throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
-		}
+		return amazonClient.uploadFile(file);
 	}
 
 	@Override
 	public String replaceFile(String oldFileUrl, MultipartFile file) throws FileStorageException {
-
-		deleteFile(oldFileUrl);
-		return storeFile(file);
+		// first delete the file and then upload the new file
+		amazonClient.deleteFileFromS3Bucket(oldFileUrl);
+		return amazonClient.uploadFile(file);
 	}
 
 	@Override
 	public void deleteFile(String fileUrl) throws FileStorageException {
-
-		try {
-			Path targetLocation = this.fileStorageLocation.resolve(fileUrl);
-			Files.delete(targetLocation);
-		} catch (IOException e) {
-			throw new FileStorageException("Could not delete file " + fileUrl + ". Please try again!", e);
-		}
+		amazonClient.deleteFileFromS3Bucket(fileUrl);
 	}
 
-	private String generateFileName(MultipartFile multiPart) {
-		return new Date().getTime() + "-" + multiPart.getOriginalFilename().replace(" ", "_");
-	}
 }

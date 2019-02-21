@@ -23,7 +23,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import edu.neu.csye6225.spring19.cloudninja.exception.FileStorageException;
 
 @Service
-@Profile("prod")
+@Profile("dev")
 public class AmazonClient {
 	private AmazonS3 s3client;
 
