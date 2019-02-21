@@ -8,6 +8,7 @@ import java.util.Date;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,6 +23,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import edu.neu.csye6225.spring19.cloudninja.exception.FileStorageException;
 
 @Service
+@Profile("prod")
 public class AmazonClient {
 	private AmazonS3 s3client;
 

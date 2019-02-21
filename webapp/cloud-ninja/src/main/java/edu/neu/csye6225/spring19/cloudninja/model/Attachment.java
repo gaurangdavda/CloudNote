@@ -26,6 +26,10 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({ "id", "url" })
 public class Attachment {
 
+	public Attachment() {
+	
+	}
+	
 	public Attachment(@NotNull String url, Note note) {
 		this.url = url;
 		this.note = note;
