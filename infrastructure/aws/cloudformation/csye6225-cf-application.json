@@ -1,5 +1,15 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
+    "Parameters":{
+      "keyname":{
+        "Description":"Key Name",
+        "Type":"String"
+      },
+      "AmiId":{
+        "Description":"AMI ID",
+        "Type":"String"
+      }
+    },
    "Resources":{
       "SecurityGroupWB":{
          "Type":"AWS::EC2::SecurityGroup",
@@ -65,12 +75,12 @@
          "Type":"AWS::EC2::Instance",
          "Properties":{
             "DisableApiTermination":"false",
-            "ImageId":"ami-011392856e1841c9c",
+            "ImageId":{"Ref":"AmiId"},
             "InstanceType":"t2.micro",
             "SecurityGroupIds": [{"Fn::GetAtt": ["SecurityGroupWB","GroupId"]}],
             "AvailabilityZone":"us-east-1a",
             "SubnetId": {"Fn::ImportValue": "MainPublicSubnet"},
-            "KeyName":"first",
+            "KeyName":{"Ref":"keyname"},
             "Volumes":[
                {
                   "Device":"/dev/sda2",
@@ -153,6 +163,6 @@
             "TableName" : "csye6225"
 
          }
-      }
+      },
    }
 }

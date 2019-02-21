@@ -19,6 +19,18 @@ echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 #   exit 1
 # fi
 
+echo "Displaying all keys!"
+aws ec2 describe-key-pairs 
+echo -e "\n"
+echo "Choose 1 Key which you want to use!"
+read KEY_CHOSEN
+
+echo "Displaying AMI!"
+aws ec2 describe-images --owners self --query 'Images[*].{ID:ImageId}'
+echo -e "\n"
+echo "Enter AMI ID"
+read amiId
+
 stackList=$(aws cloudformation list-stacks --query 'StackSummaries[?StackStatus != `DELETE_COMPLETE`].{StackName:StackName}')
 #echo "stacklist is $stackList"
 
@@ -36,7 +48,7 @@ sed -i "s/REPLACE_STACK_NAME/$1/g" csye6225-cf-networking-parameters.json
 
 ##Creating Stack
 #echo "Creating Cloud Stack $1"
-response=$(aws cloudformation create-stack --stack-name "$1" --template-body file://csye6225-cf-application.json)
+response=$(aws cloudformation create-stack --stack-name "$1" --template-body file://csye6225-cf-application.json --parameters ParameterKey="keyname",ParameterValue=$KEY_CHOSEN ParameterKey="AmiId",ParameterValue=$amiId)
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 echo "Waiting for Stack $1 to be created"
 echo "$response"
