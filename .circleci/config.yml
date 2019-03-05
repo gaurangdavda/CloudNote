@@ -3,7 +3,7 @@ jobs:
   build:
     branches:
       only:
-        - master
+        - master #Only building for master branch pushes
     docker:
       - image: circleci/openjdk:8-jdk-browsers # ...with this image as the primary container; this is where all `steps` will run
     steps:
