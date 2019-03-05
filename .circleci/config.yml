@@ -5,6 +5,28 @@ jobs:
       only:
         - master #Only building for master branch pushes
     docker:
-      - image: circleci/openjdk:8-jdk-browsers # ...with this image as the primary container; this is where all `steps` will run
+      - image: circleci/openjdk:8-jdk
     steps:
       - checkout
+      - run:
+          name: Build Artifact
+          command: |
+            cd webapp
+            echo "Our shell commands come here"
+            ls -al
+            cd ../../..
+      - run:
+          name: Zip Artifact
+          command: |
+            echo "Hello the current build number is ${CIRCLE_BUILD_NUM}"
+            pwd
+            ls -al
+            echo "Our shell commands come here"
+      - run:
+          name: Upload Artifact to S3
+          command: |
+            echo "Hello"
+      - run:
+          name: Make CodeDeploy API call
+          command: |
+            echo "Hello CodeDeploy"
