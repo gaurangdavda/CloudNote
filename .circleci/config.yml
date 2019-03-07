@@ -17,8 +17,12 @@ jobs:
       - run:
           name: Build Artifact
           command: |
-            cd webapp
-            echo "Our shell commands come here"
+            cd webapp/cloud-ninja
+            pwd
+            ls -al
+            echo "Building the artifact with Maven"
+            mvn clean install
+            cd target
             ls -al
             cd ../../..
       - run:
@@ -26,13 +30,37 @@ jobs:
           command: |
             echo "Hello the current build number is ${CIRCLE_BUILD_NUM}"
             pwd
+            echo "Listing current directory content"
             ls -al
-            echo "Our shell commands come here"
+            echo "Making the codedeploy_artifact directory"
+            mkdir -p codedeploy_artifact
+            echo "Changing directory to codedeploy_artifact"
+            cd codedeploy_artifact
+            echo "Copying all .sh files from ../infrastructure/aws/codedeploy directory to the codedeploy_artifact"
+            cp ../infrastructure/aws/codedeploy/*.sh .
+            echo "Copying all .yml files from ../ directory to the codedeploy_artifact"
+            cp ../*.yml .
+            echo "Copying the jar file from ../webapp/cloud-ninja/target/cloud-ninja-SNAPSHOT.jar to the codedeploy_artifact"
+            cp ../webapp/cloud-ninja/target/cloud-ninja-SNAPSHOT.jar .
+            echo "Zipping all files in the codedeploy_artifact directory"
+            zip -r cloud-ninja-webapp-${CIRCLE_BUILD_NUM}.zip .
+            echo "Removing the files except for the zip file from the codedeploy_artifact directory"
+            rm *.yml *.sh *.jar
+            ls -al
+            pwd
+            echo "Changing directory to root"
+            cd ..
+            pwd
+            ls -al
       - run:
           name: Upload Artifact to S3
           command: |
-            echo "Hello"
+            echo "Uploading Artifact to S3 bucket code-deploy.csye6225-spring2019-dalalvi.me"
+            cd codedeploy_artifact
+            aws s3 cp cloud-ninja-webapp-${CIRCLE_BUILD_NUM}.zip s3://${CODE_DEPLOY_S3_BUCKET}
+            cd ..
       - run:
           name: Make CodeDeploy API call
           command: |
-            echo "Hello CodeDeploy"
+            echo "Calling CodeDeploy Agent to pick the artifact and deploy on EC2 instance"
+            echo "Work in Progress"
