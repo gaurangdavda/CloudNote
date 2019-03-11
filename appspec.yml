@@ -1,0 +1,12 @@
+version: 0.0
+os: linux
+
+files:
+  - source: #source location of deployable
+    destination: #destination location of deployable
+
+hooks:
+  AfterInstall:
+   - location: ./afterInstall.sh
+     timeout: 180
+runas: centos
