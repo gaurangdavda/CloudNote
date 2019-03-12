@@ -58,12 +58,26 @@ then
   exit 1
 fi
 
+#Getting the bucket name from the user
+$bucketNamePrefix=code-deploy.
+
+echo "Enter Bucket Name"
+read Bucket
+
+if [ -z Bucket ]
+    then
+    echo "No Bucket name provided, existing code"
+    exit 1
+fi
+
+BucketName= bucketNamePrefix.Bucket
+
 #Replacing the STACK_NAME passed by the user in the csye6225-cf-networking-parameters.json
 sed -i "s/REPLACE_STACK_NAME/$1/g" csye6225-cf-networking-parameters.json
 
 ##Creating Stack
 #echo "Creating Cloud Stack $1"
-response=$(aws cloudformation create-stack --stack-name "$1" --template-body file://csye6225-cf-application.json --parameters ParameterKey="keyname",ParameterValue=$KEY_CHOSEN ParameterKey="AmiId",ParameterValue=$amiId)
+response=$(aws cloudformation create-stack --stack-name "$1" --template-body file://csye6225-cf-application.json --parameters ParameterKey="keyname",ParameterValue=$KEY_CHOSEN ParameterKey="AmiId",ParameterValue=$amiId ParameterKey="BucketName",ParameterValue=$BucketName)
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 echo "Waiting for Stack $1 to be created"
 echo "$response"
