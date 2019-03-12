@@ -182,7 +182,12 @@
                         "s3:Get*",
                         "s3:List*"
                      ],
-                     "Resource": "arn:aws:s3:::code-deploy.csye6225-s19-raghuwanshim.me"
+                     "Resource":{
+                        "Fn::Join":[
+                           "",
+                           ["arn:aws:s3:::",{"Ref":"BucketName"},"/*"]
+                        ]
+                     }
                   }
                ]
             }
@@ -205,7 +210,12 @@
                      "Action": [
                         "s3:PutObject"
                      ],
-                     "Resource": ["arn:aws:s3:::code-deploy.csye6225-s19-raghuwanshim.me"]
+                     "Resource":{
+                        "Fn::Join":[
+                           "",
+                           ["arn:aws:s3:::",{"Ref":"BucketName"},"/*"]
+                        ]
+                     }
                   }
                ]
             }
@@ -230,7 +240,22 @@
                         "codedeploy:GetApplicationRevision"
                      ],
                      "Resource": [
-                        "arn:aws:codedeploy:us-east-1:752053557892:application:csye6225-webapp"
+                        {
+                           "Fn::Join": [
+                              ":",
+                              [
+                                 "arn:aws:codedeploy",
+                                 {
+                                    "Ref": "AWS::Region"
+                                 },
+                                 {
+                                    "Ref": "AWS::AccountId"
+                                 },
+                                 "application",
+                                 "csye6225-webapp"
+                              ]
+                           ]
+                        }
                      ]
                   },
                   {
@@ -249,9 +274,57 @@
                         "codedeploy:GetDeploymentConfig"
                      ],
                      "Resource": [
-                        "arn:aws:codedeploy:us-east-1:752053557892:deploymentconfig:CodeDeployDefault.OneAtATime",
-                        "arn:aws:codedeploy:us-east-1:752053557892:deploymentconfig:CodeDeployDefault.HalfAtATime",
-                        "arn:aws:codedeploy:us-east-1:752053557892:deploymentconfig:CodeDeployDefault.AllAtOnce"
+                        {
+                           "Fn::Join": [
+                              ":",
+                              [
+                                 "arn:aws:codedeploy",
+                                 {
+                                    "Ref": "AWS::Region"
+                                 },
+                                 {
+                                    "Ref": "AWS::AccountId"
+                                 },
+                                 "deploymentconfig",
+                                 "CodeDeployDefault.OneAtATime"
+                              ]
+                           ]
+                        },
+                        {
+                           "Fn::Join": [
+                              ":",
+                              [
+                                 "arn:aws:codedeploy",
+                                 {
+                                    "Ref": "AWS::Region"
+                                 },
+                                 {
+                                    "Ref": "AWS::AccountId"
+                                 },
+                                 "deploymentconfig",
+                                 "CodeDeployDefault.HalfAtATime"
+                              ]
+                           ]
+                        },
+                        {
+                           "Fn::Join": [
+                              ":",
+                              [
+                                 "arn:aws:codedeploy",
+                                 {
+                                    "Ref": "AWS::Region"
+                                 },
+                                 {
+                                    "Ref": "AWS::AccountId"
+                                 },
+                                 "deploymentconfig",
+                                 "CodeDeployDefault.AllAtOnce"
+                              ]
+                           ]
+                        }
+
+
+
                      ]
                   }
                ]
