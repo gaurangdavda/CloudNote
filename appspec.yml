@@ -6,7 +6,21 @@ files:
     destination: #destination location of deployable
 
 hooks:
+  BeforeInstall:
+    - location: scripts/install_dependencies.sh
+      timeout: 300
+      runas: centos
   AfterInstall:
-   - location: ./afterInstall.sh
-     timeout: 180
-runas: centos
+    - location: scripts/change_permissions.sh
+      timeout: 300
+      runas: centos
+  ApplicationStart:
+    - location: scripts/start_server.sh
+    - location: scripts/create_test_db.sh
+      timeout: 300
+      runas: centos
+  ApplicationStop:
+    - location: scripts/stop_server.sh
+      timeout: 300
+      runas: centos
+

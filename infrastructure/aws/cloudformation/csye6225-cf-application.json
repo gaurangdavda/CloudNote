@@ -8,6 +8,10 @@
       "AmiId":{
         "Description":"AMI ID",
         "Type":"String"
+      },
+      "BucketName":{
+        "Description":"Bucket Name",
+        "Type":"String"
       }
     },
    "Resources":{

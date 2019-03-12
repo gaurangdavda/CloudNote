@@ -58,20 +58,20 @@ then
   exit 1
 fi
 
-#Getting the bucket name from the user
-$bucketNamePrefix=code-deploy.
+#Getting the domain name from the user
+bucketNamePrefix=code-deploy
 
-echo "Enter Bucket Name"
-read Bucket
+echo "Enter Domain Name"
+read domain
 
-if [ -z Bucket ]
+if [ -z domain ]
     then
-    echo "No Bucket name provided, existing code"
+    echo "No Domain name provided, existing code"
     exit 1
 fi
 
-BucketName= bucketNamePrefix.Bucket
-
+BucketName=${bucketNamePrefix}.${domain}
+echo "$BucketName"
 #Replacing the STACK_NAME passed by the user in the csye6225-cf-networking-parameters.json
 sed -i "s/REPLACE_STACK_NAME/$1/g" csye6225-cf-networking-parameters.json
 

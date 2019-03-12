@@ -55,7 +55,7 @@ jobs:
       - run:
           name: Upload Artifact to S3
           command: |
-            echo "Uploading Artifact to S3 bucket code-deploy.csye6225-spring2019-dalalvi.me"
+            echo "Uploading Artifact to S3 bucket ${CODE_DEPLOY_S3_BUCKET}"
             cd codedeploy_artifact
             aws s3 cp cloud-ninja-webapp-${CIRCLE_BUILD_NUM}.zip s3://${CODE_DEPLOY_S3_BUCKET}
             cd ..
