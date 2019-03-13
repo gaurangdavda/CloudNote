@@ -61,9 +61,9 @@ jobs:
           command: |
             echo "Uploading Artifact to S3 bucket ${CODE_DEPLOY_S3_BUCKET}"
             cd codedeploy_artifact
-            aws configure set aws_access_key_id ${aws_access_key_id}
-            aws configure set aws_secret_access_key ${aws_secret_access_key}
-            aws configure set default.region ${AWS_REGION}
+            # aws configure set aws_access_key_id ${aws_access_key_id}
+            # aws configure set aws_secret_access_key ${aws_secret_access_key}
+            # aws configure set default.region ${AWS_REGION}
             aws s3 cp cloud-ninja-webapp-${CIRCLE_BUILD_NUM}.zip s3://${CODE_DEPLOY_S3_BUCKET}/cloud-ninja-webapp-${CIRCLE_BUILD_NUM}.zip
             cd ..
       - run:
