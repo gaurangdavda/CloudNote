@@ -21,6 +21,7 @@
          "Description":"Code Deploy Group Name",
          "Type":"String"
       }
+
    },
    "Resources":{
       "SecurityGroupWB":{
@@ -87,12 +88,14 @@
       },
       "EC2Instance":{
          "Type":"AWS::EC2::Instance",
+         "DependsOn":"RdsInstance",
          "Properties":{
             "DisableApiTermination":"false",
             "ImageId":{
                "Ref":"AMIID"
             },
             "InstanceType":"t2.micro",
+            "IamInstanceProfile": "EC2InstanceProfile",
             "SecurityGroupIds":[
                {
                   "Fn::GetAtt":[
@@ -107,6 +110,35 @@
             },
             "KeyName":{
                "Ref":"KEYNAME"
+            },
+            "UserData":{
+              "Fn::Base64":{
+                "Fn::Join":[
+                  "\n",
+                  [
+                      "#!/bin/bash -xe",
+                      "echo export DB_USERNAME=csye6225master>>/etc/profile.d/envvariable.sh",
+                      "echo export DB_PASSWORD=csye6225password>>/etc/profile.d/envvariable.sh",
+                      {
+                        "Fn::Join":[
+                          "",
+                          [
+                      "echo export DB_ENDPOINT=jdbc:postgresql://",
+                      {
+                      "Fn::GetAtt": [
+                      "RdsInstance",
+                      "Endpoint.Address"
+                      ]
+                      },
+                      ":5432/csye6225>>/etc/profile.d/envvariable.sh",
+                    ]
+                  ]
+                },
+                      "chmod 0755 /etc/profile.d/envvariable.sh",
+                      "source /etc/profile.d/envvariable.sh"
+                  ]
+                ]
+              }
             },
             "Volumes":[
                {
@@ -124,6 +156,54 @@
             ]
          }
       },
+
+      "RdsInstance":{
+               "Type":"AWS::RDS::DBInstance",
+               "Properties":{
+                  "Engine":"Postgres",
+                  "AllocatedStorage":"100",
+                  "EngineVersion":"10.6",
+                  "DBInstanceClass":"db.t2.medium",
+                  "MultiAZ":false,
+                  "DBInstanceIdentifier":"csye6225-spring2019",
+                  "MasterUsername":"csye6225master",
+                  "MasterUserPassword":"csye6225password",
+                  "PubliclyAccessible":true,
+                  "DBName":"csye6225",
+                  "VPCSecurityGroups":[
+                     {
+                        "Ref":"SecurityGroupRDS"
+                     }
+                  ],
+                  "DBSubnetGroupName":{
+                     "Ref":"DBSubnetGroup"
+                  }
+               },
+               "DeletionPolicy":"Delete"
+            },
+            "DynamoDBTable":{
+               "Type":"AWS::DynamoDB::Table",
+               "Properties":{
+                  "AttributeDefinitions":[
+                     {
+                        "AttributeName":"id",
+                        "AttributeType":"S"
+                     }
+                  ],
+                  "KeySchema":[
+                     {
+                        "AttributeName":"id",
+                        "KeyType":"HASH"
+                     }
+                  ],
+                  "ProvisionedThroughput":{
+                     "ReadCapacityUnits":"5",
+                     "WriteCapacityUnits":"5"
+                  },
+                  "TableName":"csye6225"
+               }
+            },
+
       "NewVolume":{
          "Type":"AWS::EC2::Volume",
          "Properties":{
@@ -151,52 +231,6 @@
                   "Fn::ImportValue":"PublicSubnet3"
                }
             ]
-         }
-      },
-      "RdsInstance":{
-         "Type":"AWS::RDS::DBInstance",
-         "Properties":{
-            "Engine":"Postgres",
-            "AllocatedStorage":"100",
-            "EngineVersion":"10.6",
-            "DBInstanceClass":"db.t2.medium",
-            "MultiAZ":false,
-            "DBInstanceIdentifier":"csye6225-spring2019",
-            "MasterUsername":"csye6225master",
-            "MasterUserPassword":"csye6225password",
-            "PubliclyAccessible":true,
-            "DBName":"csye6225",
-            "VPCSecurityGroups":[
-               {
-                  "Ref":"SecurityGroupRDS"
-               }
-            ],
-            "DBSubnetGroupName":{
-               "Ref":"DBSubnetGroup"
-            }
-         },
-         "DeletionPolicy":"Delete"
-      },
-      "DynamoDBTable":{
-         "Type":"AWS::DynamoDB::Table",
-         "Properties":{
-            "AttributeDefinitions":[
-               {
-                  "AttributeName":"id",
-                  "AttributeType":"S"
-               }
-            ],
-            "KeySchema":[
-               {
-                  "AttributeName":"id",
-                  "KeyType":"HASH"
-               }
-            ],
-            "ProvisionedThroughput":{
-               "ReadCapacityUnits":"5",
-               "WriteCapacityUnits":"5"
-            },
-            "TableName":"csye6225"
          }
       },
       "CodeDeployEC2S3":{
@@ -234,6 +268,14 @@
             ]
          }
       },
+      "EC2InstanceProfile":{
+            "Type" : "AWS::IAM::InstanceProfile",
+            "Properties" :{
+                "Path": "/",
+                "Roles" : [{"Ref":"CodeDeployEC2ServiceRole"}
+                ],
+            }
+        },
       "CodeDeployEC2ServiceRole":{
          "Type":"AWS::IAM::Role",
          "Properties":{
@@ -307,18 +349,14 @@
             "DeploymentConfigName":"CodeDeployDefault.AllAtOnce",
             "Ec2TagFilters":[
                {
-                  "Key":{
-                     "Ref":"EC2TagKeyName"
-                  },
-                  "Value":{
-                     "Ref":"EC2TagKeyValue"
-                  },
+                  "Key":"Name",
+                  "Value":"EC2Webapplication",
                   "Type":"KEY_AND_VALUE"
                }
             ],
-            "autoRollbackConfiguration":{
-               "enabled":true,
-               "events":[
+            "AutoRollbackConfiguration":{
+               "Enabled":"true",
+               "Events":[
                   "DEPLOYMENT_FAILURE"
                ]
             },
