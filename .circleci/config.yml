@@ -10,7 +10,9 @@ jobs:
       - checkout
       - run:
           name: Install packages
-          command: sudo apt-get update && sudo apt-get install wget zip unzip -y
+          command: |
+            sudo apt-get update && sudo apt-get install wget zip unzip python-pip python-dev build-essential -y
+            python --version
       - run:
           name: Install awscli
           command: sudo pip install awscli
@@ -66,4 +68,10 @@ jobs:
           name: Make CodeDeploy API call
           command: |
             echo "Calling CodeDeploy Agent to pick the artifact and deploy on EC2 instance"
-            echo "Work in Progress"
+            echo "Calling CodeDeploy Agent to pick the artifact and deploy on EC2 instance"
+            pwd
+            echo "Listing current directory content"
+            ls -al
+            aws deploy create-deployment --application-name "csye6225-webapp" --deployment-group-name "csye6225-webapp-deployment" --s3-location bucket=${s3bucket},bundleType=zip,key=cloud-ninja-webapp-${CIRCLE_BUILD_NUM}.zip
+            echo "Listing current directory content"
+            ls -al
