@@ -13,8 +13,7 @@ jobs:
           command: |
             sudo apt-get update && sudo apt-get install wget zip unzip python-pip python-dev build-essential -y
             python --version
-            pip --version
-            pip3 --version
+            pip --versions
       - run:
           name: Install awscli
           command: sudo pip install awscli
