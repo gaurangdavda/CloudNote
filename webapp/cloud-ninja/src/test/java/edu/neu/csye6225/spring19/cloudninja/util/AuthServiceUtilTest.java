@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import edu.neu.csye6225.spring19.cloudninja.exception.ValidationException;
 
-public class LoginServiceUtilTest {
+public class AuthServiceUtilTest {
 //    @Autowired
 	private AuthServiceUtil authServiceUtil = new AuthServiceUtil();
 
