@@ -42,10 +42,12 @@ jobs:
             cp ../*.yml .
             echo "Copying the jar file from ../webapp/cloud-ninja/target/cloud-ninja-SNAPSHOT.jar to the codedeploy_artifact"
             cp ../webapp/cloud-ninja/target/cloud-ninja-SNAPSHOT.jar .
+            echo "Copying the properties from /webapp/cloud-ninja/src/main/resources to the codedeploy_artifact"
+            cp ../webapp/cloud-ninja/src/main/resources/*.properties .
             echo "Zipping all files in the codedeploy_artifact directory"
             zip -r cloud-ninja-webapp-${CIRCLE_BUILD_NUM}.zip .
             echo "Removing the files except for the zip file from the codedeploy_artifact directory"
-            rm *.yml *.sh *.jar
+            rm *.yml *.sh *.jar *.properties
             ls -al
             pwd
             echo "Changing directory to root"
