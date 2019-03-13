@@ -1,7 +1,7 @@
 [
   {
     "ParameterKey": "STACKNAME",
-    "ParameterValue": "main-app111",
+    "ParameterValue": "REPLACE_STACK_NAME",
     "UsePreviousValue": true
   },
   {
