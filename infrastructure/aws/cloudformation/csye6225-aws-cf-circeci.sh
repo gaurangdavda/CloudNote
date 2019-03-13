@@ -48,7 +48,7 @@ echo "Selected bucket : $s3BucketName"
 
 ##Creating Stack
 #echo "Creating Cloud Stack $1"
-response=$(aws cloudformation create-stack --stack-name "$1" --template-body file://csye6225-cf-circleci.json --capabilities CAPABILITY_IAM --parameters  ParameterKey="BUCKETNAME",ParameterValue=$s3BucketName ParameterKey="APPNAME",ParameterValue="csye6225webapp")
+response=$(aws cloudformation create-stack --stack-name "$1" --template-body file://csye6225-cf-circleci.json --capabilities CAPABILITY_IAM --parameters  ParameterKey="BUCKETNAME",ParameterValue=$s3BucketName ParameterKey="APPNAME",ParameterValue="csye6225-webapp")
 
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 echo "Waiting for Stack $1 to be created"
