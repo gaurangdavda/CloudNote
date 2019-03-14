@@ -35,7 +35,7 @@ public class AmazonClient {
 	@PostConstruct
 	private void initializeAmazon() {
 
-		this.s3client = AmazonS3ClientBuilder.standard().withCredentials(new InstanceProfileCredentialsProvider()).build();
+		this.s3client = AmazonS3ClientBuilder.standard().withCredentials(new InstanceProfileCredentialsProvider(false)).build();
 //		this.s3client = AmazonS3ClientBuilder.defaultClient();
 		// this.s3client =
 		// AmazonS3ClientBuilder.standard().withRegion(this.clientRegion).build();
