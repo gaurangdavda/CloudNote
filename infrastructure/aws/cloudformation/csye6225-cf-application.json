@@ -124,6 +124,7 @@
               "\n",
               [
                 "#!/bin/bash -xe",
+                "echo export SPRING_PROFILE=dev>>/etc/profile.d/envvariable.sh",
                 "echo export DB_USERNAME=csye6225master>>/etc/profile.d/envvariable.sh",
                 "echo export DB_PASSWORD=csye6225password>>/etc/profile.d/envvariable.sh",
                 {
