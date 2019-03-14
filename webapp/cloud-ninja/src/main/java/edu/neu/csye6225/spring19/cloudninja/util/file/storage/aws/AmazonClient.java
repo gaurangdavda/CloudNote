@@ -12,11 +12,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.auth.InstanceProfileCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
-import com.amazonaws.services.s3.model.PutObjectRequest;
 
 import edu.neu.csye6225.spring19.cloudninja.exception.FileStorageException;
 
@@ -31,22 +29,14 @@ public class AmazonClient {
 	@Value("${amazonProperties.bucketName}")
 	private String bucketName;
 
-//@Value("${amazonProperties.accessKey}")
-//private String accessKey;
-//
-//@Value("${amazonProperties.secretKey}")
-//private String secretKey;
-
 	@Value("${amazonProperties.clientRegion}")
 	private String clientRegion;
 
 	@PostConstruct
 	private void initializeAmazon() {
-//		AWSCredentials credentials = new BasicAWSCredentials(this.accessKey,
-//		this.secretKey);
-//BasicAWSCredentials creds = new BasicAWSCredentials(this.accessKey, this.secretKey);
-		this.s3client = AmazonS3ClientBuilder.standard().withCredentials(new ProfileCredentialsProvider()).build();
 
+		this.s3client = AmazonS3ClientBuilder.standard().withCredentials(new InstanceProfileCredentialsProvider(false)).build();
+//		this.s3client = AmazonS3ClientBuilder.defaultClient();
 		// this.s3client =
 		// AmazonS3ClientBuilder.standard().withRegion(this.clientRegion).build();
 
@@ -65,7 +55,7 @@ public class AmazonClient {
 	}
 
 	private void uploadFileTos3bucket(String fileName, File file) {
-		s3client.putObject(new PutObjectRequest(bucketName, fileName, file));
+		s3client.putObject(bucketName, fileName, file);
 	}
 
 	public String uploadFile(MultipartFile multipartFile) throws FileStorageException {
@@ -79,14 +69,14 @@ public class AmazonClient {
 			String fileName = generateFileName(multipartFile);
 			fileUrl = endpointUrl + "/" + bucketName + "/" + fileName;
 			uploadFileTos3bucket(fileName, file);
-			
+
 		} catch (Exception e) {
 			throw new FileStorageException("File not stored in S3 bucket. Please try again");
 		} finally {
-			if(file != null) {
+			if (file != null) {
 				file.delete();
 			}
-		
+
 		}
 
 		return fileUrl;
@@ -95,7 +85,7 @@ public class AmazonClient {
 	public void deleteFileFromS3Bucket(String fileUrl) throws FileStorageException {
 		try {
 			String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
-			s3client.deleteObject(new DeleteObjectRequest(bucketName, fileName));
+			s3client.deleteObject(bucketName, fileName);
 		} catch (Exception e) {
 			throw new FileStorageException("File not stored in S3 bucket. Please try again");
 		}
