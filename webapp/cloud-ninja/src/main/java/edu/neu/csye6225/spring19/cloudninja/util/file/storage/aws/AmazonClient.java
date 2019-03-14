@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.amazonaws.auth.InstanceProfileCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 
@@ -34,8 +35,8 @@ public class AmazonClient {
 	@PostConstruct
 	private void initializeAmazon() {
 
-//		this.s3client = AmazonS3ClientBuilder.standard().withCredentials(new ProfileCredentialsProvider()).build();
-		this.s3client = AmazonS3ClientBuilder.defaultClient();
+		this.s3client = AmazonS3ClientBuilder.standard().withCredentials(new InstanceProfileCredentialsProvider()).build();
+//		this.s3client = AmazonS3ClientBuilder.defaultClient();
 		// this.s3client =
 		// AmazonS3ClientBuilder.standard().withRegion(this.clientRegion).build();
 
