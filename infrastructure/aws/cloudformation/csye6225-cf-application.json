@@ -20,6 +20,10 @@
     "DEPGROUPNAME": {
       "Description": "Code Deploy Group Name",
       "Type": "String"
+    },
+    "BUCKETNAMEFORWEBAPP": {
+      "Description": "Bucket name for storing attachments",
+      "Type": "String"
     }
   },
   "Resources": {
@@ -122,25 +126,37 @@
                 "#!/bin/bash -xe",
                 "echo export DB_USERNAME=csye6225master>>/etc/profile.d/envvariable.sh",
                 "echo export DB_PASSWORD=csye6225password>>/etc/profile.d/envvariable.sh",
-                {
+		{
                   "Fn::Join": [
                     "",
                     [
-                      "echo export DB_ENDPOINT=jdbc:postgresql://",
+                      "echo export WEBAPP_BUCKETNAME=",
+                      {
+                        "Ref": "BUCKETNAMEFORWEBAPP"
+                      },
+                      ">>/etc/profile.d/envvariable.sh"
+                    ]
+                  ]
+                },                
+		{
+                  "Fn::Join": [
+                    "",
+                    [
+                      "echo export DB_ENDPOINT=",
                       {
                         "Fn::GetAtt": [
                           "RdsInstance",
                           "Endpoint.Address"
                         ]
                       },
-                      ":5432/csye6225>>/etc/profile.d/envvariable.sh"
+                      ">>/etc/profile.d/envvariable.sh"
                     ]
                   ]
                 },
                 "chmod 0755 /etc/profile.d/envvariable.sh",
                 "source /etc/profile.d/envvariable.sh",
-                "cd ~",
-                "mkdir webapp"
+                "mkdir /home/centos/webapp",
+		"chown centos -R /home/centos/webapp"
               ]
             ]
           }

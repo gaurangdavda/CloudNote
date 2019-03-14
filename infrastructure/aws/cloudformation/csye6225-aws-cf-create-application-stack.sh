@@ -73,10 +73,24 @@ fi
 echo "Selected bucket : $s3BucketName"
 
 
+#Listing the buckets in the AWS account and allowing the user to pick the bucket for saving attachments
+echo "Displaying all buckets in the AWS Account"
+aws s3 ls --human-readable
+echo "Select the S3 bucket to store attachments of notes"
+read s3BucketNameForWebApp
+
+if [ -z s3BucketNameForWebApp ]
+    then
+    echo "Bucket name not provided, exiting code"
+    exit 1
+fi
+
+echo "Selected bucket : $s3BucketNameForWebApp"
+
 
 ##Creating Stack
 #echo "Creating Cloud Stack $1"
-response=$(aws cloudformation create-stack --stack-name "$1" --template-body file://csye6225-cf-application.json --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey="KEYNAME",ParameterValue=$KEY_CHOSEN ParameterKey="AMIID",ParameterValue=$amiId ParameterKey="BUCKETNAME",ParameterValue=$s3BucketName ParameterKey="APPNAME",ParameterValue="csye6225-webapp" ParameterKey="DEPGROUPNAME",ParameterValue="csye6225-webapp-deployment")
+response=$(aws cloudformation create-stack --stack-name "$1" --template-body file://csye6225-cf-application.json --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey="KEYNAME",ParameterValue=$KEY_CHOSEN ParameterKey="AMIID",ParameterValue=$amiId ParameterKey="BUCKETNAME",ParameterValue=$s3BucketName ParameterKey="APPNAME",ParameterValue="csye6225-webapp" ParameterKey="DEPGROUPNAME",ParameterValue="csye6225-webapp-deployment" ParameterKey="BUCKETNAMEFORWEBAPP",ParameterValue=$s3BucketNameForWebApp)
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 echo "Waiting for Stack $1 to be created"
 echo "$response"

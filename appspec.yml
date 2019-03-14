@@ -2,8 +2,8 @@ version: 0.0
 os: linux
 
 files:
-  - source: #source location of deployable
-    destination: #destination location of deployable
+  - source: .
+    destination: /home/centos/webapp/
 
 hooks:
   AfterInstall:
