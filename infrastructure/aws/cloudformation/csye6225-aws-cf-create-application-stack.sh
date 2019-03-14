@@ -38,6 +38,8 @@ done
 echo "Choose 1 Key which you want to use!"
 read KEY_CHOSEN
 
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+
 echo "Displaying AMI!"
 for image in `aws ec2 describe-images --owners self --query 'Images[*].{ID:ImageId}' --output text | cut -f1`
 do
@@ -45,7 +47,7 @@ do
 done
 echo "Enter AMI ID"
 read amiId
-
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 stackList=$(aws cloudformation list-stacks --query 'StackSummaries[?StackStatus != `DELETE_COMPLETE`].{StackName:StackName}')
 #echo "stacklist is $stackList"
 
@@ -57,7 +59,7 @@ then
   echo "Exiting.."
   exit 1
 fi
-
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 #Listing the buckets in the AWS account and allowing the user to pick the codeDeploy bucket
 echo "Displaying all buckets in the AWS Account"
 aws s3 ls --human-readable
@@ -71,7 +73,7 @@ if [ -z s3BucketName ]
 fi
 
 echo "Selected bucket : $s3BucketName"
-
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 
 #Listing the buckets in the AWS account and allowing the user to pick the bucket for saving attachments
 echo "Displaying all buckets in the AWS Account"
@@ -86,7 +88,7 @@ if [ -z s3BucketNameForWebApp ]
 fi
 
 echo "Selected bucket : $s3BucketNameForWebApp"
-
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 
 ##Creating Stack
 #echo "Creating Cloud Stack $1"
