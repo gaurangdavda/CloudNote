@@ -3,7 +3,7 @@ jobs:
   build:
     branches:
       only:
-        - assignment-5 #Only building for master branch pushes
+        - master #Only building for master branch pushes
     docker:
       - image: circleci/openjdk:8-jdk
     steps:
