@@ -126,7 +126,7 @@
                 "#!/bin/bash -xe",
                 "echo export DB_USERNAME=csye6225master>>/etc/profile.d/envvariable.sh",
                 "echo export DB_PASSWORD=csye6225password>>/etc/profile.d/envvariable.sh",
-		{
+                {
                   "Fn::Join": [
                     "",
                     [
@@ -137,8 +137,8 @@
                       ">>/etc/profile.d/envvariable.sh"
                     ]
                   ]
-                },                
-		{
+                },
+                {
                   "Fn::Join": [
                     "",
                     [
@@ -156,7 +156,8 @@
                 "chmod 0755 /etc/profile.d/envvariable.sh",
                 "source /etc/profile.d/envvariable.sh",
                 "mkdir /home/centos/webapp",
-		"chown centos -R /home/centos/webapp"
+                "chown centos:centos -R /home/centos/webapp/*",
+                "iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080"
               ]
             ]
           }
