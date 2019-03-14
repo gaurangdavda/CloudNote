@@ -8,5 +8,5 @@ files:
 hooks:
   AfterInstall:
     - location: ./afterInstall.sh
-      timeout: 300
+      timeout: 120
       runas: centos

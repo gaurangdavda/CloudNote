@@ -6,7 +6,9 @@ sudo chown -R centos:centos /home/centos/webapp/*
 sudo chmod +x cloud-ninja-SNAPSHOT.jar
 kill -9 $(ps -ef|grep cloud-ninja | grep -v grep | awk '{print $2}')
 source /etc/profile.d/envvariable.sh
-touch app-run-out.log
-touch app-run-error.log
+
+rm -rf ./logs
+
+mkdir logs
 nohup java -Dspring.profiles.active=dev -jar cloud-ninja-SNAPSHOT.jar > /dev/null 2>&1
 echo "Leaving after install hook"
