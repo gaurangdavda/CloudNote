@@ -1,6 +1,6 @@
 package edu.neu.csye6225.spring19.cloudninja.service.impl;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class LoginServiceImplTest {
 
