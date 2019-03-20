@@ -24,6 +24,10 @@ To run : ./csye6225-aws-cf-create-application-stack.sh "yourstackname"
 
 To run : ./csye6225-aws-cf-terminate-application-stack.sh "yourstackname"
 
+5. csye6225-aws-cf-circeci.sh 
+
+The scripts takes csye6225-cf-circleci.json and creates the policies and roles which are being attached circle ci user, a user with that policy can get user information from the AWS Management Console, the AWS CLI, or the AWS API.
+
 Steps to connect to rds:
 
 psql --host="your rds endpoint here" --port=5432 --username=csye6225master --password="database user password" --dbname=csye6225
