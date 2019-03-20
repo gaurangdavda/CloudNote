@@ -10,4 +10,5 @@ nohup java -jar cloud-ninja-SNAPSHOT.jar > /dev/null 2> /dev/null < /dev/null &
 cd /opt/aws/amazon-cloudwatch-agent/etc
 sudo cp /home/centos/webapp/amazon-cloudwatch-agent-schema.json amazon-cloudwatch-agent-schema.json
 sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent-schema.json -s
+#sudo systemctl restart amazon-cloudwatch-agent.service
 echo "Leaving after install hook"
