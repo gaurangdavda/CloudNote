@@ -46,7 +46,7 @@ public class MethodProfiler {
 		return output;
 	}
 
-	
+
 	@Before("restServiceMethods()")
 	public void countEndpointCall(JoinPoint joinPoint) {
 		System.out.println(joinPoint.getSignature().getName());
