@@ -51,7 +51,7 @@ public class MethodProfiler {
 		stopwatch.stop();
 		logger.log(Level.INFO, "Method Exited: " + pjp.getSignature().getName());
 		// send the recorded time to statsd
-		String key = String.format("%s.%s", pjp.getSignature().getDeclaringTypeName(), pjp.getSignature().getName());
+		String key = String.format("%s.%s", pjp.getSignature().getName(), pjp.getSignature().getName());
 		statsDClient.recordExecutionTime(key, stopwatch.elapsed(TimeUnit.MILLISECONDS));
 		// System.out.println(stopwatch.elapsed(TimeUnit.MILLISECONDS));
 		// return the recorded result
