@@ -2,7 +2,7 @@
 <Configuration status="WARN" monitorInterval="30">
 	<Properties>
 		<Property name="LOG_PATTERN">
-			%d{yyyy/MM/dd HH:mm:ss,SSS} [%-6p] %c{1} – %m%n
+			 %d{yyyy/MM/dd HH:mm:ss,SSS} [%-6p] – %m%n
 		</Property>
 	</Properties>
 	<Appenders>
@@ -25,13 +25,12 @@
 		</RollingFile>
 	</Appenders>
 	<Loggers>
-		<Logger name="edu.neu.csye6225" level="error" additivity="false">
+		<Logger name="edu.neu.csye6225" level="info" additivity="false">
 			<AppenderRef ref="ConsoleAppender" />
 			<AppenderRef ref="FileAppender" />
 		</Logger>
 
 		<Root level="info">
-			<!-- <AppenderRef ref="ConsoleAppender" /> -->
 			<AppenderRef ref="FileAppender" />
 		</Root>
 	</Loggers>
