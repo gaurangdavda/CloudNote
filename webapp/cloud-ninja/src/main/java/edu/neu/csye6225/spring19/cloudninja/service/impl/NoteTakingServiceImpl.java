@@ -73,7 +73,7 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 			Note savedNote = noteTakingRepository.save(note);
 			return savedNote;
 		} catch (Exception e) {
-			logger.log(Level.ERROR, commonUtil.stackTraceString(e));
+			logger.error(commonUtil.stackTraceString(e));
 			throw e;
 		}
 	}
@@ -97,7 +97,7 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 						"Note with ID: " + noteId.toString() + " is not one of your notes");
 			}
 		} catch (Exception e) {
-			logger.log(Level.ERROR, commonUtil.stackTraceString(e));
+			logger.error(commonUtil.stackTraceString(e));
 			throw e;
 		}
 	}
@@ -113,7 +113,7 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 			fetchedNote.setTitle(note.getTitle());
 			noteTakingRepository.save(fetchedNote);
 		} catch (Exception e) {
-			logger.log(Level.ERROR, commonUtil.stackTraceString(e));
+			logger.error(commonUtil.stackTraceString(e));
 			throw e;
 		}
 	}
@@ -133,7 +133,7 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 			}
 			noteTakingRepository.delete(fetchedNote);
 		} catch (Exception e) {
-			logger.log(Level.ERROR, commonUtil.stackTraceString(e));
+			logger.error(commonUtil.stackTraceString(e));
 			throw e;
 		}
 	}
@@ -146,7 +146,7 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 			fetchedNote = getNote(auth, noteId);
 			return fetchedNote.getAttachments();
 		} catch (Exception e) {
-			logger.log(Level.ERROR, commonUtil.stackTraceString(e));
+			logger.error(commonUtil.stackTraceString(e));
 			throw e;
 		}
 	}
@@ -162,7 +162,7 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 			attachment.setFileName(commonUtil.getFileNameFromPath(fileLocation));
 			return attachmentReposiory.save(attachment);
 		} catch (Exception e) {
-			logger.log(Level.ERROR, commonUtil.stackTraceString(e));
+			logger.error(commonUtil.stackTraceString(e));
 			throw e;
 		}
 	}
@@ -182,7 +182,7 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 			}
 			return savedAttachments;
 		} catch (Exception e) {
-			logger.log(Level.ERROR, commonUtil.stackTraceString(e));
+			logger.error(commonUtil.stackTraceString(e));
 			throw e;
 		}
 	}
@@ -199,7 +199,7 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 			attachment.setFileName(commonUtil.getFileNameFromPath(fileLocation));
 			attachmentReposiory.save(attachment);
 		} catch (Exception e) {
-			logger.log(Level.ERROR, commonUtil.stackTraceString(e));
+			logger.error(commonUtil.stackTraceString(e));
 			throw e;
 		}
 	}
@@ -214,7 +214,7 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 			fileStorageUtil.deleteFile(attachment.getUrl());
 			attachmentReposiory.delete(attachment);
 		} catch (Exception e) {
-			logger.log(Level.ERROR, commonUtil.stackTraceString(e));
+			logger.error(commonUtil.stackTraceString(e));
 			throw e;
 		}
 	}

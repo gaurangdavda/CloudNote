@@ -54,7 +54,7 @@ public class EntryController {
 	FileStorageProperties fileStorageProperties;
 
 	@RequestMapping(method = RequestMethod.GET, value = LOGIN, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<TimeStampWrapper> login(
+	public ResponseEntity<TimeStampWrapper> getTimeStamp(
 			@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth)
 			throws ValidationException, UnAuthorizedLoginException {
 		return new ResponseEntity<TimeStampWrapper>(loginService.getTimestamp(auth), HttpStatus.OK);
