@@ -14,11 +14,6 @@ import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstant
 import java.util.List;
 import java.util.UUID;
 
-import edu.neu.csye6225.spring19.cloudninja.service.impl.NoteTakingServiceImpl;
-import edu.neu.csye6225.spring19.cloudninja.util.CommonUtil;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -58,7 +53,6 @@ public class EntryController {
 	@Autowired
 	FileStorageProperties fileStorageProperties;
 
-
 	@RequestMapping(method = RequestMethod.GET, value = LOGIN, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<TimeStampWrapper> getTimeStamp(
 			@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth)
@@ -76,20 +70,20 @@ public class EntryController {
 	public ResponseEntity<List<Note>> getAllNotes(
 			@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth)
 			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
-			return new ResponseEntity<List<Note>>(noteTakingService.getAllNotes(auth), HttpStatus.OK);
+		return new ResponseEntity<List<Note>>(noteTakingService.getAllNotes(auth), HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = NOTE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Note> createNote(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
 			@RequestBody Note note) throws ValidationException, UnAuthorizedLoginException {
-			return new ResponseEntity<Note>(noteTakingService.createNote(auth, note), HttpStatus.CREATED);
+		return new ResponseEntity<Note>(noteTakingService.createNote(auth, note), HttpStatus.CREATED);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = NOTE_ID, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Note> getNote(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
 			@PathVariable(value = "noteId") UUID noteId)
 			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
-			return new ResponseEntity<Note>(noteTakingService.getNote(auth, noteId), HttpStatus.OK);
+		return new ResponseEntity<Note>(noteTakingService.getNote(auth, noteId), HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = NOTE_ID, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -97,7 +91,7 @@ public class EntryController {
 	public void updateNote(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
 			@PathVariable(value = "noteId") UUID noteId, @RequestBody Note note)
 			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
-			noteTakingService.updateNote(auth, noteId, note);
+		noteTakingService.updateNote(auth, noteId, note);
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = NOTE_ID, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -105,7 +99,7 @@ public class EntryController {
 	public void deleteNote(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
 			@PathVariable(value = "noteId") UUID noteId)
 			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException, FileStorageException {
-			noteTakingService.deleteNote(auth, noteId);
+		noteTakingService.deleteNote(auth, noteId);
 	}
 
 	@RequestMapping(value = NOTE_ID_ATTACHMENT, method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -113,7 +107,7 @@ public class EntryController {
 	public Attachment attachFile(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
 			@PathVariable(value = "noteId") UUID noteId, @RequestParam(FILE) MultipartFile file)
 			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException, FileStorageException {
-			return noteTakingService.saveAttachment(auth, noteId, file);
+		return noteTakingService.saveAttachment(auth, noteId, file);
 	}
 
 	@RequestMapping(value = NOTE_ID_ATTACHMENTS, method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -122,7 +116,7 @@ public class EntryController {
 			@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
 			@PathVariable(value = "noteId") UUID noteId, @RequestParam(FILE) MultipartFile[] files)
 			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException, FileStorageException {
-			return noteTakingService.saveAttachments(auth, noteId, files);
+		return noteTakingService.saveAttachments(auth, noteId, files);
 	}
 
 	@RequestMapping(value = NOTE_ID_ATTACHMENT, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -130,7 +124,7 @@ public class EntryController {
 	public List<Attachment> getAllAttachments(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
 			@PathVariable(value = "noteId") UUID noteId)
 			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException {
-			return noteTakingService.getAttachments(auth, noteId);
+		return noteTakingService.getAttachments(auth, noteId);
 	}
 
 	@RequestMapping(value = NOTE_ID_ATTACHMENT_ID, method = RequestMethod.PUT, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -139,7 +133,7 @@ public class EntryController {
 			@PathVariable(value = "noteId") UUID noteId, @PathVariable(value = "idAttachments") UUID attachmentId,
 			@RequestParam(FILE) MultipartFile file)
 			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException, FileStorageException {
-			noteTakingService.updateAttachment(auth, noteId, attachmentId, file);
+		noteTakingService.updateAttachment(auth, noteId, attachmentId, file);
 	}
 
 	@RequestMapping(value = NOTE_ID_ATTACHMENT_ID, method = RequestMethod.DELETE)
@@ -147,6 +141,6 @@ public class EntryController {
 	public void deleteAttachment(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth,
 			@PathVariable(value = "noteId") UUID noteId, @PathVariable(value = "idAttachments") UUID attachmentId)
 			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException, FileStorageException {
-			noteTakingService.deleteAttachment(auth, noteId, attachmentId);
+		noteTakingService.deleteAttachment(auth, noteId, attachmentId);
 	}
 }
