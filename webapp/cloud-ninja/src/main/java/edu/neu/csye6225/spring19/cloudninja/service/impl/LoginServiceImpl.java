@@ -51,10 +51,10 @@ public class LoginServiceImpl implements LoginService {
 
 			timeStampWrapper.setTimeStamp(
 					new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new java.util.Date(System.currentTimeMillis())));
-			logger.log(Level.INFO, "Login successful.");
+			logger.info("Login successful.");
 			return timeStampWrapper;
 		} catch (Exception e) {
-			logger.log(Level.ERROR, commonUtil.stackTraceString(e));
+			logger.error(commonUtil.stackTraceString(e));
 			throw e;
 		}
 	}
@@ -78,7 +78,7 @@ public class LoginServiceImpl implements LoginService {
 			responseBody.setResponseMessage("User created successfully.");
 			return responseBody;
 		} catch (Exception e) {
-			logger.log(Level.ERROR, commonUtil.stackTraceString(e));
+			logger.error(commonUtil.stackTraceString(e));
 			throw e;
 		}
 	}
