@@ -32,7 +32,7 @@ public class MethodProfiler {
 	}
 
 	@Around("restServiceMethods()")
-	public Object profile2(ProceedingJoinPoint pjp) throws Throwable {
+	public Object loggerProfile(ProceedingJoinPoint pjp) throws Throwable {
 
 		// execute the method, record the result and measure the time
 		logger.log(Level.INFO, "Method Entered: " + pjp.getSignature().getName());
