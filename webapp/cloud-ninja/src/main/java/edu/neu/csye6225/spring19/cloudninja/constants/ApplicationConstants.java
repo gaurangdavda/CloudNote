@@ -28,8 +28,8 @@ public class ApplicationConstants {
 	// Endpoints for this service
 	// =========================================================================================================================
 	public static final String LOGIN = "/";
-	public static final String NOTE_ID = "/notegaurang/{noteId}";
-	public static final String NOTE = "/notegaurang";
+	public static final String NOTE_ID = "/note/{noteId}";
+	public static final String NOTE = "/note";
 	public static final String REGISTER = "/user/register";
 	public static final String HTTP_OK = "User Created Successfully";
 	public static final String AUTHORIZATION = "Authorization";
