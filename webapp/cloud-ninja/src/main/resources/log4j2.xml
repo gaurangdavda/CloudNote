@@ -2,7 +2,7 @@
 <Configuration status="WARN" monitorInterval="30">
 	<Properties>
 		<Property name="LOG_PATTERN">
-			 [%-6p] – %m%n
+			 %d{yyyy/MM/dd HH:mm:ss,SSS} [%-6p] – %m%n
 		</Property>
 	</Properties>
 	<Appenders>
