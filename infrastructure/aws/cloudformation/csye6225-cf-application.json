@@ -288,7 +288,7 @@
                 "s3:Delete*",
                 "s3:Put*"
               ],
-              "Resource":{
+              "Resource": {
                 "Fn::Join": [
                   "",
                   [
@@ -313,8 +313,8 @@
     "CodeDeployEC2ServiceRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
-	"ManagedPolicyArns": [
-	  "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
         ],
         "AssumeRolePolicyDocument": {
           "Version": "2012-10-17",
@@ -410,6 +410,33 @@
         },
         "ServiceRoleArn": {
           "Fn::Sub": "arn:aws:iam::${AWS::AccountId}:role/CodeDeployServiceRole"
+        }
+      }
+    },
+    "PasswordResetSNSTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "DisplayName": {
+          "Fn::Join": [
+            "",
+            [
+              "password_reset_",
+              {
+                "Ref": "AWS::StackName"
+              }
+            ]
+          ]
+        },
+        "TopicName": {
+          "Fn::Join": [
+            "",
+            [
+              "password_reset_",
+              {
+                "Ref": "AWS::StackName"
+              }
+            ]
+          ]
         }
       }
     }
