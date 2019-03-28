@@ -363,10 +363,6 @@
     "LambdaCLIRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
-        "ManagedPolicyArns": [
-          "arn:aws:iam::aws:policy/service-role/AmazonSESFullAccess",
-          "arn:aws:iam::aws:policy/service-role/AmazonDynamoDBFullAccess"
-        ],
         "AssumeRolePolicyDocument": {
           "Version": "2012-10-17",
           "Statement": [

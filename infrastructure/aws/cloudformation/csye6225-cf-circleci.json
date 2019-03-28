@@ -216,7 +216,22 @@
                         "lambda:*",
                         "iam:PassRole"
                      ],
-                     "Resource":"*"
+                     "Resource":{
+                        "Fn::Join":[
+                              ":",
+                              [
+                                 "arn:aws:lambda",
+                                 {
+                                    "Ref":"AWS::Region"
+                                 },
+                                 {
+                                    "Ref":"AWS::AccountId"
+                                 },
+                                 "function",
+                                 "*"
+                              ]
+                           ]
+                     }
                   }
                ]
             },
