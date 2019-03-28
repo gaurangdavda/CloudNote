@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 
 @Service
-//@Profile("dev")
+@Profile("dev")
 public class AWSSNSClient {
 
     private AmazonSNS snsClient;
@@ -24,8 +24,6 @@ public class AWSSNSClient {
 
     @Value("${amazonProperties.clientRegion}")
     private String clientRegion;
-
-    private static final Logger logger = LogManager.getLogger(AWSSNSClient.class);
 
     @PostConstruct
     private void initializeAmazon() {

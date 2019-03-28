@@ -93,7 +93,7 @@
     },
     "EC2Instance": {
       "Type": "AWS::EC2::Instance",
-      "DependsOn": "RdsInstance",
+      "DependsOn": ["RdsInstance", "PasswordResetSNSTopic"],
       "Properties": {
         "DisableApiTermination": "false",
         "ImageId": {
@@ -154,6 +154,18 @@
                     ]
                   ]
                 },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "echo export TOPIC_ARN=",
+                      {
+                        "Ref": "PasswordResetSNSTopic"
+                      },
+                      ">>/etc/profile.d/envvariable.sh"
+                    ]
+                  ]
+                }
                 "chmod 0755 /etc/profile.d/envvariable.sh",
                 "source /etc/profile.d/envvariable.sh",
                 "mkdir /home/centos/webapp",
