@@ -42,7 +42,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
 
         //Check if email exists in database
         List<UserCredentials> credentialList = userRepository.findByEmailId(passwordReset.getEmailId());
-        if (credentialList == null && credentialList.size() != 1)
+        if (credentialList == null || credentialList.size() != 1)
             throw new ValidationException("Email ID does not exist in the system");
 
 
