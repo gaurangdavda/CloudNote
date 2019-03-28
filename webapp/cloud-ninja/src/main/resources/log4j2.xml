@@ -26,7 +26,6 @@
 	</Appenders>
 	<Loggers>
 		<Logger name="edu.neu.csye6225" level="info" additivity="false">
-			<AppenderRef ref="ConsoleAppender" />
 			<AppenderRef ref="FileAppender" />
 		</Logger>
 

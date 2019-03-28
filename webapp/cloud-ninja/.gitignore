@@ -31,3 +31,4 @@ mvnw.cmd
 webapp/.idea/
 uploads/
 logs/
+bin/
