@@ -223,13 +223,13 @@
       "Properties": {
         "AttributeDefinitions": [
           {
-            "AttributeName": "id",
+            "AttributeName": "Email",
             "AttributeType": "S"
           }
         ],
         "KeySchema": [
           {
-            "AttributeName": "id",
+            "AttributeName": "Email",
             "KeyType": "HASH"
           }
         ],
@@ -237,7 +237,11 @@
           "ReadCapacityUnits": "5",
           "WriteCapacityUnits": "5"
         },
-        "TableName": "csye6225"
+        "TableName": "csye6225",
+        "TimeToLiveSpecification": {
+          "AttributeName": "ExpirationTime",
+          "Enabled": true
+        }
       }
     },
     "NewVolume": {
@@ -332,15 +336,15 @@
         "PolicyDocument": {
           "Version": "2012-10-17",
           "Statement": [
-              {
-                  "Effect": "Allow",
-                  "Action": [
-                      "sns:Publish"
-                  ],
-                  "Resource": {
-                    "Ref" : "PasswordResetSNSTopic"
-                  }
+            {
+              "Effect": "Allow",
+              "Action": [
+                "sns:Publish"
+              ],
+              "Resource": {
+                "Ref": "PasswordResetSNSTopic"
               }
+            }
           ]
         },
         "Roles": [
@@ -489,6 +493,15 @@
       },
       "Export": {
         "Name": "PasswordResetTopicARN"
+      }
+    },
+    "DynamoDBTableARN": {
+      "Description": "DynamoDB Table ARN",
+      "Value": {
+        "Fn::GetAtt": [
+          "DynamoDBTable",
+          "Arn"
+        ]
       }
     }
   }
