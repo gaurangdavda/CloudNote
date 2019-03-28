@@ -34,10 +34,10 @@ public class MethodProfiler {
 	public Object loggerProfile(ProceedingJoinPoint pjp) throws Throwable {
 
 		// execute the method, record the result and measure the time
-		logger.log(Level.INFO, "Method Entered: " + pjp.getSignature().getName());
+		logger.info("Method Entered: " + pjp.getSignature().getName());
 		Object output = pjp.proceed();
 
-		logger.log(Level.INFO, "Method Exited: " + pjp.getSignature().getName());
+		logger.info("Method Exited: " + pjp.getSignature().getName());
 		// return the recorded result
 		return output;
 	}
@@ -45,15 +45,11 @@ public class MethodProfiler {
 	@Around("restServiceMethods()")
 	public Object profile(ProceedingJoinPoint pjp) throws Throwable {
 		// execute the method, record the result and measure the time
-		logger.log(Level.INFO, "Method Entered: " + pjp.getSignature().getName());
 		Stopwatch stopwatch = Stopwatch.createStarted();
 		Object output = pjp.proceed();
 		stopwatch.stop();
-		logger.log(Level.INFO, "Method Exited: " + pjp.getSignature().getName());
 		// send the recorded time to statsd
-		//String key = String.format("%s.%s", pjp.getSignature().getName(), pjp.getSignature().getName());
 		statsDClient.recordExecutionTime(pjp.getSignature().getName(), stopwatch.elapsed(TimeUnit.MILLISECONDS));
-		// System.out.println(stopwatch.elapsed(TimeUnit.MILLISECONDS));
 		// return the recorded result
 		return output;
 	}

@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import edu.neu.csye6225.spring19.cloudninja.exception.FileStorageException;
 import edu.neu.csye6225.spring19.cloudninja.util.file.storage.FileStorageUtil;
-import edu.neu.csye6225.spring19.cloudninja.util.file.storage.aws.AmazonClient;
+import edu.neu.csye6225.spring19.cloudninja.aws.AmazonClient;
 
 @Component
 @Scope(value = "singleton")
