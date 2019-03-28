@@ -502,6 +502,9 @@
           "DynamoDBTable",
           "Arn"
         ]
+      },
+      "Export": {
+        "Name": "DynamoDBTableARN"
       }
     }
   }
