@@ -93,7 +93,10 @@
     },
     "EC2Instance": {
       "Type": "AWS::EC2::Instance",
-      "DependsOn": "RdsInstance",
+      "DependsOn": [
+        "RdsInstance",
+        "PasswordResetSNSTopic"
+      ],
       "Properties": {
         "DisableApiTermination": "false",
         "ImageId": {
@@ -154,6 +157,18 @@
                     ]
                   ]
                 },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "echo export TOPIC_ARN=",
+                      {
+                        "Ref": "PasswordResetSNSTopic"
+                      },
+                      ">>/etc/profile.d/envvariable.sh"
+                    ]
+                  ]
+                },
                 "chmod 0755 /etc/profile.d/envvariable.sh",
                 "source /etc/profile.d/envvariable.sh",
                 "mkdir /home/centos/webapp",
@@ -208,13 +223,13 @@
       "Properties": {
         "AttributeDefinitions": [
           {
-            "AttributeName": "id",
+            "AttributeName": "Email",
             "AttributeType": "S"
           }
         ],
         "KeySchema": [
           {
-            "AttributeName": "id",
+            "AttributeName": "Email",
             "KeyType": "HASH"
           }
         ],
@@ -222,7 +237,11 @@
           "ReadCapacityUnits": "5",
           "WriteCapacityUnits": "5"
         },
-        "TableName": "csye6225"
+        "TableName": "csye6225",
+        "TimeToLiveSpecification": {
+          "AttributeName": "ExpirationTime",
+          "Enabled": true
+        }
       }
     },
     "NewVolume": {
@@ -288,7 +307,7 @@
                 "s3:Delete*",
                 "s3:Put*"
               ],
-              "Resource":{
+              "Resource": {
                 "Fn::Join": [
                   "",
                   [
@@ -310,11 +329,36 @@
         ]
       }
     },
+    "SNSTopicSubscribePolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "SNS-Topic-Subscribe",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "sns:Publish"
+              ],
+              "Resource": {
+                "Ref": "PasswordResetSNSTopic"
+              }
+            }
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "CodeDeployEC2ServiceRole"
+          }
+        ]
+      }
+    },
     "CodeDeployEC2ServiceRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
-	"ManagedPolicyArns": [
-	  "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
         ],
         "AssumeRolePolicyDocument": {
           "Version": "2012-10-17",
@@ -411,6 +455,56 @@
         "ServiceRoleArn": {
           "Fn::Sub": "arn:aws:iam::${AWS::AccountId}:role/CodeDeployServiceRole"
         }
+      }
+    },
+    "PasswordResetSNSTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "DisplayName": {
+          "Fn::Join": [
+            "",
+            [
+              "password_reset_",
+              {
+                "Ref": "AWS::StackName"
+              }
+            ]
+          ]
+        },
+        "TopicName": {
+          "Fn::Join": [
+            "",
+            [
+              "password_reset_",
+              {
+                "Ref": "AWS::StackName"
+              }
+            ]
+          ]
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "PasswordResetTopicARN": {
+      "Description": "Topic ARN for Lambda to subscribe",
+      "Value": {
+        "Ref": "PasswordResetSNSTopic"
+      },
+      "Export": {
+        "Name": "PasswordResetTopicARN"
+      }
+    },
+    "DynamoDBTableARN": {
+      "Description": "DynamoDB Table ARN",
+      "Value": {
+        "Fn::GetAtt": [
+          "DynamoDBTable",
+          "Arn"
+        ]
+      },
+      "Export": {
+        "Name": "DynamoDBTableARN"
       }
     }
   }

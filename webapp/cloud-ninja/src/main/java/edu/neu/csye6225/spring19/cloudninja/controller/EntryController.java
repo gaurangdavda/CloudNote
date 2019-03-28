@@ -14,6 +14,9 @@ import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstant
 import java.util.List;
 import java.util.UUID;
 
+import edu.neu.csye6225.spring19.cloudninja.exception.*;
+import edu.neu.csye6225.spring19.cloudninja.model.*;
+import edu.neu.csye6225.spring19.cloudninja.service.PasswordResetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,18 +31,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import edu.neu.csye6225.spring19.cloudninja.exception.FileStorageException;
-import edu.neu.csye6225.spring19.cloudninja.exception.ResourceNotFoundException;
-import edu.neu.csye6225.spring19.cloudninja.exception.UnAuthorizedLoginException;
-import edu.neu.csye6225.spring19.cloudninja.exception.ValidationException;
-import edu.neu.csye6225.spring19.cloudninja.model.Attachment;
-import edu.neu.csye6225.spring19.cloudninja.model.Note;
-import edu.neu.csye6225.spring19.cloudninja.model.ResponseBody;
-import edu.neu.csye6225.spring19.cloudninja.model.TimeStampWrapper;
-import edu.neu.csye6225.spring19.cloudninja.model.UserCredentials;
 import edu.neu.csye6225.spring19.cloudninja.property.FileStorageProperties;
 import edu.neu.csye6225.spring19.cloudninja.service.LoginService;
 import edu.neu.csye6225.spring19.cloudninja.service.NoteTakingService;
+
+import javax.validation.constraints.NotNull;
 
 @RestController
 public class EntryController {
@@ -49,6 +45,9 @@ public class EntryController {
 
 	@Autowired
 	private NoteTakingService noteTakingService;
+
+	@Autowired
+	private PasswordResetService passwordResetService;
 
 	@Autowired
 	FileStorageProperties fileStorageProperties;
@@ -142,5 +141,11 @@ public class EntryController {
 			@PathVariable(value = "noteId") UUID noteId, @PathVariable(value = "idAttachments") UUID attachmentId)
 			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException, FileStorageException {
 		noteTakingService.deleteAttachment(auth, noteId, attachmentId);
+	}
+
+	@RequestMapping(value = "reset", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(HttpStatus.CREATED)
+	public void resestPassword(@RequestBody @NotNull PasswordReset passwordReset) throws ServerException, ValidationException {
+		passwordResetService.resetPassword(passwordReset);
 	}
 }

@@ -20,7 +20,8 @@ To run : ./csye6225-aws-cf-terminate-stack.sh "yourstackname"
 
 To run : ./csye6225-aws-cf-create-application-stack.sh "yourstackname"
 
-4.csye6225-aws-cf-terminate-application-stack.sh The script takes stack name which you want to delete and tears down all the resources attached to the stack provided. The script will tear down a EC2,RDS,Dynamo DB  which will be attached to VPC
+4.csye6225-aws-cf-terminate-application-stack.sh The script takes stack name which you want to delete and tears down all the resources attached to the stack provided. The script will tear down a EC2,RDS,Dynamo DB  which will be attached to VPC.
+Also includes PasswordResetSNSTopic.
 
 To run : ./csye6225-aws-cf-terminate-application-stack.sh "yourstackname"
 
