@@ -1,4 +1,4 @@
-package edu.neu.csye6225.spring19.cloudninja.util.file.storage.aws;
+package edu.neu.csye6225.spring19.cloudninja.aws;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,9 +36,6 @@ public class AmazonClient {
 	private void initializeAmazon() {
 
 		this.s3client = AmazonS3ClientBuilder.standard().withCredentials(new InstanceProfileCredentialsProvider(false)).build();
-//		this.s3client = AmazonS3ClientBuilder.defaultClient();
-		// this.s3client =
-		// AmazonS3ClientBuilder.standard().withRegion(this.clientRegion).build();
 
 	}
 
