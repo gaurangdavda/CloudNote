@@ -25,8 +25,6 @@ public class AWSSNSClient {
     @Value("${amazonProperties.clientRegion}")
     private String clientRegion;
 
-    private static final Logger logger = LogManager.getLogger(AWSSNSClient.class);
-
     @PostConstruct
     private void initializeAmazon() {
         this.snsClient = AmazonSNSClientBuilder.standard().withRegion(clientRegion).withCredentials(DefaultAWSCredentialsProviderChain.getInstance()).build();
