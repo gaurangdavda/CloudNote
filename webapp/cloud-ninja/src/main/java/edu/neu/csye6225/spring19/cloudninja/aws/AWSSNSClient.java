@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 
 @Service
-//@Profile("dev")
+@Profile("dev")
 public class AWSSNSClient {
 
     private AmazonSNS snsClient;
