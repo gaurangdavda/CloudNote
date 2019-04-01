@@ -313,7 +313,6 @@
     "WebServerGroup":{
              "Type":"AWS::AutoScaling::AutoScalingGroup",
              "Properties":{
-               "AvailabilityZones" : { "Fn::GetAZs" : "" },
                 "AutoScalingGroupName":"csye6225ASG",
                 "Cooldown":"60",
                 "DesiredCapacity":"3",
@@ -329,6 +328,14 @@
                       "PropagateAtLaunch":"True"
                    }
                 ],
+                "VPCZoneIdentifier":[
+               {
+                  "Fn::ImportValue":"PublicSubnet2"
+               },
+               {
+                  "Fn::ImportValue":"PublicSubnet3"
+               }
+             ]
              }
     },
     "WebServerScaleUpPolicy": {
