@@ -329,6 +329,80 @@
         ]
       }
     },
+    "WebServerScaleUpPolicy": {
+    "Type": "AWS::AutoScaling::ScalingPolicy",
+    "Properties": {
+      "AdjustmentType": "ChangeInCapacity",
+      "AutoScalingGroupName": {
+        "Ref": "WebServerGroup"
+      },
+      "Cooldown": "60",
+      "ScalingAdjustment": "1"
+    }
+  },
+  "WebServerScaleDownPolicy": {
+    "Type": "AWS::AutoScaling::ScalingPolicy",
+    "Properties": {
+      "AdjustmentType": "ChangeInCapacity",
+      "AutoScalingGroupName": {
+        "Ref": "WebServerGroup"
+      },
+      "Cooldown": "60",
+      "ScalingAdjustment": "-1"
+    }
+  },
+  "CPUAlarmHigh": {
+    "Type": "AWS::CloudWatch::Alarm",
+    "Properties": {
+      "AlarmDescription": "Scale-up if CPU > 90% for 10 minutes",
+      "MetricName": "CPUUtilization",
+      "Namespace": "AWS/EC2",
+      "Statistic": "Average",
+      "Period": "300",
+      "EvaluationPeriods": "2",
+      "Threshold": "90",
+      "AlarmActions": [
+        {
+          "Ref": "WebServerScaleUpPolicy"
+        }
+      ],
+      "Dimensions": [
+        {
+          "Name": "AutoScalingGroupName",
+          "Value": {
+            "Ref": "WebServerGroup"
+          }
+        }
+      ],
+      "ComparisonOperator": "GreaterThanThreshold"
+    }
+  },
+  "CPUAlarmLow": {
+    "Type": "AWS::CloudWatch::Alarm",
+    "Properties": {
+      "AlarmDescription": "Scale-down if CPU < 70% for 10 minutes",
+      "MetricName": "CPUUtilization",
+      "Namespace": "AWS/EC2",
+      "Statistic": "Average",
+      "Period": "300",
+      "EvaluationPeriods": "2",
+      "Threshold": "70",
+      "AlarmActions": [
+        {
+          "Ref": "WebServerScaleDownPolicy"
+        }
+      ],
+      "Dimensions": [
+        {
+          "Name": "AutoScalingGroupName",
+          "Value": {
+            "Ref": "WebServerGroup"
+          }
+        }
+      ],
+      "ComparisonOperator": "LessThanThreshold"
+    }
+  },
     "SNSTopicSubscribePolicy": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
