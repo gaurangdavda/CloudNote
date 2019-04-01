@@ -91,14 +91,13 @@
         ]
       }
     },
-    "EC2Instance": {
-      "Type": "AWS::EC2::Instance",
+    "AutoScalingEC2Instance": {
+      "Type":"AWS::AutoScaling::LaunchConfiguration",
       "DependsOn": [
         "RdsInstance",
         "PasswordResetSNSTopic"
       ],
       "Properties": {
-        "DisableApiTermination": "false",
         "ImageId": {
           "Ref": "AMIID"
         },
@@ -106,7 +105,7 @@
         "IamInstanceProfile": {
           "Ref": "EC2InstanceProfile"
         },
-        "SecurityGroupIds": [
+        "SecurityGroups": [
           {
             "Fn::GetAtt": [
               "SecurityGroupWB",
@@ -114,10 +113,6 @@
             ]
           }
         ],
-        "AvailabilityZone": "us-east-1a",
-        "SubnetId": {
-          "Fn::ImportValue": "MainPublicSubnet"
-        },
         "KeyName": {
           "Ref": "KEYNAME"
         },
@@ -177,21 +172,7 @@
               ]
             ]
           }
-        },
-        "Volumes": [
-          {
-            "Device": "/dev/sda2",
-            "VolumeId": {
-              "Ref": "NewVolume"
-            }
-          }
-        ],
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "EC2Webapplication"
-          }
-        ]
+        }
       }
     },
     "RdsInstance": {
@@ -328,6 +309,27 @@
           }
         ]
       }
+    },
+    "WebServerGroup":{
+             "Type":"AWS::AutoScaling::AutoScalingGroup",
+             "Properties":{
+               "AvailabilityZones" : { "Fn::GetAZs" : "" },
+                "AutoScalingGroupName":"csye6225ASG",
+                "Cooldown":"60",
+                "DesiredCapacity":"3",
+                "LaunchConfigurationName":{
+                   "Ref":"AutoScalingEC2Instance"
+                },
+                "MaxSize":"10",
+                "MinSize":"3",
+                "Tags":[
+                   {
+                      "Key":"Name",
+                      "Value":"EC2Webapplication",
+                      "PropagateAtLaunch":"True"
+                   }
+                ],
+             }
     },
     "WebServerScaleUpPolicy": {
     "Type": "AWS::AutoScaling::ScalingPolicy",
