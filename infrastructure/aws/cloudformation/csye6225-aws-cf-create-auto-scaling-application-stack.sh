@@ -48,6 +48,17 @@ done
 echo "Enter AMI ID"
 read amiId
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+
+
+echo "Displaying Certificates"
+for certificate in `aws acm list-certificates --query 'CertificateSummaryList[*].{ID:CertificateArn}' --output text | cut -f1`
+do
+  echo -e $certificate
+done
+echo "Enter Certificate ARN"
+read certificate_arn
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+
 stackList=$(aws cloudformation list-stacks --query 'StackSummaries[?StackStatus != `DELETE_COMPLETE`].{StackName:StackName}')
 #echo "stacklist is $stackList"
 
@@ -92,7 +103,7 @@ echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 
 ##Creating Stack
 #echo "Creating Cloud Stack $1"
-response=$(aws cloudformation create-stack --stack-name "$1" --template-body file://csye6225-cf-auto-scaling-application.json --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey="KEYNAME",ParameterValue=$KEY_CHOSEN ParameterKey="AMIID",ParameterValue=$amiId ParameterKey="BUCKETNAME",ParameterValue=$s3BucketName ParameterKey="APPNAME",ParameterValue="csye6225-webapp" ParameterKey="DEPGROUPNAME",ParameterValue="csye6225-webapp-deployment" ParameterKey="BUCKETNAMEFORWEBAPP",ParameterValue=$s3BucketNameForWebApp)
+response=$(aws cloudformation create-stack --stack-name "$1" --template-body file://csye6225-cf-auto-scaling-application.json --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey="KEYNAME",ParameterValue=$KEY_CHOSEN ParameterKey="AMIID",ParameterValue=$amiId ParameterKey="BUCKETNAME",ParameterValue=$s3BucketName ParameterKey="APPNAME",ParameterValue="csye6225-webapp" ParameterKey="DEPGROUPNAME",ParameterValue="csye6225-webapp-deployment" ParameterKey="BUCKETNAMEFORWEBAPP",ParameterValue=$s3BucketNameForWebApp ParameterKey="CERTIFICATEARN",ParameterValue=$certificate_arn)
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 echo "Waiting for Stack $1 to be created"
 echo "$response"
