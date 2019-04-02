@@ -24,6 +24,10 @@
     "BUCKETNAMEFORWEBAPP": {
       "Description": "Bucket name for storing attachments",
       "Type": "String"
+    },
+    "CERTIFICATEARN": {
+      "Description": "AWS Certificate Manager Certificate ARN",
+      "Type": "String"
     }
   },
   "Resources": {
@@ -92,7 +96,7 @@
       }
     },
     "AutoScalingEC2Instance": {
-      "Type":"AWS::AutoScaling::LaunchConfiguration",
+      "Type": "AWS::AutoScaling::LaunchConfiguration",
       "DependsOn": [
         "RdsInstance",
         "PasswordResetSNSTopic"
@@ -175,6 +179,20 @@
         }
       }
     },
+    "NewVolume": {
+      "Type": "AWS::EC2::Volume",
+      "Properties": {
+        "Size": "20",
+        "VolumeType": "gp2",
+        "AvailabilityZone": "us-east-1a",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "EC2AppVolume"
+          }
+        ]
+      }
+    },
     "RdsInstance": {
       "Type": "AWS::RDS::DBInstance",
       "Properties": {
@@ -225,19 +243,73 @@
         }
       }
     },
-    "NewVolume": {
-      "Type": "AWS::EC2::Volume",
+    "ElasticLoadBalancer": {
+      "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
       "Properties": {
-        "Size": "20",
-        "VolumeType": "gp2",
-        "AvailabilityZone": "us-east-1a",
-        "Tags": [
+        "Name": "csye6225-load-balancer",
+        "Scheme": "internet-facing",
+        "Type": "application",
+        "SecurityGroups": {
+          "Ref": "ELBSecurityGroup"
+        },
+        "Subnets": [
           {
-            "Key": "Name",
-            "Value": "EC2AppVolume"
+            "Fn::ImportValue": "PublicSubnet4"
+          },
+          {
+            "Fn::ImportValue": "PublicSubnet5"
           }
         ]
       }
+    },
+    "ELBListener": {
+      "Type": "AWS::ElasticLoadBalancingV2::Listener",
+      "Properties": {
+        "Certificates": [
+          {
+            "CertificateArn": {
+              "Ref": "CERTIFICATEARN"
+            }
+          }
+        ],
+        "LoadBalancerArn": {
+          "Ref": "ElasticLoadBalancer"
+        },
+        "DefaultActions": [
+          {
+            "Type": "forward",
+            "TargetGroupArn": {
+              "Ref": "ELBTargetGroup"
+            }
+          }
+        ],
+        "Port": "443",
+        "Protocol": "HTTPS"
+      }
+    },
+    "ELBTargetGroup": {
+      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "-",
+            [
+              {
+                "Ref": "AWS::StackName"
+              },
+              "TargetGroup"
+            ]
+          ]
+        },
+        "Port": 80,
+        "Protocol": "HTTP",
+        "VpcId": {
+          "Fn::ImportValue": "VPCID"
+        }
+      },
+      "DependsOn": [
+        "ElasticLoadBalancer"
+      ]
     },
     "DBSubnetGroup": {
       "Type": "AWS::RDS::DBSubnetGroup",
@@ -310,108 +382,130 @@
         ]
       }
     },
-    "WebServerGroup":{
-             "Type":"AWS::AutoScaling::AutoScalingGroup",
-             "Properties":{
-                "AutoScalingGroupName":"csye6225ASG",
-                "Cooldown":"60",
-                "DesiredCapacity":"3",
-                "LaunchConfigurationName":{
-                   "Ref":"AutoScalingEC2Instance"
-                },
-                "MaxSize":"10",
-                "MinSize":"3",
-                "Tags":[
-                   {
-                      "Key":"Name",
-                      "Value":"EC2Webapplication",
-                      "PropagateAtLaunch":"True"
-                   }
-                ],
-                "VPCZoneIdentifier":[
-               {
-                  "Fn::ImportValue":"PublicSubnet2"
-               },
-               {
-                  "Fn::ImportValue":"PublicSubnet3"
-               }
-             ]
-             }
+    "WebServerGroup": {
+      "Type": "AWS::AutoScaling::AutoScalingGroup",
+      "Properties": {
+        "AvailabilityZones": {
+          "Fn::GetAZs": ""
+        },
+        "AutoScalingGroupName": "csye6225ASG",
+        "Cooldown": "60",
+        "DesiredCapacity": "3",
+        "LaunchConfigurationName": {
+          "Ref": "AutoScalingEC2Instance"
+        },
+        "MaxSize": "10",
+        "MinSize": "3",
+        "TargetGroupArn": {
+          "Ref": "ELBTargetGroup"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "EC2Webapplication",
+            "PropagateAtLaunch": "True"
+          }
+        ]
+      }
+    },
+    "ELBSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "VpcId": {
+          "Fn::ImportValue": "VPCID"
+        },
+        "GroupDescription": "SecurityGroup to access webapplication",
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "To allow world for port 443",
+            "FromPort": "443",
+            "ToPort": "443",
+            "IpProtocol": "TCP"
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "ELBSecurityGroup"
+          }
+        ]
+      }
     },
     "WebServerScaleUpPolicy": {
-    "Type": "AWS::AutoScaling::ScalingPolicy",
-    "Properties": {
-      "AdjustmentType": "ChangeInCapacity",
-      "AutoScalingGroupName": {
-        "Ref": "WebServerGroup"
-      },
-      "Cooldown": "60",
-      "ScalingAdjustment": "1"
-    }
-  },
-  "WebServerScaleDownPolicy": {
-    "Type": "AWS::AutoScaling::ScalingPolicy",
-    "Properties": {
-      "AdjustmentType": "ChangeInCapacity",
-      "AutoScalingGroupName": {
-        "Ref": "WebServerGroup"
-      },
-      "Cooldown": "60",
-      "ScalingAdjustment": "-1"
-    }
-  },
-  "CPUAlarmHigh": {
-    "Type": "AWS::CloudWatch::Alarm",
-    "Properties": {
-      "AlarmDescription": "Scale-up if CPU > 90% for 10 minutes",
-      "MetricName": "CPUUtilization",
-      "Namespace": "AWS/EC2",
-      "Statistic": "Average",
-      "Period": "300",
-      "EvaluationPeriods": "2",
-      "Threshold": "90",
-      "AlarmActions": [
-        {
-          "Ref": "WebServerScaleUpPolicy"
-        }
-      ],
-      "Dimensions": [
-        {
-          "Name": "AutoScalingGroupName",
-          "Value": {
-            "Ref": "WebServerGroup"
+      "Type": "AWS::AutoScaling::ScalingPolicy",
+      "Properties": {
+        "AdjustmentType": "ChangeInCapacity",
+        "AutoScalingGroupName": {
+          "Ref": "WebServerGroup"
+        },
+        "Cooldown": "60",
+        "ScalingAdjustment": "1"
+      }
+    },
+    "WebServerScaleDownPolicy": {
+      "Type": "AWS::AutoScaling::ScalingPolicy",
+      "Properties": {
+        "AdjustmentType": "ChangeInCapacity",
+        "AutoScalingGroupName": {
+          "Ref": "WebServerGroup"
+        },
+        "Cooldown": "60",
+        "ScalingAdjustment": "-1"
+      }
+    },
+    "CPUAlarmHigh": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "AlarmDescription": "Scale-up if CPU > 90% for 10 minutes",
+        "MetricName": "CPUUtilization",
+        "Namespace": "AWS/EC2",
+        "Statistic": "Average",
+        "Period": "60",
+        "EvaluationPeriods": "2",
+        "Threshold": "90",
+        "AlarmActions": [
+          {
+            "Ref": "WebServerScaleUpPolicy"
           }
-        }
-      ],
-      "ComparisonOperator": "GreaterThanThreshold"
-    }
-  },
-  "CPUAlarmLow": {
-    "Type": "AWS::CloudWatch::Alarm",
-    "Properties": {
-      "AlarmDescription": "Scale-down if CPU < 70% for 10 minutes",
-      "MetricName": "CPUUtilization",
-      "Namespace": "AWS/EC2",
-      "Statistic": "Average",
-      "Period": "300",
-      "EvaluationPeriods": "2",
-      "Threshold": "70",
-      "AlarmActions": [
-        {
-          "Ref": "WebServerScaleDownPolicy"
-        }
-      ],
-      "Dimensions": [
-        {
-          "Name": "AutoScalingGroupName",
-          "Value": {
-            "Ref": "WebServerGroup"
+        ],
+        "Dimensions": [
+          {
+            "Name": "AutoScalingGroupName",
+            "Value": {
+              "Ref": "WebServerGroup"
+            }
           }
-        }
-      ],
-      "ComparisonOperator": "LessThanThreshold"
-    }
-  },
+        ],
+        "ComparisonOperator": "GreaterThanThreshold"
+      }
+    },
+    "CPUAlarmLow": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "AlarmDescription": "Scale-down if CPU < 70% for 10 minutes",
+        "MetricName": "CPUUtilization",
+        "Namespace": "AWS/EC2",
+        "Statistic": "Average",
+        "Period": "60",
+        "EvaluationPeriods": "2",
+        "Threshold": "70",
+        "AlarmActions": [
+          {
+            "Ref": "WebServerScaleDownPolicy"
+          }
+        ],
+        "Dimensions": [
+          {
+            "Name": "AutoScalingGroupName",
+            "Value": {
+              "Ref": "WebServerGroup"
+            }
+          }
+        ],
+        "ComparisonOperator": "LessThanThreshold"
+      }
+    },
     "SNSTopicSubscribePolicy": {
       "Type": "AWS::IAM::Policy",
       "Properties": {

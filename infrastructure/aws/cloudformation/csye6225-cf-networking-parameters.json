@@ -35,6 +35,16 @@
     "UsePreviousValue": true
   },
   {
+    "ParameterKey": "PublicSubnet4CIDR",
+    "ParameterValue": "10.0.3.0/24",
+    "UsePreviousValue": true
+  },
+  {
+    "ParameterKey": "PublicSubnet5CIDR",
+    "ParameterValue": "10.0.4.0/24",
+    "UsePreviousValue": true
+  },
+  {
     "ParameterKey": "IGNAME",
     "ParameterValue": "ig",
     "UsePreviousValue": true
@@ -57,6 +67,16 @@
   {
     "ParameterKey": "PBSN3NAME",
     "ParameterValue": "pb-subnet-3",
+    "UsePreviousValue": true
+  },
+  {
+    "ParameterKey": "PBSN4NAME",
+    "ParameterValue": "pb-subnet-4",
+    "UsePreviousValue": true
+  },
+  {
+    "ParameterKey": "PBSN5NAME",
+    "ParameterValue": "pb-subnet-5",
     "UsePreviousValue": true
   }
 ]
