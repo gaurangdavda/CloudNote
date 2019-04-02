@@ -249,9 +249,11 @@
         "Name": "csye6225-load-balancer",
         "Scheme": "internet-facing",
         "Type": "application",
-        "SecurityGroups": {
-          "Ref": "ELBSecurityGroup"
-        },
+        "SecurityGroups": [
+          {
+            "Ref": "ELBSecurityGroup"
+          }
+      ],
         "Subnets": [
           {
             "Fn::ImportValue": "PublicSubnet4"
@@ -385,9 +387,6 @@
     "WebServerGroup": {
       "Type": "AWS::AutoScaling::AutoScalingGroup",
       "Properties": {
-        "AvailabilityZones": {
-          "Fn::GetAZs": ""
-        },
         "AutoScalingGroupName": "csye6225ASG",
         "Cooldown": "60",
         "DesiredCapacity": "3",
@@ -396,16 +395,24 @@
         },
         "MaxSize": "10",
         "MinSize": "3",
-        "TargetGroupArn": {
+        "TargetGroupARNs": [{
           "Ref": "ELBTargetGroup"
-        },
+        }],
         "Tags": [
           {
             "Key": "Name",
             "Value": "EC2Webapplication",
             "PropagateAtLaunch": "True"
           }
-        ]
+        ],
+        "VPCZoneIdentifier":[
+               {
+                  "Fn::ImportValue":"PublicSubnet2"
+               },
+               {
+                  "Fn::ImportValue":"PublicSubnet3"
+               }
+             ]
       }
     },
     "ELBSecurityGroup": {
