@@ -3,7 +3,6 @@ package edu.neu.csye6225.spring19.cloudninja.aws;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Date;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
@@ -51,7 +50,7 @@ public class AmazonClient {
 
 	private String generateFileName(MultipartFile multiPart) {
 
-		return new Date().getTime() + "-" + generateUUID() + "-" + multiPart.getOriginalFilename().replace(" ", "_");
+		return generateUUID() + "-" + multiPart.getOriginalFilename().replace(" ", "_");
 	}
 
 	private String generateUUID() {
