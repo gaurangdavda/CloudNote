@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Date;
+import java.util.UUID;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
@@ -73,6 +74,12 @@ public class DefaultFileStorageUtil implements FileStorageUtil {
 	}
 
 	private String generateFileName(MultipartFile multiPart) {
-		return new Date().getTime() + "-" + multiPart.getOriginalFilename().replace(" ", "_");
+		return new Date().getTime() + "-" + generateUUID() + "-" + multiPart.getOriginalFilename().replace(" ", "_");
+	}
+
+	private String generateUUID() {
+
+		UUID uuid = UUID.randomUUID();
+		return uuid.toString();
 	}
 }
