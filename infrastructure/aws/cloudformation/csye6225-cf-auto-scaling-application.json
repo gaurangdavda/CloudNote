@@ -291,8 +291,10 @@
     "ELBTargetGroup": {
       "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
       "Properties": {
-        "HealthCheckIntervalSeconds": 120,
-        "UnhealthyThresholdCount": 3,
+        "HealthCheckIntervalSeconds": 10,
+        "HealthCheckTimeoutSeconds": 5,
+        "UnhealthyThresholdCount": 2,
+        "HealthyThresholdCount": 2,
         "HealthCheckPath": "/health",
         "TargetGroupAttributes": [
           {
