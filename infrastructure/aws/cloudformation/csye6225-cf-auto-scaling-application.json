@@ -361,99 +361,111 @@
         "Name": "Find SQL injections in the query string",
         "SqlInjectionMatchTuples": [
           {
-            "FieldToMatch" : {
+            "FieldToMatch": {
               "Type": "QUERY_STRING"
             },
-            "TextTransformation" : "URL_DECODE"
+            "TextTransformation": "URL_DECODE"
           }
         ]
       }
     },
     "DetectXSS": {
-  "Type": "AWS::WAFRegional::XssMatchSet",
-  "Properties": {
-    "Name": "XssMatchSet",
-    "XssMatchTuples": [
-      {
-        "FieldToMatch": {
-          "Type": "URI"
-        },
-        "TextTransformation": "NONE"
-      },
-      {
-        "FieldToMatch": {
-          "Type": "QUERY_STRING"
-        },
-        "TextTransformation": "NONE"
-      }
-    ]
-  }
-},
-    "SqlInjRule" : {
-      "Type": "AWS::WAFRegional::Rule",
+      "Type": "AWS::WAFRegional::XssMatchSet",
       "Properties": {
-        "Name": "SqlInjRule",
-        "MetricName" : "SqlInjRule",
-        "Predicates": [
+        "Name": "XssMatchSet",
+        "XssMatchTuples": [
           {
-            "DataId" : {  "Ref" : "SqlInjDetection" },
-            "Negated" : false,
-            "Type" : "SqlInjectionMatch"
+            "FieldToMatch": {
+              "Type": "URI"
+            },
+            "TextTransformation": "NONE"
+          },
+          {
+            "FieldToMatch": {
+              "Type": "QUERY_STRING"
+            },
+            "TextTransformation": "NONE"
           }
         ]
       }
     },
-    "XSSRule" : {
-  "Type": "AWS::WAFRegional::Rule",
-  "Properties": {
-    "Name": "XSSRule",
-    "MetricName" : "XSSRule",
-    "Predicates": [
-      {
-        "DataId" : {  "Ref" : "DetectXSS" },
-        "Negated" : false,
-        "Type" : "XssMatch"
-      }
-    ]
-  }
-},
-  "MyWebACLAssociation": {
-      "Type": "AWS::WAFRegional::WebACLAssociation",
-      "DependsOn":[
-                "ElasticLoadBalancer",
-                "MyWebACL"
-        ],
+    "SqlInjRule": {
+      "Type": "AWS::WAFRegional::Rule",
       "Properties": {
-        "ResourceArn": { "Ref": "ElasticLoadBalancer" },
-        "WebACLId": { "Ref": "MyWebACL" }
+        "Name": "SqlInjRule",
+        "MetricName": "SqlInjRule",
+        "Predicates": [
+          {
+            "DataId": {
+              "Ref": "SqlInjDetection"
+            },
+            "Negated": false,
+            "Type": "SqlInjectionMatch"
+          }
+        ]
       }
     },
-  "MyWebACL": {
-  "Type": "AWS::WAFRegional::WebACL",
-  "Properties": {
-    "Name": "WebACL",
-    "DefaultAction": {
-      "Type": "ALLOW"
+    "XSSRule": {
+      "Type": "AWS::WAFRegional::Rule",
+      "Properties": {
+        "Name": "XSSRule",
+        "MetricName": "XSSRule",
+        "Predicates": [
+          {
+            "DataId": {
+              "Ref": "DetectXSS"
+            },
+            "Negated": false,
+            "Type": "XssMatch"
+          }
+        ]
+      }
     },
-    "MetricName" : "MyWebACL",
-    "Rules": [
-      {
-        "Action" : {
-          "Type" : "BLOCK"
+    "MyWebACLAssociation": {
+      "Type": "AWS::WAFRegional::WebACLAssociation",
+      "DependsOn": [
+        "ElasticLoadBalancer",
+        "MyWebACL"
+      ],
+      "Properties": {
+        "ResourceArn": {
+          "Ref": "ElasticLoadBalancer"
         },
-        "Priority" : 1,
-        "RuleId" : { "Ref" : "SqlInjRule" }
+        "WebACLId": {
+          "Ref": "MyWebACL"
+        }
       }
-      {
-        "Action" : {
-          "Type" : "BLOCK"
+    },
+    "MyWebACL": {
+      "Type": "AWS::WAFRegional::WebACL",
+      "Properties": {
+        "Name": "WebACL",
+        "DefaultAction": {
+          "Type": "ALLOW"
         },
-        "Priority" : 2,
-        "RuleId" : { "Ref" : "XSSRule" }
+        "MetricName": "MyWebACL",
+        "Rules": [
+          {
+            "Action": {
+              "Type": "BLOCK"
+            },
+            "Priority": 1,
+            "RuleId": {
+              "Ref": "SqlInjRule"
+            }
+          },
+          {
+            "Action": {
+              "Type": "BLOCK"
+            },
+            "Priority": 2,
+            "RuleId": {
+              "Ref": "XSSRule"
+            }
+          }
+        ]
       }
-    ]
-  }
-},
+    },
     "DBSubnetGroup": {
       "Type": "AWS::RDS::DBSubnetGroup",
       "Properties": {
@@ -766,9 +778,14 @@
         },
         "DeploymentStyle": {
           "DeploymentType": "IN_PLACE",
-          "DeploymentOption": "WITHOUT_TRAFFIC_CONTROL"
+          "DeploymentOption": "WITH_TRAFFIC_CONTROL"
         },
-        "DeploymentConfigName": "CodeDeployDefault.AllAtOnce",
+        "DeploymentConfigName": "CodeDeployDefault.OneAtATime",
+        "AutoScalingGroups": [
+          {
+            "Ref": "WebServerGroup"
+          }
+        ],
         "Ec2TagFilters": [
           {
             "Key": "Name",
@@ -776,6 +793,9 @@
             "Type": "KEY_AND_VALUE"
           }
         ],
+        "LoadBalancerInfo": {
+           "TargetGroupInfoList" : [ { "Name": { "Fn::GetAtt": ["ELBTargetGroup", "TargetGroupName"] } } ]
+        },
         "AutoRollbackConfiguration": {
           "Enabled": "true",
           "Events": [
