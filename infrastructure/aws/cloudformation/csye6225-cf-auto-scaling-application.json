@@ -355,6 +355,64 @@
         "Type": "A"
       }
     },
+    "SqlInjDetection": {
+      "Type": "AWS::WAFRegional::SqlInjectionMatchSet",
+      "Properties": {
+        "Name": "Find SQL injections in the query string",
+        "SqlInjectionMatchTuples": [
+          {
+            "FieldToMatch" : {
+              "Type": "QUERY_STRING"
+            },
+            "TextTransformation" : "URL_DECODE"
+          }
+        ]
+      }
+    },
+    "SqlInjRule" : {
+      "Type": "AWS::WAFRegional::Rule",
+      "Properties": {
+        "Name": "SqlInjRule",
+        "MetricName" : "SqlInjRule",
+        "Predicates": [
+          {
+            "DataId" : {  "Ref" : "SqlInjDetection" },
+            "Negated" : false,
+            "Type" : "SqlInjectionMatch"
+          }
+        ]
+      }
+    },
+    "MyWebACLAssociation": {
+      "Type": "AWS::WAFRegional::WebACLAssociation",
+      "DependsOn":[
+                "ElasticLoadBalancer",
+                "MyWebACL"
+        ],
+      "Properties": {
+        "ResourceArn": { "Ref": "ElasticLoadBalancer" },
+        "WebACLId": { "Ref": "MyWebACL" }
+      }
+    },
+  "MyWebACL": {
+  "Type": "AWS::WAFRegional::WebACL",
+  "Properties": {
+    "Name": "WebACL to with three rules",
+    "DefaultAction": {
+      "Type": "ALLOW"
+    },
+    "MetricName" : "MyWebACL",
+    "Rules": [
+      {
+        "Action" : {
+          "Type" : "BLOCK"
+        },
+        "Priority" : 1,
+        "RuleId" : { "Ref" : "SqlInjRule" }
+      }
+    ]
+  }
+},
     "DBSubnetGroup": {
       "Type": "AWS::RDS::DBSubnetGroup",
       "Properties": {
