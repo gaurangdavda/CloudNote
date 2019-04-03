@@ -369,6 +369,26 @@
         ]
       }
     },
+    "DetectXSS": {
+  "Type": "AWS::WAFRegional::XssMatchSet",
+  "Properties": {
+    "Name": "XssMatchSet",
+    "XssMatchTuples": [
+      {
+        "FieldToMatch": {
+          "Type": "URI"
+        },
+        "TextTransformation": "NONE"
+      },
+      {
+        "FieldToMatch": {
+          "Type": "QUERY_STRING"
+        },
+        "TextTransformation": "NONE"
+      }
+    ]
+  }
+},
     "SqlInjRule" : {
       "Type": "AWS::WAFRegional::Rule",
       "Properties": {
@@ -383,7 +403,21 @@
         ]
       }
     },
-    "MyWebACLAssociation": {
+    "XSSRule" : {
+  "Type": "AWS::WAFRegional::Rule",
+  "Properties": {
+    "Name": "XSSRule",
+    "MetricName" : "XSSRule",
+    "Predicates": [
+      {
+        "DataId" : {  "Ref" : "DetectXSS" },
+        "Negated" : false,
+        "Type" : "XssMatch"
+      }
+    ]
+  }
+},
+  "MyWebACLAssociation": {
       "Type": "AWS::WAFRegional::WebACLAssociation",
       "DependsOn":[
                 "ElasticLoadBalancer",
@@ -397,7 +431,7 @@
   "MyWebACL": {
   "Type": "AWS::WAFRegional::WebACL",
   "Properties": {
-    "Name": "WebACL to with three rules",
+    "Name": "WebACL",
     "DefaultAction": {
       "Type": "ALLOW"
     },
@@ -409,6 +443,13 @@
         },
         "Priority" : 1,
         "RuleId" : { "Ref" : "SqlInjRule" }
+      }
+      {
+        "Action" : {
+          "Type" : "BLOCK"
+        },
+        "Priority" : 2,
+        "RuleId" : { "Ref" : "XSSRule" }
       }
     ]
   }
