@@ -28,6 +28,14 @@
     "CERTIFICATEARN": {
       "Description": "AWS Certificate Manager Certificate ARN",
       "Type": "String"
+    },
+    "HOSTEDZONE": {
+      "Description": "Domain name",
+      "Type": "String"
+    },
+    "HOSTEDZONEID": {
+      "Description": " Hosted zone ID",
+      "Type": "String"
     }
   },
   "Resources": {
@@ -40,24 +48,12 @@
         "GroupDescription": "SecurityGroup to access webapplication",
         "SecurityGroupIngress": [
           {
-            "CidrIp": "0.0.0.0/0",
-            "Description": "To allow world for port 80",
+            "SourceSecurityGroupId": {
+              "Ref": "ELBSecurityGroup"
+            },
+            "Description": "Load balancer Security Group added",
             "FromPort": "80",
             "ToPort": "80",
-            "IpProtocol": "TCP"
-          },
-          {
-            "CidrIp": "0.0.0.0/0",
-            "Description": "To allow world for port 22",
-            "FromPort": "22",
-            "ToPort": "22",
-            "IpProtocol": "TCP"
-          },
-          {
-            "CidrIp": "0.0.0.0/0",
-            "Description": "To allow world for port 443",
-            "FromPort": "443",
-            "ToPort": "443",
             "IpProtocol": "TCP"
           }
         ],
@@ -253,8 +249,11 @@
           {
             "Ref": "ELBSecurityGroup"
           }
-      ],
+        ],
         "Subnets": [
+          {
+            "Fn::ImportValue": "MainPublicSubnet"
+          },
           {
             "Fn::ImportValue": "PublicSubnet4"
           },
@@ -292,6 +291,15 @@
     "ELBTargetGroup": {
       "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
       "Properties": {
+        "HealthCheckIntervalSeconds": 30,
+        "UnhealthyThresholdCount": 10,
+        "HealthCheckPath": "/",
+        "TargetGroupAttributes": [
+          {
+            "Key": "deregistration_delay.timeout_seconds",
+            "Value": "20"
+          }
+        ],
         "Name": {
           "Fn::Join": [
             "-",
@@ -312,6 +320,40 @@
       "DependsOn": [
         "ElasticLoadBalancer"
       ]
+    },
+    "Route53Records": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "HostedZoneId": {
+          "Ref": "HOSTEDZONEID"
+        },
+        "Name": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "HOSTEDZONE"
+              },
+              "."
+            ]
+          ]
+        },
+        "AliasTarget": {
+          "HostedZoneId": {
+            "Fn::GetAtt": [
+              "ElasticLoadBalancer",
+              "CanonicalHostedZoneID"
+            ]
+          },
+          "DNSName": {
+            "Fn::GetAtt": [
+              "ElasticLoadBalancer",
+              "DNSName"
+            ]
+          }
+        },
+        "Type": "A"
+      }
     },
     "DBSubnetGroup": {
       "Type": "AWS::RDS::DBSubnetGroup",
@@ -395,9 +437,11 @@
         },
         "MaxSize": "10",
         "MinSize": "3",
-        "TargetGroupARNs": [{
-          "Ref": "ELBTargetGroup"
-        }],
+        "TargetGroupARNs": [
+          {
+            "Ref": "ELBTargetGroup"
+          }
+        ],
         "Tags": [
           {
             "Key": "Name",
@@ -405,14 +449,17 @@
             "PropagateAtLaunch": "True"
           }
         ],
-        "VPCZoneIdentifier":[
-               {
-                  "Fn::ImportValue":"PublicSubnet2"
-               },
-               {
-                  "Fn::ImportValue":"PublicSubnet3"
-               }
-             ]
+        "VPCZoneIdentifier": [
+          {
+            "Fn::ImportValue": "MainPublicSubnet"
+          },
+          {
+            "Fn::ImportValue": "PublicSubnet4"
+          },
+          {
+            "Fn::ImportValue": "PublicSubnet5"
+          }
+        ]
       }
     },
     "ELBSecurityGroup": {
