@@ -2,6 +2,7 @@ package edu.neu.csye6225.spring19.cloudninja.controller;
 
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.AUTHORIZATION;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.FILE;
+import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.HEALTH_CHECK;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.LOGIN;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.NOTE;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.NOTE_ID;
@@ -10,13 +11,13 @@ import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstant
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.NOTE_ID_ATTACHMENT_ID;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.NO_AUTH;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.REGISTER;
+import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.RESET_PASSWORD;
 
 import java.util.List;
 import java.util.UUID;
 
-import edu.neu.csye6225.spring19.cloudninja.exception.*;
-import edu.neu.csye6225.spring19.cloudninja.model.*;
-import edu.neu.csye6225.spring19.cloudninja.service.PasswordResetService;
+import javax.validation.constraints.NotNull;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,11 +32,21 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import edu.neu.csye6225.spring19.cloudninja.exception.FileStorageException;
+import edu.neu.csye6225.spring19.cloudninja.exception.ResourceNotFoundException;
+import edu.neu.csye6225.spring19.cloudninja.exception.ServerException;
+import edu.neu.csye6225.spring19.cloudninja.exception.UnAuthorizedLoginException;
+import edu.neu.csye6225.spring19.cloudninja.exception.ValidationException;
+import edu.neu.csye6225.spring19.cloudninja.model.Attachment;
+import edu.neu.csye6225.spring19.cloudninja.model.Note;
+import edu.neu.csye6225.spring19.cloudninja.model.PasswordReset;
+import edu.neu.csye6225.spring19.cloudninja.model.ResponseBody;
+import edu.neu.csye6225.spring19.cloudninja.model.TimeStampWrapper;
+import edu.neu.csye6225.spring19.cloudninja.model.UserCredentials;
 import edu.neu.csye6225.spring19.cloudninja.property.FileStorageProperties;
 import edu.neu.csye6225.spring19.cloudninja.service.LoginService;
 import edu.neu.csye6225.spring19.cloudninja.service.NoteTakingService;
-
-import javax.validation.constraints.NotNull;
+import edu.neu.csye6225.spring19.cloudninja.service.PasswordResetService;
 
 @RestController
 public class EntryController {
@@ -143,9 +154,16 @@ public class EntryController {
 		noteTakingService.deleteAttachment(auth, noteId, attachmentId);
 	}
 
-	@RequestMapping(value = "reset", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = RESET_PASSWORD, method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
-	public void resestPassword(@RequestBody @NotNull PasswordReset passwordReset) throws ServerException, ValidationException {
+	public void resestPassword(@RequestBody @NotNull PasswordReset passwordReset)
+			throws ServerException, ValidationException {
 		passwordResetService.resetPassword(passwordReset);
+	}
+
+	@RequestMapping(value = HEALTH_CHECK, method = RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public void healthCheck() {
+
 	}
 }
