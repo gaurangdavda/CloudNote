@@ -59,9 +59,25 @@ echo "Enter Certificate ARN"
 read certificate_arn
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 
-stackList=$(aws cloudformation list-stacks --query 'StackSummaries[?StackStatus != `DELETE_COMPLETE`].{StackName:StackName}')
-#echo "stacklist is $stackList"
+echo "Displaying HostedZones Domains"
+for hostedzone in `aws route53 list-hosted-zones --query HostedZones[0].Name --output text`
+do
+  echo -e ${hostedzone::-1}
+done
+echo "Enter HostedZoneID"
+read hostedZone
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 
+echo "Displaying HostedZones ID"
+for hostedzoneid in `aws route53 list-hosted-zones --query 'HostedZones[0].Id' --output text`
+do
+  echo -e ${hostedzoneid#*e/}
+done
+echo "Enter HostedZoneID"
+read hostedZoneId
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+
+stackList=$(aws cloudformation list-stacks --query 'StackSummaries[?StackStatus != `DELETE_COMPLETE`].{StackName:StackName}')
 
 if [  `echo $stackList | grep -w -c $1 ` -gt 0 ]
 then
@@ -103,7 +119,7 @@ echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 
 ##Creating Stack
 #echo "Creating Cloud Stack $1"
-response=$(aws cloudformation create-stack --stack-name "$1" --template-body file://csye6225-cf-auto-scaling-application.json --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey="KEYNAME",ParameterValue=$KEY_CHOSEN ParameterKey="AMIID",ParameterValue=$amiId ParameterKey="BUCKETNAME",ParameterValue=$s3BucketName ParameterKey="APPNAME",ParameterValue="csye6225-webapp" ParameterKey="DEPGROUPNAME",ParameterValue="csye6225-webapp-deployment" ParameterKey="BUCKETNAMEFORWEBAPP",ParameterValue=$s3BucketNameForWebApp ParameterKey="CERTIFICATEARN",ParameterValue=$certificate_arn)
+response=$(aws cloudformation create-stack --stack-name "$1" --template-body file://csye6225-cf-auto-scaling-application.json --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey="KEYNAME",ParameterValue=$KEY_CHOSEN ParameterKey="AMIID",ParameterValue=$amiId ParameterKey="BUCKETNAME",ParameterValue=$s3BucketName ParameterKey="APPNAME",ParameterValue="csye6225-webapp" ParameterKey="DEPGROUPNAME",ParameterValue="csye6225-webapp-deployment" ParameterKey="BUCKETNAMEFORWEBAPP",ParameterValue=$s3BucketNameForWebApp ParameterKey="CERTIFICATEARN",ParameterValue=$certificate_arn ParameterKey="HOSTEDZONE",ParameterValue=$hostedZone ParameterKey="HOSTEDZONEID",ParameterValue=$hostedZoneId)
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 echo "Waiting for Stack $1 to be created"
 echo "$response"
