@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
+import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 
@@ -35,7 +36,8 @@ public class AmazonClient {
 	@PostConstruct
 	private void initializeAmazon() {
 
-		this.s3client = AmazonS3ClientBuilder.standard().withCredentials(new InstanceProfileCredentialsProvider(false)).build();
+		this.s3client = AmazonS3ClientBuilder.standard().withCredentials(new InstanceProfileCredentialsProvider(false))
+				.build();
 
 	}
 
@@ -48,7 +50,14 @@ public class AmazonClient {
 	}
 
 	private String generateFileName(MultipartFile multiPart) {
-		return new Date().getTime() + "-" + multiPart.getOriginalFilename().replace(" ", "_");
+
+		return new Date().getTime() + "-" + generateUUID() + "-" + multiPart.getOriginalFilename().replace(" ", "_");
+	}
+
+	private String generateUUID() {
+
+		UUID uuid = UUID.randomUUID();
+		return uuid.toString();
 	}
 
 	private void uploadFileTos3bucket(String fileName, File file) {
