@@ -68,15 +68,16 @@ public class AmazonClient {
 		String fileUrl = "";
 
 		File file = null;
+		String fileName = null;
 		try {
 			file = convertMultiPartToFile(multipartFile);
 
-			String fileName = generateFileName(multipartFile);
+			fileName = generateFileName(multipartFile);
 			fileUrl = endpointUrl + "/" + bucketName + "/" + fileName;
 			uploadFileTos3bucket(fileName, file);
 
 		} catch (Exception e) {
-			throw new FileStorageException("File not stored in S3 bucket. Please try again");
+			throw new FileStorageException("File not stored in S3 bucket. File name: " + fileName);
 		} finally {
 			if (file != null) {
 				file.delete();
@@ -88,11 +89,12 @@ public class AmazonClient {
 	}
 
 	public void deleteFileFromS3Bucket(String fileUrl) throws FileStorageException {
+		String fileName = null;
 		try {
-			String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
+			fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
 			s3client.deleteObject(bucketName, fileName);
 		} catch (Exception e) {
-			throw new FileStorageException("File not stored in S3 bucket. Please try again");
+			throw new FileStorageException("File not stored in S3 bucket. File name: " + fileName);
 		}
 
 	}
