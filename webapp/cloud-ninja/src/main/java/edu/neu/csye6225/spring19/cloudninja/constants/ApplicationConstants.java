@@ -9,7 +9,6 @@ package edu.neu.csye6225.spring19.cloudninja.constants;
  */
 public class ApplicationConstants {
 
-	
 	// Username and Password Validation exceptions
 	// =========================================================================================================================
 	public static final String NULL_PASSWORD = "Kindly enter the password.";
@@ -37,6 +36,8 @@ public class ApplicationConstants {
 	public static final String NOTE_ID_ATTACHMENT = "/note/{noteId}/attachments";
 	public static final String NOTE_ID_ATTACHMENTS = "/note/{noteId}/multiattachments";
 	public static final String NOTE_ID_ATTACHMENT_ID = "/note/{noteId}/attachments/{idAttachments}";
+	public static final String RESET_PASSWORD = "/reset";
+	public static final String HEALTH_CHECK = "/health";
 	public static final String FILE = "file";
 
 	// =========================================================================================================================
