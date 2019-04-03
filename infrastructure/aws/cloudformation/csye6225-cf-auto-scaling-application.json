@@ -291,9 +291,9 @@
     "ELBTargetGroup": {
       "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
       "Properties": {
-        "HealthCheckIntervalSeconds": 30,
-        "UnhealthyThresholdCount": 10,
-        "HealthCheckPath": "/",
+        "HealthCheckIntervalSeconds": 120,
+        "UnhealthyThresholdCount": 3,
+        "HealthCheckPath": "/health",
         "TargetGroupAttributes": [
           {
             "Key": "deregistration_delay.timeout_seconds",
