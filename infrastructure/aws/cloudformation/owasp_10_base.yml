@@ -1173,7 +1173,7 @@ Outputs:
   wafWebACL:
     Value: !If [ isRegional, !Ref wafrOwaspACL, !Ref wafgOwaspACL ]
     Export:
-	Name: WafWebACL
+      Name: WafWebACL
   wafWebACLMetric:
     Value: !Join ['', [!Ref stackPrefix, 'owaspacl']]
   wafSQLiRule:
@@ -1221,4 +1221,4 @@ Outputs:
   wafAdminAccessWhitelist:
     Value: !If [ isRegional, !Ref wafrAdminRemoteAddrIpSet, !Ref wafgAdminRemoteAddrIpSet ]
   wafIpBlacklist:
-Value: !If [ isRegional, !Ref wafrBlacklistIpSet, !Ref wafgBlacklistIpSet ]
+    Value: !If [ isRegional, !Ref wafrBlacklistIpSet, !Ref wafgBlacklistIpSet ]
