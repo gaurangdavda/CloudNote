@@ -1,5 +1,7 @@
 package edu.neu.csye6225.spring19.cloudninja.service.impl;
 
+import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.ADMIN_EMAIL;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -232,6 +234,36 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 		throw new UnAuthorizedLoginException(
 				"Attachment with ID: " + attachmentId.toString() + " is not one of the attachments of your note");
 
+	}
+
+	@Override
+	public void deleteAllNotesAndAttachments(String auth)
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException, FileStorageException {
+
+		try {
+			UserCredentials credentials = authService.extractCredentialsFromHeader(auth);
+			authService.authenticateUser(credentials);
+			if (credentials.getEmailId().equals(ADMIN_EMAIL)) {
+				Iterable<Note> notes = noteTakingRepository.findAll();
+				if (notes != null) {
+					for (Note fetchedNote : notes) {
+						List<Attachment> attachments = fetchedNote.getAttachments();
+						if (attachments != null && attachments.size() > 0) {
+							for (Attachment a : attachments) {
+								fileStorageUtil.deleteFile(a.getUrl());
+								attachmentReposiory.delete(a);
+							}
+						}
+						noteTakingRepository.delete(fetchedNote);
+					}
+				}
+			} else {
+				throw new UnAuthorizedLoginException("Not an admin role. Can't delete the database.");
+			}
+		} catch (Exception e) {
+			logger.log(Level.ERROR, commonUtil.stackTraceString(e));
+			throw e;
+		}
 	}
 
 }

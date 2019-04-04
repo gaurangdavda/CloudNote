@@ -42,4 +42,7 @@ public interface NoteTakingService {
 	public List<Attachment> saveAttachments(String auth, UUID noteId, MultipartFile[] files)
 			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException, FileStorageException;
 
+	public void deleteAllNotesAndAttachments(String auth)
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException, FileStorageException;
+
 }

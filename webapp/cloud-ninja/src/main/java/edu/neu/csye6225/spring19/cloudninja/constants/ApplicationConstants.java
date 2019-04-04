@@ -9,7 +9,6 @@ package edu.neu.csye6225.spring19.cloudninja.constants;
  */
 public class ApplicationConstants {
 
-	
 	// Username and Password Validation exceptions
 	// =========================================================================================================================
 	public static final String NULL_PASSWORD = "Kindly enter the password.";
@@ -37,6 +36,9 @@ public class ApplicationConstants {
 	public static final String NOTE_ID_ATTACHMENT = "/note/{noteId}/attachments";
 	public static final String NOTE_ID_ATTACHMENTS = "/note/{noteId}/multiattachments";
 	public static final String NOTE_ID_ATTACHMENT_ID = "/note/{noteId}/attachments/{idAttachments}";
+	public static final String RESET_PASSWORD = "/reset";
+	public static final String HEALTH_CHECK = "/health";
+	public static final String DELETE_ALL_RECORDS = "/deleteall";
 	public static final String FILE = "file";
 
 	// =========================================================================================================================
@@ -44,5 +46,12 @@ public class ApplicationConstants {
 	// Date format
 	// =========================================================================================================================
 	public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZZZ'Z'";
+
+	// =========================================================================================================================
+
+	// Admin creds
+	// =========================================================================================================================
+	public static final String ADMIN_EMAIL = "admin@gvkm.com";
+	public static final String ADMIN_PASSWD = "Admin@#1234gvkm";
 
 }
