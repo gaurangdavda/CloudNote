@@ -1172,6 +1172,8 @@ Resources:
 Outputs:
   wafWebACL:
     Value: !If [ isRegional, !Ref wafrOwaspACL, !Ref wafgOwaspACL ]
+    Export:
+	Name: WafWebACL
   wafWebACLMetric:
     Value: !Join ['', [!Ref stackPrefix, 'owaspacl']]
   wafSQLiRule:
