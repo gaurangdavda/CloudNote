@@ -1106,7 +1106,7 @@ Resources:
           Priority: 70
           RuleId: !Ref wafrPHPInsecureRule
         - Action:
-            Type: !Ref ruleAction
+            Type: ALLOW
           Priority: 80
           RuleId: !Ref wafrCSRFRule
         - Action:
@@ -1155,7 +1155,7 @@ Resources:
           Priority: 70
           RuleId: !Ref wafgPHPInsecureRule
         - Action:
-            Type: !Ref ruleAction
+            Type: ALLOW
           Priority: 80
           RuleId: !Ref wafgCSRFRule
         - Action:
