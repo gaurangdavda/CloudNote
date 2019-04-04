@@ -1,5 +1,7 @@
 package edu.neu.csye6225.spring19.cloudninja.service.impl;
 
+import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.ADMIN_EMAIL;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -239,8 +241,14 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException, FileStorageException {
 
 		try {
-			attachmentReposiory.deleteAll();
-			noteTakingRepository.deleteAll();
+			UserCredentials credentials = authService.extractCredentialsFromHeader(auth);
+			authService.authenticateUser(credentials);
+			if (credentials.getEmailId().equals(ADMIN_EMAIL)) {
+				attachmentReposiory.deleteAll();
+				noteTakingRepository.deleteAll();
+			} else {
+				throw new UnAuthorizedLoginException("Not an admin role. Can't delete the database.");
+			}
 		} catch (Exception e) {
 			logger.log(Level.ERROR, commonUtil.stackTraceString(e));
 			throw e;

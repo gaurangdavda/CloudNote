@@ -1,5 +1,6 @@
 package edu.neu.csye6225.spring19.cloudninja.service;
 
+import edu.neu.csye6225.spring19.cloudninja.exception.ResourceNotFoundException;
 import edu.neu.csye6225.spring19.cloudninja.exception.UnAuthorizedLoginException;
 import edu.neu.csye6225.spring19.cloudninja.exception.ValidationException;
 import edu.neu.csye6225.spring19.cloudninja.model.ResponseBody;
@@ -12,6 +13,7 @@ public interface LoginService {
 
 	public ResponseBody registerUser(UserCredentials userCredentials) throws ValidationException;
 
-	public void deleteAllUsers(String auth) throws ValidationException;
+	public void deleteAllUsers(String auth)
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException;
 
 }
