@@ -38,6 +38,7 @@ public class ApplicationConstants {
 	public static final String NOTE_ID_ATTACHMENT_ID = "/note/{noteId}/attachments/{idAttachments}";
 	public static final String RESET_PASSWORD = "/reset";
 	public static final String HEALTH_CHECK = "/health";
+	public static final String DELETE_ALL_RECORDS = "/deleteall";
 	public static final String FILE = "file";
 
 	// =========================================================================================================================

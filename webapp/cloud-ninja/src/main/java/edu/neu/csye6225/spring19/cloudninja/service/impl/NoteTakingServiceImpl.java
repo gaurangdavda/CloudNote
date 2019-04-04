@@ -234,4 +234,17 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 
 	}
 
+	@Override
+	public void deleteAllNotesAndAttachments(String auth)
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException, FileStorageException {
+
+		try {
+			attachmentReposiory.deleteAll();
+			noteTakingRepository.deleteAll();
+		} catch (Exception e) {
+			logger.log(Level.ERROR, commonUtil.stackTraceString(e));
+			throw e;
+		}
+	}
+
 }
