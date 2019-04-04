@@ -117,6 +117,17 @@ fi
 echo "Selected bucket : $s3BucketNameForWebApp"
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 
+##Creating WAF Stack
+response_waf=$(aws cloudformation create-stack --stack-name waf-rules --template-body file://owasp_10_base.yml)
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+echo "Waiting for Stack waf-rules to be created"
+echo "$response_waf"
+
+aws cloudformation wait stack-create-complete --stack-name waf-rules
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+echo "stack waf-rules created successfully"
+
+
 ##Creating Stack
 #echo "Creating Cloud Stack $1"
 response=$(aws cloudformation create-stack --stack-name "$1" --template-body file://csye6225-cf-auto-scaling-application.json --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey="KEYNAME",ParameterValue=$KEY_CHOSEN ParameterKey="AMIID",ParameterValue=$amiId ParameterKey="BUCKETNAME",ParameterValue=$s3BucketName ParameterKey="APPNAME",ParameterValue="csye6225-webapp" ParameterKey="DEPGROUPNAME",ParameterValue="csye6225-webapp-deployment" ParameterKey="BUCKETNAMEFORWEBAPP",ParameterValue=$s3BucketNameForWebApp ParameterKey="CERTIFICATEARN",ParameterValue=$certificate_arn ParameterKey="HOSTEDZONE",ParameterValue=$hostedZone ParameterKey="HOSTEDZONEID",ParameterValue=$hostedZoneId)
@@ -127,13 +138,3 @@ echo "$response"
 aws cloudformation wait stack-create-complete --stack-name $1
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 echo "stack $1 created successfully"
-
-##Creating WAF Stack
-response_waf=$(aws cloudformation create-stack --stack-name waf-rules --template-body file://owasp_10_base.yml)
-echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-echo "Waiting for Stack waf-rules to be created"
-echo "$response_waf"
-
-aws cloudformation wait stack-create-complete --stack-name waf-rules
-echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-echo "stack waf-rules created successfully"
