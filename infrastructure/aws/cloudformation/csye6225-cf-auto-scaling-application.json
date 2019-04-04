@@ -357,20 +357,6 @@
         "Type": "A"
       }
     },
-    "MyWebACLAssociation": {
-      "Type": "AWS::WAFRegional::WebACLAssociation",
-      "DependsOn": [
-        "ElasticLoadBalancer"
-      ],
-      "Properties": {
-        "ResourceArn": {
-          "Ref": "ElasticLoadBalancer"
-        },
-        "WebACLId": {
-          "Fn::ImportValue": "WafWebACL"
-        }
-      }
-    },
     "DBSubnetGroup": {
       "Type": "AWS::RDS::DBSubnetGroup",
       "Properties": {
@@ -760,6 +746,15 @@
       },
       "Export": {
         "Name": "DynamoDBTableARN"
+      }
+    },
+    "ElasticLoadBalancerOut": {
+      "Description": "Load Balancer",
+      "Value": {
+        "Ref": "ElasticLoadBalancer"
+      },
+      "Export": {
+        "Name": "csye6225-load-balancer"
       }
     }
   }

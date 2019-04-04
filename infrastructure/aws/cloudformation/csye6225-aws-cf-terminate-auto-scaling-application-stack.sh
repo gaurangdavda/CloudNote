@@ -11,7 +11,7 @@ fi
 
 echo " "
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-echo "Deleting cloud stack with name: $1"
+echo "Deleting cloud stack with name: $1 and waf-rules"
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 echo " "
 
@@ -26,6 +26,13 @@ then
   exit 1
 fi
 
+aws cloudformation delete-stack --stack-name waf-rules
+
+aws cloudformation wait stack-delete-complete --stack-name waf-rules
+echo "Stack deletion triggered"
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+echo "Waiting for the stack waf_rules to be deleted"
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 
 aws cloudformation delete-stack --stack-name $1
 echo "Stack deletion triggered"

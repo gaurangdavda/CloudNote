@@ -127,3 +127,13 @@ echo "$response"
 aws cloudformation wait stack-create-complete --stack-name $1
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 echo "stack $1 created successfully"
+
+##Creating WAF Stack
+response_waf=$(aws cloudformation create-stack --stack-name waf-rules --template-body file://owasp_10_base.yml)
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+echo "Waiting for Stack waf-rules to be created"
+echo "$response_waf"
+
+aws cloudformation wait stack-create-complete --stack-name waf-rules
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+echo "stack waf-rules created successfully"
