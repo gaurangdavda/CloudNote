@@ -244,8 +244,19 @@ public class NoteTakingServiceImpl implements NoteTakingService {
 			UserCredentials credentials = authService.extractCredentialsFromHeader(auth);
 			authService.authenticateUser(credentials);
 			if (credentials.getEmailId().equals(ADMIN_EMAIL)) {
-				attachmentReposiory.deleteAll();
-				noteTakingRepository.deleteAll();
+				Iterable<Note> notes = noteTakingRepository.findAll();
+				if (notes != null) {
+					for (Note fetchedNote : notes) {
+						List<Attachment> attachments = fetchedNote.getAttachments();
+						if (attachments != null && attachments.size() > 0) {
+							for (Attachment a : attachments) {
+								fileStorageUtil.deleteFile(a.getUrl());
+								attachmentReposiory.delete(a);
+							}
+						}
+						noteTakingRepository.delete(fetchedNote);
+					}
+				}
 			} else {
 				throw new UnAuthorizedLoginException("Not an admin role. Can't delete the database.");
 			}
