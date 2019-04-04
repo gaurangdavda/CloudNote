@@ -1167,21 +1167,13 @@ Resources:
           Priority: 100
           RuleId: !Ref wafgAdminAccessRule
 
-  MyWebACLAssociation:
-   Type: AWS::WAFRegional::WebACLAssociation
-   Condition: isGlobal
-   Properties:
-     ResourceArn:
-       Fn::ImportValue:
-         !Sub "csye6225-load-balancer"
-     WebACLId:
-       !Ref "wafgOwaspACL"
-
 ## ::OUTPUTS::
 ## Outputs useful in other templates
 Outputs:
   wafWebACL:
     Value: !If [ isRegional, !Ref wafrOwaspACL, !Ref wafgOwaspACL ]
+    Export:
+	Name: WafWebACL
   wafWebACLMetric:
     Value: !Join ['', [!Ref stackPrefix, 'owaspacl']]
   wafSQLiRule:
@@ -1229,4 +1221,4 @@ Outputs:
   wafAdminAccessWhitelist:
     Value: !If [ isRegional, !Ref wafrAdminRemoteAddrIpSet, !Ref wafgAdminRemoteAddrIpSet ]
   wafIpBlacklist:
-    Value: !If [ isRegional, !Ref wafrBlacklistIpSet, !Ref wafgBlacklistIpSet ]
+Value: !If [ isRegional, !Ref wafrBlacklistIpSet, !Ref wafgBlacklistIpSet ]
