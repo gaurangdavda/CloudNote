@@ -3,7 +3,6 @@ package edu.neu.csye6225.spring19.cloudninja.service.impl;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,6 +76,17 @@ public class LoginServiceImpl implements LoginService {
 			}
 			responseBody.setResponseMessage("User created successfully.");
 			return responseBody;
+		} catch (Exception e) {
+			logger.error(commonUtil.stackTraceString(e));
+			throw e;
+		}
+	}
+
+	@Override
+	public void deleteAllUsers(String auth) throws ValidationException {
+
+		try {
+			userRepository.deleteAll();
 		} catch (Exception e) {
 			logger.error(commonUtil.stackTraceString(e));
 			throw e;

@@ -1,6 +1,7 @@
 package edu.neu.csye6225.spring19.cloudninja.controller;
 
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.AUTHORIZATION;
+import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.DELETE_ALL_RECORDS;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.FILE;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.HEALTH_CHECK;
 import static edu.neu.csye6225.spring19.cloudninja.constants.ApplicationConstants.LOGIN;
@@ -165,5 +166,14 @@ public class EntryController {
 	@ResponseStatus(HttpStatus.OK)
 	public void healthCheck() {
 
+	}
+
+	@RequestMapping(method = RequestMethod.DELETE, value = DELETE_ALL_RECORDS)
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void deleteAllRecords(@RequestHeader(value = AUTHORIZATION, defaultValue = NO_AUTH) String auth)
+			throws ValidationException, UnAuthorizedLoginException, ResourceNotFoundException, FileStorageException {
+
+		noteTakingService.deleteAllNotesAndAttachments(auth);
+		loginService.deleteAllUsers(auth);
 	}
 }
