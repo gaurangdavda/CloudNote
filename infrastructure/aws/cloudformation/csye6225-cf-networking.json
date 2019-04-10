@@ -213,7 +213,7 @@
           {
             "Key": "Name",
             "Value": {
-              "Ref": "PBSN5NAME"
+              "Ref": "PBSN3NAME"
             }
           }
         ]
