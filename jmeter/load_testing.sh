@@ -27,15 +27,48 @@ if [ -f $filelog ] ; then
 fi
 
 if [ -d $reportdir ] ; then
-    rm -RF $reportdir
+    rm -rf $reportdir
 fi
 
-## Checking whether the domain name is passed as an arguement
-if [ $# -lt 1 ]; then
-  echo "Kindly provide domain name! Script execution stopped."
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+read -p "Enter the domain name: " hostName
+
+if [[ -z "$hostName" ]]; then
+  echo "Kindly provide domain name"
+  echo "Exiting"
+  echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
   exit 1
 fi
+
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-echo "Running JMeter with domain name: $1"
+read -p "Enter the attachment path: " filepath
+
+if [[ -z "$filepath" ]]; then
+  echo "Kindly provide file path"
+  echo "Exiting"
+  echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+  exit 1
+else
+  if [ -f $filepath ] ; then
+    echo "Attaching $filepath to all the notes"
+  else
+    echo "Enter a valid attachment"
+    echo "Exiting"
+    echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+    exit 1
+  fi
+fi
+
+function getext() {
+   [ "$#" != 1 ] && { echo "Wrong number of arguments. Provide exactly one." >&2; return 254; }
+   [ -r "$1" ] || { echo "Not a file, nonexistent or unreadable." >&2; return 1; }
+   grep "^$(file -b --mime-type "$1")"$'\t' /etc/mime.types |
+      awk -F '\t+' '{print $1}'
+}
+mimetype=$(getext $filepath)
+echo "$mimetype is mime type of file"
+
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-jmeter -Jhostname=$1 -n -t load_testing.jmx -l $filejtl -j $filelog -e -o $reportdir
+echo "Running JMeter with domain name: $hostName"
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+jmeter -Jhostname=$hostName -Jfilepath=$filepath -Jmimetype=$mimetype -n -t load_testing.jmx -l $filejtl -j $filelog -e -o $reportdir
